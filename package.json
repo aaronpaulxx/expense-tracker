@@ -1,0 +1,83 @@
+{
+  "name": "expense-tracker",
+  "private": true,
+  "version": "1.1.0",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "dev": "vite",
+    "electron:dev": "concurrently \"vite dev\" \"electron .\"",
+    "electron:build": "vite build && electron-builder",
+    "electron:preview": "vite build && electron ."
+  },
+  "build": {
+    "appId": "com.expense-tracker.app",
+    "productName": "Expense Tracker",
+    "directories": {
+      "output": "release/"
+    },
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "preload.cjs",
+      "splash.html",
+      "splash.css"
+    ],
+    "extraResources": [
+      "splash.html",
+      "splash.css"
+    ],
+    "mac": {
+      "category": "public.app-category.finance"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "asar": {
+    "unpack": [
+      "preload.cjs"
+    ]
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "@tailwindcss/vite": "^4.0.4",
+    "axios": "^1.7.9",
+    "chroma-js": "^3.1.2",
+    "lucide-react": "^0.475.0",
+    "react": "^19.0.0",
+    "react-datepicker": "^8.0.0",
+    "react-day-picker": "^9.5.1",
+    "react-dom": "^19.0.0",
+    "react-select": "^5.10.0",
+    "recharts": "^2.15.1",
+    "tailwind-scrollbar-hide": "^2.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^1.3.2",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
+    "electron": "^34.1.1",
+    "electron-builder": "^25.1.8",
+    "eslint": "^9.20.1",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^4.0.4",
+    "vite": "^6.1.0"
+  },
+  "description": "Expense Tracker",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+}
+
+.spinner {
+  background-image: linear-gradient(rgb(197, 105, 250) 35%, rgb(63, 233, 255));
+  width: 70px;
+  height: 70px;
+  animation: spinning82341 1.7s linear infinite;
+  text-align: center;
+  border-radius: 50px;
+  filter: blur(1px);
+  box-shadow: 0px -5px 20px 0px rgb(196, 95, 255),
+    0px 5px 20px 0px rgb(66, 233, 255);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner1 {
+  background-color: rgb(48, 0, 61);
+  width: 80px;
+  height: 80px;
+  border-radius: 50px;
+  filter: blur(10px);
+}
+
+.title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: end; /* Aligns text to the right (end) */
+  margin-left: 15px;
+  font-family: "Fira Code", "JetBrains Mono", "Source Code Pro", Menlo, Consolas;
+}
+
+.titleh1 {
+  font-family: "Bruno Ace SC", serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 2.5rem;
+}
+
+.gradient-text {
+  background: linear-gradient(to right, rgb(0, 123, 255), rgb(142, 36, 170));
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@keyframes spinning82341 {
+  to {
+    transform: rotate(360deg);
+  }
+}
