@@ -4,11 +4,10 @@ import Header from "./components/Header";
 import BudgetPanel from "./components/BudgetPanel";
 import DateSelector from "./components/DateSelector";
 import ExpenseForm from "./components/ExpenseForm";
-import Summary from "./components/Summary";
+
 import ExpenseList from "./components/ExpenseList";
-import WeeklySpendingChart from "./components/WeeklySpendingChart";
-import ExpenseCategoriesChart from "./components/ExpenseCategoriesChart";
-import YearlyOverviewChart from "./components/YearlyOverviewChart";
+import FinancialInsights from "./components/FinancialInsights";
+
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { useExpenseCalculations } from "./hooks/useExpenseCalculations";
 
@@ -258,40 +257,16 @@ const App = () => {
               Financial Insights
             </label>
           </div>
-
-          {/* Summary Card */}
-          <div className="w-full p-2 mb-2">
-            <Summary
-              categoryTotals={categoryTotalsForToday}
-              totalForDay={totalForToday}
-              date={date}
-            />
-          </div>
-
-          {/* Weekly Spending Chart */}
-          <div className="w-full p-2 mb-2">
-            <WeeklySpendingChart
-              expenses={expenses}
-              selectedMonth={selectedMonth}
-              date={date}
-            />
-          </div>
-
-          {/* Expense Categories Chart */}
-          <div className="w-full p-2 mb-2">
-            <ExpenseCategoriesChart
-              categoryTotals={categoryTotals}
-              selectedMonth={selectedMonth}
-            />
-          </div>
-
-          {/* Yearly Overview Chart */}
-          <div className="w-full p-2">
-            <YearlyOverviewChart
-              expenses={expenses}
-              selectedYear={selectedYear}
-            />
-          </div>
+          {/* Financial Insights Section */}
+          <FinancialInsights
+            expenses={expenses}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
+            categoryTotals={categoryTotals}
+            categoryTotalsForToday={categoryTotalsForToday}
+            totalForToday={totalForToday}
+            date={date}
+          />
           <div className="w-full flex justify-center mt-3">
             <span className="text-xs text-stone-400 mb-4">
               Created by{" "}

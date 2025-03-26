@@ -81,7 +81,7 @@ const ExpenseForm = ({
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
       // Combine all error messages
-      const errorMessages = Object.values(errors).filter(Boolean).join(" | ");
+      const errorMessages = Object.values(errors).filter(Boolean).join("\n"); // Uses line breaks instead of "|"
 
       setNotification(errorMessages);
     }
@@ -126,14 +126,15 @@ const ExpenseForm = ({
     <>
       {notification && (
         <div
-          className={`fixed bottom-4 right-8 bg-stone-900 text-white p-2 rounded-lg text-sm border-1 border-stone-600 shadow-lg flex items-center gap-4 z-50 ${
+          className={`fixed bottom-4 right-5 bg-stone-900 text-white p-2 rounded-lg text-sm border-1 border-stone-600 shadow-lg flex items-center gap-4 z-50 ${
             isClosing
               ? "animate-[slideOut_0.3s_ease-in_forwards]"
               : "animate-[slideIn_0.2s_ease-out]"
           }`}
         >
           <AlertCircle size={28} className="text-red-400" />
-          <div className="flex-1">{notification}</div>
+          <div className="flex-1 -ml-2 whitespace-pre-wrap">{notification}</div>
+
           <button
             onClick={closeNotification}
             className="text-white hover:text-stone-300 cursor-pointer"

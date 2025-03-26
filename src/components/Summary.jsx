@@ -22,7 +22,7 @@ const Summary = ({ categoryTotals, totalForDay, date }) => {
         <span className="text-stone-300 font-style">{dayName}</span>
       </h3>
 
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         {Object.entries(CATEGORIES).map(([category, { icon: Icon, color }]) => (
           <div
             key={category}
@@ -37,7 +37,7 @@ const Summary = ({ categoryTotals, totalForDay, date }) => {
             </span>
           </div>
         ))}
-        <div className="pt-2 border-t border-stone-500 flex justify-between font-semibold">
+        <div className="pt-1.5 border-t border-stone-500 flex justify-between font-semibold">
           <span className="text-stone-300 flex items-center gap-1 text-[20px]">
             <Wallet size={20} className="text-[#cfc80e]" />
             Total

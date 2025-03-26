@@ -83,7 +83,7 @@ const Header = ({ budgets, setBudgets, clearRecords, expenses }) => {
 
       {notification && (
         <div
-          className={`fixed bottom-4 right-8 bg-stone-900 text-white p-2 rounded-lg text-sm border-1 border-stone-600 shadow-lg flex items-center gap-4 z-1000 ${
+          className={`fixed bottom-4 right-5 bg-stone-900 text-white p-2 rounded-lg text-sm border-1 border-stone-600 shadow-lg flex items-center gap-4 z-1000 ${
             isClosing
               ? "animate-[slideOut_0.3s_ease-in_forwards]"
               : "animate-[slideIn_0.2s_ease-out]"
