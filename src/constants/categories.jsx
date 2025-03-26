@@ -1,7 +1,7 @@
 import {
   Utensils,
-  Train,
-  ShoppingBag,
+  Car,
+  ShoppingCart,
   CreditCard,
   Home,
   Package,
@@ -13,11 +13,11 @@ export const CATEGORIES = {
     color: "text-green-400",
   },
   Transport: {
-    icon: Train,
+    icon: Car,
     color: "text-yellow-400",
   },
   Shopping: {
-    icon: ShoppingBag,
+    icon: ShoppingCart,
     color: "text-blue-400",
   },
   Credit: {

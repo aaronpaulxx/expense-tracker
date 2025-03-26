@@ -40,7 +40,7 @@ const App = () => {
   const isFirstHalf = currentDay <= 15;
   const currentBudget = isFirstHalf ? budgets.firstHalf : budgets.secondHalf;
 
-  const [isNewlyAdded, setIsNewlyAdded] = useState(false);
+  const [newlyAddedId, setNewlyAddedId] = useState(null);
 
   const {
     calculatePeriodExpenses,
@@ -73,19 +73,31 @@ const App = () => {
   const handleAddExpense = () => {
     if (validateForm()) {
       const amount = parseFloat(newExpense.amount);
+      // Generate unique ID using current date and time
+      const expenseId = Date.now().toString();
+
       setExpenses((prev) => {
         const updatedExpenses = {
           ...prev,
           [currentDateKey]: [
-            { ...newExpense, amount },
+            {
+              ...newExpense,
+              amount,
+              id: expenseId,
+            },
             ...(prev[currentDateKey] || []),
           ],
         };
+
         setNewExpense({ name: "", amount: "", category: "Food" });
         setErrors({});
-        setIsNewlyAdded(true);
 
-        setTimeout(() => setIsNewlyAdded(false), 200);
+        // Set the newly added ID instead of a boolean
+        setNewlyAddedId(expenseId);
+
+        // Clear the newly added ID after animation completes
+        setTimeout(() => setNewlyAddedId(null), 300);
+
         return updatedExpenses;
       });
     }
@@ -99,7 +111,7 @@ const App = () => {
         [currentDateKey]: prev[currentDateKey].filter((_, i) => i !== index),
       }));
       setDeletingIndex(null);
-    }, 300);
+    }, 400);
   };
 
   const handleUpdateExpense = (index, updatedExpense) => {
@@ -126,7 +138,7 @@ const App = () => {
 
   useEffect(() => {
     // Add a minimum loading time of 1 second for better UX
-    const minimumLoadingTime = 1000; // 1 second
+    const minimumLoadingTime = 500;
     const startTime = Date.now();
 
     // Check if data is ready
@@ -151,7 +163,7 @@ const App = () => {
   }, [budgets, expenses]); // Dependencies
 
   return (
-    <div className="h-screen w-screen bg-gray-950 flex flex-col overflow-auto">
+    <div className="max-w-full h-screen bg-stone-950 flex flex-col custom-scrollbar">
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-[rgba(33,33,33,0.85)] z-50 transition-opacity duration-500 ease-in-out">
           {/* Centered content (Spinner + Title on the Right) */}
@@ -163,8 +175,8 @@ const App = () => {
 
             {/* Title and Author Information */}
             <div className="flex flex-col items-start text-left z-50">
-              <h1 className="text-5xl font-bold titleh1">
-                <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold titleh1">
+                <span className="bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">
                   Expense Tracker
                 </span>
               </h1>
@@ -180,9 +192,20 @@ const App = () => {
         expenses={expenses}
       />
 
-      <div className="flex flex-1 h-[calc(100vh-8px)] overflow-auto p-2 flex-col sm:flex-row sm:h-auto">
-        {/* Left Panel */}
-        <div className="w-full sm:w-1/3 bg-gray-900 rounded-lg p-3 flex flex-col gap-2 sm:mr-2 mb-2 sm:mb-0">
+      {/* Date Selector - Fixed at the top after header */}
+      <div className="sticky top-0 z-1 bg-stone-950 border-b border-stone-600">
+        <DateSelector
+          date={date}
+          setDate={setDate}
+          dateInputRef={dateInputRef}
+          onYearChange={setSelectedYear}
+          handleDateClick={handleDateClick}
+        />
+      </div>
+
+      <div className="flex flex-1 overflow-auto flex-col">
+        {/* Budget Panel */}
+        <div className="w-full p-2 flex flex-col gap-2 mb-2">
           <BudgetPanel
             budgets={budgets}
             setBudgets={setBudgets}
@@ -192,14 +215,15 @@ const App = () => {
             expenses={expenses}
             date={date}
           />
+        </div>
 
-          <DateSelector
-            date={date}
-            setDate={setDate}
-            dateInputRef={dateInputRef}
-            onYearChange={setSelectedYear}
-            handleDateClick={handleDateClick}
-          />
+        {/* Expense Entry Section */}
+        <div className="w-full p-2 flex flex-col gap-2">
+          <div className="w-full pl-2">
+            <label className="text-md border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full">
+              Expense Details
+            </label>
+          </div>
 
           <ExpenseForm
             newExpense={newExpense}
@@ -207,61 +231,73 @@ const App = () => {
             errors={errors}
             handleAddExpense={handleAddExpense}
           />
+        </div>
 
-          <h2 className="text-lg font-semibold mb-2 text-white">
-            Today&apos;s Expenses
-          </h2>
+        {/* Today's Expenses Section */}
+        <div className="w-full p-2 flex flex-col gap-2">
+          <div className="w-full pl-2 mb-1">
+            <label className="text-md border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full">
+              Today&apos;s Expenses
+            </label>
+          </div>
           <ExpenseList
             date={date}
             expenses={expenses}
             currentDateKey={currentDateKey}
-            isNewlyAdded={isNewlyAdded}
+            newlyAddedId={newlyAddedId}
             deletingIndex={deletingIndex}
             handleDeleteExpense={handleDeleteExpense}
             onUpdateExpense={handleUpdateExpense}
           />
         </div>
 
-        {/* Right Panel */}
-        <div className="w-full sm:w-2/3 flex flex-col bg-gray-900 rounded-lg">
-          <h2 className="text-lg font-semibold text-gray-100 p-2 pb-0">
-            Financial Insights
-          </h2>
-          {/* 2x2 Grid Container */}
-          <div className="grid grid-cols-1 md:grid-cols-2 h-full -mt-1.5">
-            {/* Weekly Spending Card */}
-            <div className="rounded p-3">
-              <WeeklySpendingChart
-                expenses={expenses}
-                selectedMonth={selectedMonth}
-                date={date}
-              />
-            </div>
+        {/* Financial Insights Section */}
+        <div className="w-full p-2 flex flex-col gap-2">
+          <div className="w-full pl-2 mt-3">
+            <label className="text-md border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full">
+              Financial Insights
+            </label>
+          </div>
 
-            {/* Expense Categories Card */}
-            <div className="rounded p-3">
-              <ExpenseCategoriesChart
-                categoryTotals={categoryTotals}
-                selectedMonth={selectedMonth}
-              />
-            </div>
+          {/* Summary Card */}
+          <div className="w-full p-2 mb-2">
+            <Summary
+              categoryTotals={categoryTotalsForToday}
+              totalForDay={totalForToday}
+              date={date}
+            />
+          </div>
 
-            {/* Summary Card */}
-            <div className=" rounded p-3">
-              <Summary
-                categoryTotals={categoryTotalsForToday}
-                totalForDay={totalForToday}
-                date={date}
-              />
-            </div>
+          {/* Weekly Spending Chart */}
+          <div className="w-full p-2 mb-2">
+            <WeeklySpendingChart
+              expenses={expenses}
+              selectedMonth={selectedMonth}
+              date={date}
+            />
+          </div>
 
-            {/* Yearly Overview Card */}
-            <div className="rounded p-3">
-              <YearlyOverviewChart
-                expenses={expenses}
-                selectedYear={selectedYear}
-              />
-            </div>
+          {/* Expense Categories Chart */}
+          <div className="w-full p-2 mb-2">
+            <ExpenseCategoriesChart
+              categoryTotals={categoryTotals}
+              selectedMonth={selectedMonth}
+            />
+          </div>
+
+          {/* Yearly Overview Chart */}
+          <div className="w-full p-2">
+            <YearlyOverviewChart
+              expenses={expenses}
+              selectedYear={selectedYear}
+            />
+          </div>
+          <div className="w-full flex justify-center mt-3">
+            <span className="text-xs text-stone-400 mb-4">
+              Created by{" "}
+              <span className="font-medium text-stone-300">APZR</span> ©{" "}
+              {new Date().getFullYear()}
+            </span>
           </div>
         </div>
       </div>

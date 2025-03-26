@@ -82,7 +82,7 @@ const Settings = ({
       setHasChanges(false);
       setNotification(
         <span>
-          <Check size={28} className="inline text-green-500" /> Budget settings
+          <Check size={28} className="inline text-green-500 " /> Budget settings
           saved successfully.
         </span>
       );
@@ -227,17 +227,17 @@ const Settings = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Panel className="relative bg-gray-900 p-5 rounded-xl shadow-lg w-[40rem] max-w-[90%] max-h-[90vh] overflow-y-auto">
+            <Dialog.Panel className="relative bg-stone-900 p-5 rounded-xl shadow-lg w-[40rem] max-w-[90%] max-h-[90vh] overflow-y-auto border-stone-500 border-1 custom-scrollbar">
               <div className="flex justify-between items-center border-b border-white">
                 <Dialog.Title className="text-xl font-bold text-white">
                   <div className="flex items-center gap-2 mb-2">
-                    <SettingsIcon size={24} className="text-purple-300" />{" "}
+                    <SettingsIcon size={30} className="text-stone-300" />{" "}
                     Settings
                   </div>
                 </Dialog.Title>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-gray-400 hover:text-white transition-all duration-200 cursor-pointer"
+                  className="text-stone-400 hover:text-white transition-all duration-200 cursor-pointer"
                 >
                   <X size={24} />
                 </button>
@@ -247,7 +247,7 @@ const Settings = ({
                 {/* Budget Settings */}
                 <div className="pb-0 flex justify-between items-center">
                   <div className="flex items-center gap-2">
-                    <WalletMinimal size={16} className="text-purple-300" />
+                    <WalletMinimal size={20} className="text-stone-300" />
                     <h2 className="text-sm font-medium text-white ">
                       Budget Settings
                     </h2>
@@ -256,52 +256,61 @@ const Settings = ({
                     {hasChanges && (
                       <button
                         onClick={handleReset}
-                        className="text-gray-400 hover:text-white transition cursor-pointer"
-                        title="Reset changes"
+                        className="relative group text-stone-400 hover:text-white transition cursor-pointer"
                       >
                         <RotateCcw
                           size={18}
-                          className="transition-transform duration-200 hover:scale-120"
+                          className="transition-transform duration-200 hover:scale-110"
                         />
+
+                        {/* Tooltip */}
+                        <div className="absolute -top-8 -left-8 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition bg-stone-800 text-white text-xs px-2 py-1 rounded-md shadow-lg whitespace-nowrap">
+                          Reset changes
+                        </div>
                       </button>
                     )}
+
+                    {/* Button with Tooltip */}
                     <button
                       onClick={toggleEditBudget}
-                      className="text-gray-400 hover:text-white transition cursor-pointer"
-                      title={
-                        isEditingBudget
+                      className="relative group text-stone-400 hover:text-white transition cursor-pointer"
+                      disabled={showConfirmDelete}
+                    >
+                      {/* Tooltip */}
+                      <span className="absolute -top-8 -left-8 -translate-x-1/2 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                        {isEditingBudget
                           ? hasChanges
                             ? "Save changes"
                             : "Cancel editing"
-                          : "Edit budget"
-                      }
-                      disabled={showConfirmDelete}
-                    >
+                          : "Edit budget"}
+                      </span>
+
+                      {/* Icon */}
                       {isEditingBudget ? (
                         hasChanges ? (
                           <Check
-                            size={18}
+                            size={22}
                             className="text-green-500 transition-transform duration-200 hover:scale-120"
                           />
                         ) : (
                           <Ban
                             size={18}
-                            className="text-red-500 transition-transform duration-200 hover:scale-120"
+                            className="text-red-500 transition-transform duration-200 hover:scale-110"
                           />
                         )
                       ) : (
                         <Edit
                           size={18}
-                          className="text-yellow-500 transition-transform duration-200 hover:scale-120"
+                          className="text-yellow-500 transition-transform duration-200 hover:scale-110"
                         />
                       )}
                     </button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="-mt-3 grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-xs font-medium text-gray-300">
+                    <label className="text-xs font-medium text-stone-300">
                       1st to 15th Budget
                     </label>
                     <input
@@ -314,13 +323,13 @@ const Settings = ({
                       className={`w-full px-3 py-1 border rounded-lg text-sm text-white 
                       ${
                         isEditingBudget
-                          ? "bg-gray-800 border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-400/50 transition-all duration-200"
-                          : "bg-gray-700 border-gray-600"
+                          ? "bg-stone-800 border-stone-600 focus:outline-none focus:ring-2 focus:ring-teal-400/50 transition-all duration-200"
+                          : "bg-stone-700 border-stone-600"
                       }`}
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-gray-300">
+                    <label className="text-xs font-medium text-stone-300">
                       16th to End Budget
                     </label>
                     <input
@@ -333,34 +342,34 @@ const Settings = ({
                       className={`w-full px-3 py-1 border rounded-lg text-sm text-white 
                       ${
                         isEditingBudget
-                          ? "bg-gray-800 border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-400/50 transition-all duration-200"
-                          : "bg-gray-700 border-gray-600"
+                          ? "bg-stone-800 border-stone-600 focus:outline-none focus:ring-2 focus:ring-teal-400/50 transition-all duration-200"
+                          : "bg-stone-700 border-stone-600"
                       }`}
                     />
                   </div>
                 </div>
                 {/* Storage Information Section */}
-                <div className="border-t border-gray-700 pt-3">
+                <div className="border-t border-stone-700 pt-3">
                   <div className="flex items-center gap-2">
-                    <Database size={16} className="text-purple-300" />
+                    <Database size={20} className="text-stone-300" />
                     <h2 className="text-sm font-medium text-white">
                       Storage Usage
                     </h2>
                   </div>
                   <div className="mt-2">
-                    <div className="w-full bg-gray-700 rounded-full h-2.5">
+                    <div className="w-full bg-stone-700 rounded-full h-2.5">
                       <div
-                        className="bg-purple-300 h-2.5 rounded-full"
+                        className="bg-teal-300 h-2.5 rounded-full"
                         style={{
                           width: `${Math.min(storageInfo.percentage, 100)}%`,
                         }}
                       ></div>
                     </div>
                     <div className="flex justify-between mt-1">
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-stone-400">
                         {storageInfo.used} KB used
                       </span>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-stone-400">
                         {storageInfo.total} KB total
                       </span>
                     </div>
@@ -373,24 +382,24 @@ const Settings = ({
                 </div>
 
                 {/* Export Data Section */}
-                <div className="border-t border-gray-700 pt-3">
+                <div className="border-t border-stone-700 pt-3">
                   <div className="flex items-center gap-2">
-                    <MonitorDown size={16} className="text-purple-300" />
+                    <MonitorDown size={20} className="text-stone-300" />
                     <h2 className="text-sm font-medium text-white">
                       Export Data
                     </h2>
                   </div>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-2">
-                    <span className="text-sm text-gray-400">
+                    <span className="text-sm text-stone-400">
                       Download your expense records as an Excel spreadsheet
                     </span>
 
                     <button
                       onClick={handleExportData}
-                      className="w-full md:w-auto mt-3 md:mt-0 cursor-pointer inline-flex items-center justify-center gap-2 py-0.5 px-0.5 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white shadow-lg hover:shadow-purple-500/50 duration-200"
+                      className="w-full md:w-auto mt-3 md:mt-0 cursor-pointer inline-flex items-center justify-center gap-2 py-0.5 px-0.5 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-teal-600 to-green-500 group-hover:from-teal-600 group-hover:to-green-500 hover:text-white dark:text-white shadow-lg hover:shadow-teal-500/50 duration-200"
                     >
-                      <span className="flex items-center justify-center gap-2 px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md hover:bg-transparent w-full">
-                        <FileDown size={18} className="text-gray-300" />
+                      <span className="flex items-center justify-center gap-2 px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-stone-900 rounded-md group-hover:bg-transparent w-full">
+                        <FileDown size={18} className="text-stone-300" />
                         Export
                       </span>
                     </button>
@@ -398,15 +407,15 @@ const Settings = ({
                 </div>
 
                 {/* Delete Records Section */}
-                <div className="border-t border-gray-700 pt-3">
+                <div className="border-t border-stone-700 pt-3">
                   <div className="flex items-center gap-2">
-                    <Trash2 size={16} className="text-purple-300" />
+                    <Trash2 size={20} className="text-stone-300" />
                     <h2 className="text-sm font-medium text-white">
                       Delete Records
                     </h2>
                   </div>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-2">
-                    <span className="text-sm text-gray-400">
+                    <span className="text-sm text-stone-400">
                       Remove all expense records permanently
                     </span>
                     <button
@@ -418,7 +427,7 @@ const Settings = ({
                       }}
                       className="w-full md:w-auto mt-3 md:mt-0 cursor-pointer inline-flex items-center justify-center gap-2 py-0.5 px-0.5 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-red-400 to-red-500 shadow-lg hover:shadow-red-500/50 duration-200"
                     >
-                      <span className="flex items-center justify-center gap-2 px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md hover:bg-transparent w-full">
+                      <span className="flex items-center justify-center gap-2 px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-stone-900 rounded-md group-hover:bg-transparent w-full">
                         <Trash size={18} />
                         Delete All
                       </span>
@@ -430,10 +439,10 @@ const Settings = ({
                         Are you sure you want to delete all records? This action
                         cannot be undone.
                       </p>
-                      <div className="flex justify-end space-x-4 mt-2">
+                      <div className="flex justify-center space-x-4 mt-3">
                         <button
                           onClick={() => setShowConfirmDelete(false)}
-                          className="px-4 py-1 rounded-md bg-gray-700 text-white hover:bg-gray-600 transition cursor-pointer"
+                          className="px-4 py-1 rounded-md bg-stone-700 text-white hover:bg-stone-600 transition cursor-pointer w-full"
                         >
                           Cancel
                         </button>

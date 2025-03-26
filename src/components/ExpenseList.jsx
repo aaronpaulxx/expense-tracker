@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import {
   Trash,
@@ -14,17 +14,34 @@ import { CATEGORIES } from "../constants/categories";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
-const Toast = ({ message, onClose }) => (
-  <div className="fixed bottom-4 right-4 z-50 animate-[slideIn_0.2s_ease-out]">
-    <div className="bg-gray-700 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2">
-      <Check size={28} className="w-6 h-6 text-green-500" />
-      <span>{message}</span>
-      <button onClick={onClose} className="cursor-pointer">
-        <X size={18} />
-      </button>
+const Toast = ({ message, onClose }) => {
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 300); // Match this with the CSS animation duration
+  };
+
+  return (
+    <div
+      className={`fixed bottom-4 right-4 z-50 ${
+        isClosing
+          ? "animate-[slideOut_0.3s_ease-in_forwards]"
+          : "animate-[slideIn_0.2s_ease-out]"
+      }`}
+    >
+      <div className="bg-stone-900 border-1 text-sm border-stone-600 text-white p-2 rounded-lg shadow-lg flex items-center gap-2">
+        <Check size={28} className="w-6 h-6 text-green-500" />
+        <span>{message}</span>
+        <button onClick={handleClose} className="cursor-pointer">
+          <X size={18} />
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const formatNumber = (num) =>
   num.toLocaleString("en-US", {
@@ -35,7 +52,7 @@ const formatNumber = (num) =>
 const ExpenseList = ({
   expenses,
   currentDateKey,
-  isNewlyAdded,
+  newlyAddedId,
   deletingIndex,
   handleDeleteExpense,
   date,
@@ -61,16 +78,17 @@ const ExpenseList = ({
   const colourStyles = {
     control: (styles, { isFocused }) => ({
       ...styles,
-      backgroundColor: "#1f2937", // gray-800
-      borderColor: isFocused ? "#c084fc80" : "#374151", // Purple-400 when focused
-      borderRadius: "8px", // Add border-radius
+      backgroundColor: "#1c1917", // stone-800
+      borderColor: "#78716c", // Same border color regardless of focus state
+      borderRadius: "9px", // Add border-radius
+      borderWidth: "1px", // Same border width regardless of focus state
       "&:hover": {
-        backgroundColor: "#1f2937", // gray-800
+        backgroundColor: "#292524", // stone-800
       },
-      boxShadow: isFocused ? "0 0 0 1.5px #c084fc80" : "none", // Mimic Tailwind's focus:ring-2
+      boxShadow: "none", // Removed focus ring shadow
       transition: "all 200ms",
-      minHeight: "34px", // Slightly taller for the edit form
-      height: "34px",
+      minHeight: "30px",
+      height: "33px",
     }),
     valueContainer: (styles) => ({
       ...styles,
@@ -85,20 +103,19 @@ const ExpenseList = ({
     dropdownIndicator: (styles, { isFocused }) => ({
       ...styles,
       padding: "0 6px",
-      color: isFocused ? "#c084fc" : "#9ca3af",
+      color: isFocused ? "#14b8a680" : "#9ca3af",
       transition: "color 200ms",
       "&:hover": {
-        color: "#c084fc",
+        color: "#22c55e",
       },
     }),
     menu: (styles) => ({
       ...styles,
-      backgroundColor: "#1f2937",
+      backgroundColor: "#292524",
       border: "1px solid #374151",
       borderRadius: "8px", // Add border-radius
       boxShadow:
         "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-      overflow: "hidden", // Ensures rounded corners work properly
     }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
       ...styles,
@@ -108,9 +125,9 @@ const ExpenseList = ({
       background: isDisabled
         ? undefined
         : isSelected
-        ? "linear-gradient(to right, #644a8a, #3b82f6)" // Purple (#644a8a) to Blue (#3b82f6)
+        ? "linear-gradient(to right, #166534, #115e59)" // Green to Teal
         : isFocused
-        ? "#374151"
+        ? "#57534e"
         : undefined,
 
       color: isDisabled ? "#6b7280" : "white",
@@ -219,33 +236,33 @@ const ExpenseList = ({
       });
       handleClose();
       setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
+      setTimeout(() => setShowToast(false), 5000);
     }
   };
 
   return (
     <>
-      <div className="flex-1 space-y-2 overflow-y-auto max-h-[200px] sm:max-h-[200px] md:max-h-full overflow-x-hidden custom-scrollbar rounded-lg">
+      <div className="ml-2 mr-2 flex-1 p-2 space-y-2 overflow-y-auto min-h-[200px] max-h-[200px] sm:max-h-[200px] overflow-x-hidden custom-scrollbar rounded-xl border-1 border-stone-500">
         {expenses[currentDateKey]?.map((expense, index) => {
           const CategoryIcon = CATEGORIES[expense.category].icon;
 
           return (
             <div
-              key={index}
-              className={`flex items-center justify-between px-2 py-1 rounded-lg bg-gray-800/80 backdrop-blur-sm border border-gray-700/50 shadow-md shadow-gray-950 group
-              ${
-                deletingIndex === index
-                  ? "translate-x-full opacity-0 transition-all duration-200"
-                  : ""
-              }
-              hover:bg-gray-700/80 hover:border-gray-600/50 transition-all duration-200
-              ${
-                isNewlyAdded && !deletingIndex
-                  ? "animate-[fadeIn_0.2s_ease-in-out]"
-                  : ""
-              }`}
+              key={expense.id} // Use the unique ID as the key instead of index
+              className={`flex items-center justify-between px-2 py-1 rounded-lg bg-stone-800 backdrop-blur-sm shadow-md shadow-stone-950 group
+            ${
+              deletingIndex === index
+                ? "animate-[slideOut_0.4s_cubic-bezier(0.68,-0.55,0.27,1.55)_forwards]"
+                : ""
+            }
+            hover:bg-stone-700/80 hover:border-stone-300 hover:border-1.5 transition-all duration-200
+            ${
+              newlyAddedId === expense.id
+                ? "animate-[fadeIn_0.5s_cubic-bezier(0.26,0.53,0.74,1.48)] scale-100 opacity-100"
+                : ""
+            }`}
             >
-              <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="flex items-center gap-3 min-w-0 flex-1 ">
                 <div className="rounded-lg flex-shrink-0">
                   <CategoryIcon
                     size={28}
@@ -261,14 +278,14 @@ const ExpenseList = ({
                   >
                     {truncateText(expense.name)}
                   </span>
-                  <span className="text-[12px] text-gray-400">
+                  <span className="text-[12px] text-stone-400">
                     {expense.category}
                   </span>
                 </div>
               </div>
 
               <div className="flex items-center gap-1 flex-shrink-0">
-                <span className="text-green-400 font-medium text-md px-3 py-1 bg-green-400/10 rounded-md whitespace-nowrap">
+                <span className="text-green-400 font-medium text-md px-3 py-1 bg-green-400/10 rounded-md whitespace-nowrap ">
                   ₱{formatNumber(expense.amount)}
                 </span>
                 <button
@@ -288,13 +305,9 @@ const ExpenseList = ({
           );
         })}
         {!expenses[currentDateKey]?.length && (
-          <div className="text-center text-gray-400 py-8 flex flex-col items-center">
-            <ClipboardX size={50} className="opacity-50" />
-            <span className="text-sm">No expenses recorded for this day:</span>
-            <span className="text-sm">{dayName}</span>
-            <span className="text-sm opacity-75 mt-2">
-              Add an expense using the form above
-            </span>
+          <div className="text-center text-stone-500 py-8 flex flex-col items-center">
+            <ClipboardX size={40} className="opacity-70 mb-5" />
+            <span className="text-sm">No expenses recorded for this day.</span>
           </div>
         )}
       </div>
@@ -324,18 +337,18 @@ const ExpenseList = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-auto max-w-md transform overflow-hidden rounded-xl bg-gray-900 p-4 text-left align-middle shadow-xl transition-all border border-gray-700/50">
+                <Dialog.Panel className="w-auto max-w-md transform overflow-hidden rounded-xl bg-stone-900 p-4 text-left align-middle shadow-xl transition-all border-stone-500 border-1">
                   <Dialog.Title
                     as="div"
                     className="flex justify-between items-center mb-4 border-b border-white"
                   >
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                      <PencilLine size={24} className="text-purple-300" />
+                      <PencilLine size={24} className="text-stone-300" />
                       Edit Expense
                     </h2>
                     <button
                       onClick={handleClose}
-                      className="text-gray-400 hover:text-gray-200 p-2 transition-all duration-200 cursor-pointer"
+                      className="text-stone-400 hover:text-stone-200 p-2 transition-all duration-200 cursor-pointer"
                     >
                       <X size={24} />
                     </button>
@@ -343,7 +356,7 @@ const ExpenseList = ({
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-2">
+                      <label className="block text-sm font-medium text-stone-200 mb-2">
                         Name
                       </label>
                       <input
@@ -353,23 +366,23 @@ const ExpenseList = ({
                         onChange={(e) =>
                           handleFormChange("name", e.target.value)
                         }
-                        className={`w-full px-3 py-1 bg-gray-800/50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400/50 text-white placeholder-gray-400 transition-all duration-200 ${
+                        className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
                           errors.name
-                            ? "border-red-500/50"
-                            : "border-gray-600/50"
-                        }`}
+                            ? "border-red-400"
+                            : "border-stone-500 border-1"
+                        } rounded-lg text-white text-sm`}
                         placeholder="Enter expense description"
                       />
                       {errors.name && (
-                        <div className="mt-1 flex items-center gap-1 text-red-500">
-                          <AlertCircle size={12} />
+                        <div className="mt-1 flex items-center gap-1 text-red-400">
+                          <AlertCircle size={15} />
                           <p className="text-xs">{errors.name}</p>
                         </div>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-2">
+                      <label className="block text-sm font-medium text-stone-200 mb-2">
                         Amount
                       </label>
                       <input
@@ -378,23 +391,23 @@ const ExpenseList = ({
                         onChange={(e) =>
                           handleFormChange("amount", e.target.value)
                         }
-                        className={`w-full px-3 py-1 bg-gray-800/50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400/50 text-white placeholder-gray-400 transition-all duration-200 ${
+                        className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
                           errors.amount
-                            ? "border-red-500/50"
-                            : "border-gray-600/50"
-                        }`}
+                            ? "border-red-400"
+                            : "border-stone-500 border-1"
+                        } rounded-lg text-white text-sm`}
                         placeholder="Enter amount"
                       />
                       {errors.amount && (
-                        <div className="mt-1 flex items-center gap-1 text-red-500">
-                          <AlertCircle size={12} />
+                        <div className="mt-1 flex items-center gap-1 text-red-400">
+                          <AlertCircle size={15} />
                           <p className="text-xs">{errors.amount}</p>
                         </div>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-2">
+                      <label className="block text-sm font-medium text-stone-200 mb-2">
                         Category
                       </label>
                       <Select
@@ -440,10 +453,10 @@ const ExpenseList = ({
                       />
                     </div>
 
-                    <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-700/50">
+                    <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-stone-500">
                       <button
                         onClick={handleClose}
-                        className="px-4 py-2.5 text-sm font-medium text-gray-300 hover:text-white bg-gray-700/50 rounded-lg hover:bg-gray-600/50 focus:outline-none focus:ring-2 focus:ring-gray-500/50 transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                        className="h-10 px-4 text-sm font-medium text-stone-300 hover:text-stone-200 bg-stone-700 hover:bg-red-500 rounded-lg focus:outline-none  transition-all duration-200 flex items-center gap-2 cursor-pointer"
                       >
                         <Ban size={16} />
                         Cancel
@@ -453,13 +466,13 @@ const ExpenseList = ({
                         disabled={
                           !hasChanges() || Object.keys(errors).length > 0
                         }
-                        className={`w-full md:w-auto mt-3 md:mt-0 inline-flex items-center justify-center gap-2 py-0.5 px-0.5 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white shadow-lg hover:shadow-purple-500/50 duration-200 ${
+                        className={`w-full  inline-flex items-center justify-center gap-2 py-0.5 px-0.5 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-teal-600 to-green-500 group-hover:from-teal-600 group-hover:to-green-500 hover:text-white dark:text-white shadow-lg hover:shadow-teal-500/50 duration-200 ${
                           !hasChanges() || Object.keys(errors).length > 0
                             ? "opacity-50 cursor-not-allowed"
                             : "cursor-pointer"
                         }`}
                       >
-                        <span className="flex items-center justify-center gap-2 px-3 py-2 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md hover:bg-transparent w-full">
+                        <span className="flex items-center justify-center gap-2 px-3 py-2 transition-all ease-in duration-75 bg-white dark:bg-stone-900 rounded-md group-hover:bg-transparent w-full">
                           <Save size={16} />
                           Save Changes
                         </span>

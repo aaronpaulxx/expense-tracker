@@ -51,36 +51,37 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
   );
 
   return (
-    <div className="bg-gray-800 rounded p-2 shadow-md shadow-gray-950">
-      <h3 className="text-sm font-medium text-gray-300 mb-2">
-        {selectedMonth
-          ? `Weekly Spending - ${new Date(selectedMonth).toLocaleString(
-              "en-US",
-              {
+    <div className="border-stone-500 border-1 rounded-xl p-2 shadow-md shadow-stone-950">
+      <h3 className="text-sm font-medium text-stone-300 mb-5 pb-2 border-b border-stone-500 flex justify-between items-center">
+        <span>Weekly Spending</span>
+        <span className="text-stone-300">
+          {selectedMonth
+            ? new Date(selectedMonth).toLocaleString("en-US", {
                 month: "long",
                 year: "numeric",
-              }
-            )}`
-          : "Weekly Spending"}
+              })
+            : ""}
+        </span>
       </h3>
+
       <ResponsiveContainer width="100%" height={200}>
         <BarChart
           data={weeklyTrendData}
-          margin={{ top: 10, right: 20, left: 10, bottom: 20 }} // More space for labels
+          margin={{ top: 20, right: 20, left: -10, bottom: 10 }} // More space for labels
         >
           {/* Subtle Grid for a Clean Look */}
-          <CartesianGrid strokeDasharray="2 2" stroke="#8c99ad" opacity={0.4} />
+          <CartesianGrid strokeDasharray="2 2" stroke="#e7e5e4" opacity={0.4} />
 
           {/* X-Axis (Weeks) */}
           <XAxis
             dataKey="week"
-            tick={{ fontSize: 12, fill: "#9ca3af" }} // Lighter color for readability
+            tick={{ fontSize: 12, fill: "#d6d3d1" }} // Lighter color for readability
             tickLine={{ stroke: "#4A5568" }}
           />
 
           {/* Y-Axis (Values) */}
           <YAxis
-            tick={{ fontSize: 12, fill: "#9ca3af" }}
+            tick={{ fontSize: 12, fill: "#d6d3d1" }}
             tickLine={{ stroke: "#4A5568" }}
             tickFormatter={(value) => `₱${value.toLocaleString()}`}
           />
@@ -88,14 +89,16 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
           {/* Tooltip */}
           <Tooltip
             content={<CustomTooltip />}
-            cursor={{ fill: "rgba(129, 140, 248, 0.1)" }}
+            cursor={{ fill: "rgba(16, 185, 129, 0.1)" }} // green-500 with 10% opacity
           />
 
           {/* Modern Gradient Bar with Hover Effect */}
           <defs>
             <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#636cf1" stopOpacity={0.9} />
-              <stop offset="100%" stopColor="#9963f1" stopOpacity={0.5} />
+              <stop offset="0%" stopColor="#10b981" stopOpacity={0.9} />{" "}
+              {/* Green-500 */}
+              <stop offset="100%" stopColor="#14b8a6" stopOpacity={0.5} />{" "}
+              {/* Teal-500 */}
             </linearGradient>
           </defs>
 

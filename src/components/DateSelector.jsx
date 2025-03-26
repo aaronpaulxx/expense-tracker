@@ -1,7 +1,7 @@
 // src/components/DateSelector.jsx
 import React from "react";
 import DatePicker from "react-datepicker";
-import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import "../styles/datepicker.css";
 
 const DateSelector = ({
@@ -26,14 +26,14 @@ const DateSelector = ({
     changeMonth,
     months,
   }) => (
-    <div className="flex items-center justify-between px-2 py-2 bg-gray-800 text-white rounded-t-lg">
+    <div className="flex items-center justify-between px-2 py-2 text-white rounded-t-lg ">
       {/* Previous Month Button */}
       <button
         onClick={decreaseMonth}
         disabled={prevMonthButtonDisabled}
-        className="p-1 hover:bg-gray-700 rounded-full transition-colors"
+        className="p-1 mr-2 hover:bg-stone-700 rounded-full transition-colors cursor-pointer"
       >
-        <ChevronLeft size={20} className="text-gray-400 hover:text-white" />
+        <ChevronLeft size={20} className="text-stone-400 hover:text-white" />
       </button>
 
       {/* Month & Year Dropdowns */}
@@ -42,7 +42,7 @@ const DateSelector = ({
         <select
           value={date.getMonth()}
           onChange={({ target: { value } }) => changeMonth(parseInt(value))}
-          className="bg-gray-700 text-white px-2 py-1 rounded-md text-sm focus:outline-none cursor-pointer"
+          className="bg-stone-800 text-white px-2 py-1 rounded-md text-sm focus:outline-none cursor-pointer"
         >
           {months.map((month, index) => (
             <option key={index} value={index}>
@@ -55,7 +55,7 @@ const DateSelector = ({
         <select
           value={date.getFullYear()}
           onChange={({ target: { value } }) => changeYear(parseInt(value))}
-          className="bg-gray-700 text-white px-2 py-1 rounded-md text-sm focus:outline-none cursor-pointer"
+          className="bg-stone-800 text-white px-2 py-1 rounded-md text-sm focus:outline-none cursor-pointer"
         >
           {Array.from(
             { length: 100 },
@@ -72,39 +72,57 @@ const DateSelector = ({
       <button
         onClick={increaseMonth}
         disabled={nextMonthButtonDisabled}
-        className="p-1 hover:bg-gray-700 rounded-full transition-colors"
+        className="p-1 ml-2 hover:bg-stone-700 rounded-full transition-colors cursor-pointer"
       >
-        <ChevronRight size={20} className="text-gray-400 hover:text-white" />
+        <ChevronRight size={20} className="text-stone-400 hover:text-white" />
       </button>
     </div>
   );
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center">
       {/* Previous Day Button */}
       <button
         onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}
-        className="h-[44px] group px-3 py-2 bg-gray-800 text-white rounded-lg shadow-md duration-200 hover:bg-gray-700 text-sm flex items-center justify-center cursor-pointer shadow-gray-950"
+        className="h-[50px] group px-3 py-2 text-white duration-200 hover:bg-stone-800 text-sm flex items-center justify-center cursor-pointer "
       >
+        {/* Tooltip */}
+        <div className="absolute left-1 top-15 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+          Previous Day
+        </div>
         <ChevronLeft
-          size={18}
-          className="transition-transform duration-300 ease-in-out group-hover:scale-130"
+          size={30}
+          className="mr-1 transition-transform duration-300 ease-in-out group-hover:scale-130"
         />
       </button>
 
-      {/* Date Display */}
+      {/* Date Display with Tooltip */}
       <div
         onClick={handleDateClick}
-        className="relative flex-1 px-4 py-2 rounded-lg bg-gray-800 text-center text-xl font-semibold text-white shadow-md hover:bg-gray-700 transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 shadow-gray-950"
+        className="relative flex-1 px-5 py-2 rounded-lg text-center transition-all duration-300 cursor-pointer flex items-center justify-center gap-x-3 group"
       >
-        <span>
-          {date.toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </span>
-        <Calendar size={18} className="text-gray-200" />
+        {/* Tooltip */}
+        <div className="absolute top-14 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+          Click to change date
+        </div>
+
+        {/* Weekday Container */}
+        <div>
+          <span className="text-lg text-green-300 uppercase">
+            - {date.toLocaleDateString("en-US", { weekday: "long" })} -
+          </span>
+        </div>
+
+        {/* Date Container */}
+        <div>
+          <span className="text-lg text-white uppercase">
+            {date.toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </span>
+        </div>
       </div>
 
       {/* Date Picker with Month & Year Dropdowns */}
@@ -144,11 +162,15 @@ const DateSelector = ({
       {/* Next Day Button */}
       <button
         onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}
-        className="h-[44px] group px-3 py-2 bg-gray-800 text-white rounded-lg shadow-md duration-200 hover:bg-gray-700 text-sm flex items-center justify-center cursor-pointer shadow-gray-950"
+        className="h-[50px] group px-3 py-2 text-white duration-200 hover:bg-stone-800 text-sm flex items-center justify-center cursor-pointer "
       >
+        {/* Tooltip */}
+        <div className="absolute right-1 top-15 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+          Next Day
+        </div>
         <ChevronRight
-          size={18}
-          className="transition-transform duration-300 ease-in-out group-hover:scale-130"
+          size={30}
+          className="ml-1 transition-transform duration-300 ease-in-out group-hover:scale-130"
         />
       </button>
     </div>

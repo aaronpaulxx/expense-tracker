@@ -6,7 +6,6 @@ import {
   Area,
   XAxis,
   YAxis,
-  Tooltip,
   Legend,
   ResponsiveContainer,
   CartesianGrid,
@@ -68,24 +67,6 @@ const formatYearlyData = (expenses, selectedYear) => {
   return Object.values(monthlyData);
 };
 
-// Custom Tooltip Component
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length > 0) {
-    const total = payload.reduce((sum, entry) => sum + (entry.value || 0), 0);
-
-    return (
-      <div
-        className="p-2 rounded-lg shadow-lg border border-gray-700 text-white w-full"
-        style={{ background: "linear-gradient(to bottom, #3b82f6, #9333ea)" }}
-      >
-        <p className="font-medium">{label}</p>
-        <p className="text-sm">Total: ₱{total.toLocaleString()}</p>
-      </div>
-    );
-  }
-  return null;
-};
-
 const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   const [chartType, setChartType] = useState("line"); // "line" or "area"
 
@@ -96,9 +77,9 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   );
 
   return (
-    <div className="chart-container p-2 bg-gray-800 rounded shadow-md shadow-gray-950">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-sm font-medium text-gray-300 mb-2">
+    <div className="chart-container p-2 border-stone-500 border-1 rounded-xl shadow-md shadow-stone-950">
+      <div className="flex justify-between items-center mb-5 border-b-1 border-stone-500 w-full">
+        <h3 className="text-sm font-medium text-stone-300 mb-2 ">
           {selectedYear
             ? `Yearly Overview - ${selectedYear}`
             : "Yearly Overview"}
@@ -114,7 +95,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
             }
             className="sr-only peer"
           />
-          <div className="w-9 h-5 bg-purple-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-4 peer-checked:bg-blue-500 relative after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border after:border-gray-300 after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+          <div className="mb-2 w-9 h-5 bg-green-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-4 peer-checked:bg-red-500 relative after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border after:border-stone-300 after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
         </label>
       </div>
 
@@ -122,7 +103,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
         {chartType === "line" ? (
           <LineChart
             data={data}
-            margin={{ top: 10, right: 20, left: 8, bottom: 10 }}
+            margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
             animateNewValues={true}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -131,10 +112,15 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
               tick={{ fontSize: 12, fill: "#9ca3af" }}
               tickFormatter={(value) => `₱${value.toLocaleString()}`}
             />
-            <Tooltip content={<CustomTooltip />} />
+
             <Legend
               verticalAlign="bottom"
-              wrapperStyle={{ fontSize: "10px" }}
+              wrapperStyle={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+                fontSize: "10px",
+              }}
             />
 
             {/* 🟢 Generate Lines Dynamically */}
@@ -150,7 +136,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
         ) : (
           <AreaChart
             data={data}
-            margin={{ top: 10, right: 20, left: 8, bottom: 10 }}
+            margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
             animateNewValues={true}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -159,7 +145,6 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
               tick={{ fontSize: 12, fill: "#9ca3af" }}
               tickFormatter={(value) => `₱${value.toLocaleString()}`}
             />
-            <Tooltip content={<CustomTooltip />} />
             <Legend
               verticalAlign="bottom"
               wrapperStyle={{ fontSize: "10px" }}

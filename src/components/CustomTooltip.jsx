@@ -1,32 +1,36 @@
 import React from "react";
 
 export const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    // Check if a dynamic color exists
-    const hasDynamicColor = Boolean(payload[0]?.payload?.color);
-
-    // Background: Dynamic color or default gradient
-    const backgroundStyle = {
-      background: hasDynamicColor
-        ? payload[0]?.payload?.color
-        : "linear-gradient(to bottom, #3b82f6, #9333ea)", // Default blue-to-purple
-    };
-
-    return (
-      <div
-        className={`p-3 rounded-lg shadow-lg border border-gray-700 ${
-          hasDynamicColor ? "text-black" : "text-white"
-        }`}
-        style={backgroundStyle}
-      >
-        <p className="font-medium">{label}</p>
-        {payload.map((entry, index) => (
-          <p key={index} className="text-sm">
-            {entry.name}: ₱{entry.value.toLocaleString()}
-          </p>
-        ))}
-      </div>
-    );
+  if (!active || !payload || !payload.length) {
+    return null;
   }
-  return null;
+
+  return (
+    <div
+      className="p-3 rounded-lg shadow-lg border border-stone-600 text-white"
+      style={{
+        background: "linear-gradient(to bottom, #171717, #3f3f3f)", // Black-to-gray gradient
+      }}
+    >
+      <p className="font-medium">{label}</p>
+      {payload.map((entry, index) => {
+        const categoryColor = entry.payload?.color;
+
+        return (
+          <div key={index} className="flex items-center gap-2 text-sm">
+            {/* Only show the square if a valid color exists */}
+            {categoryColor && categoryColor !== "#ffffff" && (
+              <span
+                className="w-3 h-3 rounded-xs"
+                style={{ backgroundColor: categoryColor }}
+              />
+            )}
+            <span>
+              {entry.name}: ₱{entry.value.toLocaleString()}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
 };

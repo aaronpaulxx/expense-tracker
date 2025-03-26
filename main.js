@@ -38,7 +38,7 @@ function createSplashScreen() {
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 1920,
+    width: 500,
     height: 1080,
     resizable: false,
     webPreferences: {

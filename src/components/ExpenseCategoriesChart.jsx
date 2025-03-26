@@ -1,13 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { CustomTooltip } from "./CustomTooltip";
+import { ClipboardX } from "lucide-react";
 
 const COLORS = {
   Food: "#34d399",
@@ -66,36 +60,37 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
     return () => cancelAnimationFrame(animationFrame);
   }, [formattedData]);
 
+  const totalAmount = animatedData.reduce((sum, item) => sum + item.value, 0);
+
   return (
-    <div className="bg-gray-800 rounded p-2 flex flex-col shadow-md shadow-gray-950">
-      <h3 className="text-sm font-medium text-gray-300 mb-2">
-        {selectedMonth
-          ? `Monthly Category Breakdown - ${new Date(
-              selectedMonth
-            ).toLocaleString("en-US", {
+    <div className=" rounded-xl p-2 flex flex-col border-1 border-stone-500">
+      <h3 className="text-sm font-medium text-stone-300 mb-5 pb-2 border-b border-stone-500 flex justify-between items-center">
+        <span>Monthly Category Breakdown</span>
+        {selectedMonth && (
+          <span className="text-stone-300">
+            {new Date(selectedMonth).toLocaleString("en-US", {
               month: "long",
               year: "numeric",
-            })}`
-          : "Monthly Category Breakdown"}
+            })}
+          </span>
+        )}
       </h3>
 
       <div className="flex-1 flex items-center justify-center">
         {animatedData.some((entry) => entry.value > 0) ? (
           <div className="flex w-full items-center justify-center gap-5">
             {/* Custom Legend with better alignment */}
-            <div className="w-40">
+            <div className="w-45">
               {animatedData.map((entry) => {
-                const total = animatedData.reduce(
-                  (sum, item) => sum + item.value,
-                  0
-                );
                 const percentage =
-                  total > 0 ? ((entry.value / total) * 100).toFixed(1) : "0.0";
+                  totalAmount > 0
+                    ? ((entry.value / totalAmount) * 100).toFixed(1)
+                    : "0.0";
 
                 return (
                   <div
                     key={entry.name}
-                    className="flex items-center text-gray-300 text-sm mb-1 pl-5"
+                    className="flex items-center text-gray-300 text-sm mb-3 pl-5"
                   >
                     {/* Category Color Indicator */}
                     <div
@@ -125,9 +120,9 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    innerRadius={40}
-                    outerRadius={70}
-                    paddingAngle={2}
+                    innerRadius={55}
+                    outerRadius={85}
+                    paddingAngle={0}
                     isAnimationActive={false} // Turn off default Recharts animation
                   >
                     {animatedData.map((entry) => (
@@ -139,14 +134,46 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
                       />
                     ))}
                   </Pie>
+
+                  {/* Centered Label for Total Amount */}
+                  <text
+                    x="50%"
+                    y="50%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fill="#ffffff"
+                  >
+                    <tspan
+                      fontSize={
+                        totalAmount.toString().length > 5
+                          ? 15 // Medium size for mid-range numbers
+                          : totalAmount.toString().length > 3
+                          ? 17 // Slightly smaller font for 6-7 character numbers
+                          : 22 // Default size
+                      }
+                      fontWeight="bold"
+                    >
+                      ₱
+                      {totalAmount.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </tspan>
+
+                    <tspan x="50%" y="60%" fontSize="15" fill="#9ca3af">
+                      Total
+                    </tspan>
+                  </text>
+
                   <Tooltip content={<CustomTooltip />} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </div>
         ) : (
-          <div className="text-gray-400 min-h-[200px]">
-            No data available for this month
+          <div className="text-stone-500 min-h-[200px] py-8 flex flex-col items-center">
+            <ClipboardX size={40} className="opacity-70 mb-5" />
+            <span className="text-sm">No data available for this month.</span>
           </div>
         )}
       </div>

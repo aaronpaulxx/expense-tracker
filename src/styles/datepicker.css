@@ -1,16 +1,15 @@
 /* Base DatePicker Container */
 .react-datepicker {
-  --datepicker-bg: #1f2937;
-  --datepicker-border: #374151;
+  --datepicker-bg: #1c1917;
+  --datepicker-border: #7e7e7e;
   --datepicker-text: #fff;
-  --datepicker-muted: #9ca3af;
-  --datepicker-disabled: #4b5563;
-  --datepicker-header-bg: #111827;
-  --datepicker-gradient-start: #8b5cf6;
-  --datepicker-gradient-end: #6366f1;
+  --datepicker-muted: #75e09c;
+  --datepicker-disabled: #6b6b6b;
+  --datepicker-header-bg: #000000;
+  --datepicker-gradient-start: #167a3b;
+  --datepicker-gradient-end: #3cae6662;
 
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: var(--datepicker-bg);
   border: 1px solid var(--datepicker-border);
   border-radius: 0.5rem;
@@ -18,6 +17,12 @@
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
   padding: 0.5rem;
   color: var(--datepicker-text);
+}
+
+.react-datepicker-popper {
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, 7%) !important;
 }
 
 /* Header Styles */
@@ -48,7 +53,7 @@
 
 /* Calendar Grid */
 .react-datepicker__month {
-  margin: 0.4rem;
+  margin: 0.9rem;
 }
 
 .react-datepicker__week {
@@ -59,8 +64,8 @@
 /* Weekday Labels */
 .react-datepicker__day-name {
   color: var(--datepicker-muted);
-  font-weight: 500;
-  margin: 0.4rem;
+  font-weight: 600;
+  margin: 0.8rem;
   width: 2rem;
   text-align: center;
 }
@@ -94,11 +99,14 @@
   border-radius: 50%;
 }
 
-/* Today's Date */
+/* Highlight Today's Date */
 .react-datepicker__day--today {
   border: 2px solid var(--datepicker-gradient-start);
   font-weight: 700;
-  border-radius: 50%;
+  border-radius: 50%; /* Makes it stand out as a circular highlight */
+  padding: 4px; /* Ensures spacing consistency */
+  outline: 2px solid var(--datepicker-gradient-start);
+  outline-offset: 2px;
 }
 
 /* Outside Month Days */
@@ -114,15 +122,9 @@
   opacity: 0.5;
 }
 
-/* Focus States */
-.react-datepicker__day:focus {
-  outline: 2px solid var(--datepicker-gradient-start);
-  outline-offset: 2px;
-}
-
 /* Keyboard Navigation */
 .react-datepicker__day--keyboard-selected {
-  background: rgba(139, 92, 246, 0.2);
+  background: rgba(92, 246, 136, 0.2);
   border-radius: 50%;
 }
 

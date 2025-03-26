@@ -6,41 +6,62 @@ const Header = ({ budgets, setBudgets, clearRecords, expenses }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notification, setNotification] = useState("");
   const [isHovered, setIsHovered] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     if (notification) {
-      const timer = setTimeout(() => setNotification(""), 5000);
+      const timer = setTimeout(() => {
+        // Start closing animation before removing
+        setIsClosing(true);
+
+        // Wait for animation to complete before clearing notification
+        setTimeout(() => {
+          setNotification("");
+          setIsClosing(false);
+        }, 300); // Match this with the CSS animation duration
+      }, 5000);
+
       return () => clearTimeout(timer);
     }
   }, [notification]);
 
+  const closeNotification = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setNotification("");
+      setIsClosing(false);
+    }, 300); // Match this with the CSS animation duration
+  };
+
   return (
     <>
-      <div className="py-2 border-b border-gray-800 flex justify-between items-center px-5 bg-[linear-gradient(45deg,#111827_25%,#3b82f6_50%,#8b5cf6_75%,#171717_100%)]">
+      <div
+        className="py-2 border-b border-stone-800 flex justify-between items-center px-5 bg-[linear-gradient(45deg,#1f1f1f_25%,#10B98180_50%,#14B8A6_75%,#171717_100%)]
+"
+      >
         <div
-          className="flex flex-col cursor-pointer leading-tight -mt-1"
+          className="flex flex-col cursor-pointer"
           onClick={() => window.location.reload()}
         >
-          <h1 className="text-3xl font-bold titleh1">
-            <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-[20px] font-bold titleh1">
+            <span className="bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">
               Expense Tracker
             </span>
           </h1>
-          <p className="text-xs text-white self-end -mt-1">
-            by Aaron Paul Z.R.
-          </p>
         </div>
 
         <div className="relative flex items-center">
           <div
             className={`absolute right-full mr-2 overflow-hidden transition-all duration-300 ease-in-out ${
-              isHovered ? "w-20 opacity-100" : "w-0 opacity-0"
+              isHovered ? "w-12 opacity-100" : "w-0 opacity-0"
             }`}
           >
-            <span className="text-purple-100 whitespace-nowrap">Settings</span>
+            <span className="text-white whitespace-nowrap text-xs">
+              Settings
+            </span>
           </div>
           <button
-            className="text-purple-100 hover:text-white transition-transform duration-300 hover:rotate-180 cursor-pointer"
+            className="text-white hover:text-white transition-transform duration-300 hover:rotate-180 cursor-pointer"
             onClick={() => setIsOpen(true)}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -61,11 +82,17 @@ const Header = ({ budgets, setBudgets, clearRecords, expenses }) => {
       />
 
       {notification && (
-        <div className="fixed bottom-4 right-4 bg-gray-700 text-white p-4 rounded-lg shadow-lg flex items-center gap-4 z-1000">
+        <div
+          className={`fixed bottom-4 right-8 bg-stone-900 text-white p-2 rounded-lg text-sm border-1 border-stone-600 shadow-lg flex items-center gap-4 z-1000 ${
+            isClosing
+              ? "animate-[slideOut_0.3s_ease-in_forwards]"
+              : "animate-[slideIn_0.2s_ease-out]"
+          }`}
+        >
           <div className="flex-1">{notification}</div>
           <button
-            onClick={() => setNotification("")}
-            className="text-white hover:text-gray-300 cursor-pointer"
+            onClick={closeNotification}
+            className="text-white hover:text-stone-300 cursor-pointer"
           >
             <X size={18} />
           </button>
