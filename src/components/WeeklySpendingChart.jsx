@@ -8,7 +8,36 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { CustomTooltip } from "./CustomTooltip";
+
+const getWeekDetails = (year, month) => {
+  const weeks = [];
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const weekLength = Math.ceil(daysInMonth / 4);
+
+  for (let week = 1; week <= 4; week++) {
+    const startDay = (week - 1) * weekLength + 1;
+    const endDay = Math.min(week * weekLength, daysInMonth);
+    
+    const startDate = new Date(year, month, startDay);
+    const endDate = new Date(year, month, endDay);
+
+    weeks.push({
+      week: `Week ${week}`,
+      startDate,
+      endDate,
+      startDateFormatted: startDate.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      }),
+      endDateFormatted: endDate.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      })
+    });
+  }
+
+  return weeks;
+};
 
 const getWeekNumber = (date) => {
   const year = date.getFullYear();
@@ -20,28 +49,61 @@ const getWeekNumber = (date) => {
 };
 
 const formatWeeklyTrend = (expenses, selectedMonth) => {
-  const weeklyData = { "Week 1": 0, "Week 2": 0, "Week 3": 0, "Week 4": 0 };
+  const selectedDate = new Date(selectedMonth);
+  const year = selectedDate.getFullYear();
+  const month = selectedDate.getMonth();
+
+  const weekDetails = getWeekDetails(year, month);
+  const weeklyData = weekDetails.map(weekInfo => ({
+    week: weekInfo.week,
+    startDate: weekInfo.startDate,
+    endDate: weekInfo.endDate,
+    startDateFormatted: weekInfo.startDateFormatted,
+    endDateFormatted: weekInfo.endDateFormatted,
+    Total: 0
+  }));
 
   Object.entries(expenses).forEach(([date, dayExpenses]) => {
     const expenseDate = new Date(date);
-    const monthLabel = expenseDate.toLocaleString("default", {
-      month: "short",
-      year: "numeric",
-    });
-
-    if (monthLabel === selectedMonth) {
-      const weekKey = `Week ${getWeekNumber(expenseDate)}`;
-      weeklyData[weekKey] += dayExpenses.reduce(
+    
+    if (expenseDate.getFullYear() === year && expenseDate.getMonth() === month) {
+      const weekIndex = getWeekNumber(expenseDate) - 1;
+      weeklyData[weekIndex].Total += dayExpenses.reduce(
         (sum, exp) => sum + exp.amount,
         0
       );
     }
   });
 
-  return Object.entries(weeklyData).map(([week, Total]) => ({
-    week,
-    Total: Number(Total.toFixed(2)),
+  return weeklyData.map(week => ({
+    ...week,
+    Total: Number(week.Total.toFixed(2))
   }));
+};
+
+export const CustomTooltip = ({ active, payload, label }) => {
+  if (!active || !payload || !payload.length) {
+    return null;
+  }
+
+  const weekData = payload[0].payload;
+
+  return (
+    <div
+      className="p-3 rounded-lg shadow-lg border border-stone-600 text-white"
+      style={{
+        background: "linear-gradient(to bottom, #171717, #3f3f3f)", // Black-to-gray gradient
+      }}
+    >
+      <p className="font-medium text-md">{weekData.week}</p>
+      <p className="text-stone-300 text-sm mb-3">
+        {weekData.startDateFormatted} - {weekData.endDateFormatted}
+      </p>
+      <div className="flex items-center gap-2 text-sm">
+        <span>Total: ₱{weekData.Total.toLocaleString()}</span>
+      </div>
+    </div>
+  );
 };
 
 const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
@@ -67,38 +129,31 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
       <ResponsiveContainer width="100%" height={200}>
         <BarChart
           data={weeklyTrendData}
-          margin={{ top: 20, right: 20, left: -10, bottom: 10 }} // More space for labels
+          margin={{ top: 20, right: 20, left: -10, bottom: 10 }}
         >
-          {/* Subtle Grid for a Clean Look */}
           <CartesianGrid strokeDasharray="2 2" stroke="#e7e5e4" opacity={0.4} />
 
-          {/* X-Axis (Weeks) */}
           <XAxis
             dataKey="week"
-            tick={{ fontSize: 12, fill: "#d6d3d1" }} // Lighter color for readability
+            tick={{ fontSize: 12, fill: "#d6d3d1" }}
             tickLine={{ stroke: "#4A5568" }}
           />
 
-          {/* Y-Axis (Values) */}
           <YAxis
             tick={{ fontSize: 12, fill: "#d6d3d1" }}
             tickLine={{ stroke: "#4A5568" }}
             tickFormatter={(value) => `₱${value.toLocaleString()}`}
           />
 
-          {/* Tooltip */}
           <Tooltip
             content={<CustomTooltip />}
-            cursor={{ fill: "rgba(16, 185, 129, 0.1)" }} // green-500 with 10% opacity
+            cursor={{ fill: "rgba(16, 185, 129, 0.1)" }}
           />
 
-          {/* Modern Gradient Bar with Hover Effect */}
           <defs>
             <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#10b981" stopOpacity={0.9} />{" "}
-              {/* Green-500 */}
-              <stop offset="100%" stopColor="#14b8a6" stopOpacity={0.5} />{" "}
-              {/* Teal-500 */}
+              <stop offset="0%" stopColor="#10b981" stopOpacity={0.9} />
+              <stop offset="100%" stopColor="#14b8a6" stopOpacity={0.5} />
             </linearGradient>
           </defs>
 
@@ -106,7 +161,7 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
             dataKey="Total"
             fill="url(#colorTotal)"
             radius={[8, 8, 0, 0]}
-            barSize={30} // Adjusts bar thickness
+            barSize={30}
           />
         </BarChart>
       </ResponsiveContainer>

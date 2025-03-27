@@ -10,6 +10,8 @@ import FinancialInsights from "./components/FinancialInsights";
 
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { useExpenseCalculations } from "./hooks/useExpenseCalculations";
+import Footer from "./components/Footer";
+
 
 const App = () => {
   const [date, setDate] = useState(new Date());
@@ -268,11 +270,7 @@ const App = () => {
             date={date}
           />
           <div className="w-full flex justify-center mt-3">
-            <span className="text-xs text-stone-400 mb-4">
-              Created by{" "}
-              <span className="font-medium text-stone-300">APZR</span> ©{" "}
-              {new Date().getFullYear()}
-            </span>
+            <Footer/>
           </div>
         </div>
       </div>
