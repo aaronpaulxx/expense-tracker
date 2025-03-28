@@ -1,0 +1,2 @@
+release/win-unpacked/Expense[[:space:]]Tracker.exe filter=lfs diff=lfs merge=lfs -text
+release/win-unpacked/resources/app.asar filter=lfs diff=lfs merge=lfs -text
