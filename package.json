@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "electron:dev": "concurrently \"vite dev\" \"electron .\"",
-    "electron:build": "vite build && electron-builder",
+    "electron:build": "vite build && electron-builder --win",
     "electron:preview": "vite build && electron ."
   },
   "build": {
@@ -33,9 +33,6 @@
     "win": {
       "target": "nsis",
       "icon": "icon.ico"
-    },
-    "linux": {
-      "target": "AppImage"
     }
   },
   "asar": {
