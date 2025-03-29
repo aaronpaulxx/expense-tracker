@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 "release/" 
+release/
+*.exe
+*.asar
