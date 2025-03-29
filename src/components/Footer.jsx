@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import surprise from "../assets/surprise.png";
 
 const Footer = () => {
   const [clicks, setClicks] = useState(0);
@@ -32,12 +33,12 @@ const Footer = () => {
     <div className="w-full flex justify-center mt-3 relative">
       {secretActive && (
         <motion.img
-          src="/middle-finger.png"
-          alt="Middle Finger"
-          className="absolute left-0 w-8 h-8"
-          animate={{ opacity: [0, 1, 0.5, 1, 0] }}
-          transition={{ duration: 0.5, repeat: Infinity }}
-        />
+        src={surprise}
+        alt="surprise"
+        className="absolute left-0 w-8 h-8"
+        animate={{ opacity: [0, 1, 0.5, 1, 0] }}
+        transition={{ duration: 0.5, repeat: Infinity }}
+      />
       )}
       <motion.span
         className="text-xs mb-4 cursor-pointer relative"
@@ -83,10 +84,10 @@ const Footer = () => {
         </motion.span>{" "}
         © {new Date().getFullYear()}
       </motion.span>
-      {secretActive && (
+      {secretActive && (  
         <motion.img
-          src="/middle-finger.png"
-          alt="Middle Finger"
+          src={surprise}
+          alt="surprise"
           className="absolute right-0 w-8 h-8"
           animate={{ opacity: [0, 1, 0.5, 1, 0] }}
           transition={{ duration: 0.5, repeat: Infinity }}

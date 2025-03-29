@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "electron:dev": "concurrently \"vite dev\" \"electron .\"",
-    "electron:build": "vite build && electron-builder --win",
+    "electron:build": "vite build && electron-builder",
     "electron:preview": "vite build && electron ."
   },
   "build": {
@@ -27,12 +27,14 @@
       "splash.html",
       "splash.css"
     ],
-    "mac": {
-      "category": "public.app-category.finance"
-    },
     "win": {
-      "target": "nsis",
-      "icon": "icon.ico"
+      "target": ["nsis", "zip"],
+      "icon": "/workspaces/expense-tracker/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
     }
   },
   "asar": {
