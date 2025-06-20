@@ -12,7 +12,7 @@ export const CustomTooltip = ({ active, payload, label }) => {
         background: "linear-gradient(to bottom, #171717, #3f3f3f)", // Black-to-gray gradient
       }}
     >
-      <p className="font-medium">{label}</p>
+      <p className="font-medium text-sm text-stone-300">{label}</p>
       {payload.map((entry, index) => {
         const categoryColor = entry.payload?.color;
 
@@ -25,7 +25,7 @@ export const CustomTooltip = ({ active, payload, label }) => {
                 style={{ backgroundColor: categoryColor }}
               />
             )}
-            <span>
+            <span className="text-white">
               {entry.name}: ₱{entry.value.toLocaleString()}
             </span>
           </div>

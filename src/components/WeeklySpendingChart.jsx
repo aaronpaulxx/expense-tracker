@@ -95,11 +95,12 @@ export const CustomTooltip = ({ active, payload, label }) => {
         background: "linear-gradient(to bottom, #171717, #3f3f3f)", // Black-to-gray gradient
       }}
     >
-      <p className="font-medium text-md">{weekData.week}</p>
-      <p className="text-stone-300 text-sm mb-3">
-        {weekData.startDateFormatted} - {weekData.endDateFormatted}
+      
+      <p className="font-bold text-md text-stone-200">{weekData.week}</p>
+      <p className="text-stone-300 text-xs mb-3">
+        ({weekData.startDateFormatted} - {weekData.endDateFormatted})
       </p>
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-2 text-sm font-medium">
         <span>Total: ₱{weekData.Total.toLocaleString()}</span>
       </div>
     </div>

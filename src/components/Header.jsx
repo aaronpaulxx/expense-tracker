@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Settings as SettingsIcon, X } from "lucide-react";
 import Settings from "./Settings";
 
-const Header = ({ budgets, setBudgets, clearRecords, expenses }) => {
+const Header = ({ budgets, setBudgets, clearRecords, expenses, setExpenses }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notification, setNotification] = useState("");
   const [isHovered, setIsHovered] = useState(false);
@@ -79,6 +79,7 @@ const Header = ({ budgets, setBudgets, clearRecords, expenses }) => {
         clearRecords={clearRecords}
         expenses={expenses}
         setNotification={setNotification}
+        setExpenses={setExpenses}
       />
 
       {notification && (
@@ -92,7 +93,7 @@ const Header = ({ budgets, setBudgets, clearRecords, expenses }) => {
           <div className="flex-1">{notification}</div>
           <button
             onClick={closeNotification}
-            className="text-white hover:text-stone-300 cursor-pointer"
+            className="text-stone-400 hover:text-white cursor-pointer"
           >
             <X size={18} />
           </button>

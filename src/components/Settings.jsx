@@ -1,18 +1,16 @@
 import React, { useState, useEffect, Fragment } from "react";
 import {
   Settings as SettingsIcon,
-  Edit,
   Check,
   X,
-  RotateCcw,
   Trash,
-  Ban,
-  CircleX,
   Database,
-  WalletMinimal,
-  Trash2,
   MonitorDown,
-  FileDown,
+  Download,
+  Upload,
+  MonitorUp,
+  Trash2,
+  CircleX,
 } from "lucide-react";
 import { Dialog, Transition } from "@headlessui/react";
 import * as XLSX from "xlsx";
@@ -25,75 +23,126 @@ const Settings = ({
   clearRecords,
   expenses,
   setNotification,
+  setExpenses,
 }) => {
-  const [tempBudgets, setTempBudgets] = useState({ ...budgets });
-  const [isEditingBudget, setIsEditingBudget] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  // NEW: State for the delete confirmation input
+  const [deleteConfirmationInput, setDeleteConfirmationInput] = useState("");
+  const [showConfirmImport, setShowConfirmImport] = useState(false);
+  const [importData, setImportData] = useState(null);
   const [storageInfo, setStorageInfo] = useState({ used: 0, total: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [exportFileInfo, setExportFileInfo] = useState(null);
+  const [isDragInvalid, setIsDragInvalid] = useState(false);
+
+  const formatBytes = (bytes, decimals = 2) => {
+    if (!+bytes) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+  };
+
+  const parseDateCell = (cellValue) => {
+    if (cellValue === null || cellValue === undefined) {
+      return null;
+    }
+    if (typeof cellValue === "number") {
+      const d = XLSX.SSF.parse_date_code(cellValue);
+      if (d) {
+        return new Date(Date.UTC(d.y, d.m - 1, d.d));
+      }
+    }
+    if (cellValue instanceof Date && !isNaN(cellValue)) {
+      return new Date(
+        Date.UTC(
+          cellValue.getFullYear(),
+          cellValue.getMonth(),
+          cellValue.getDate()
+        )
+      );
+    }
+    if (typeof cellValue === "string") {
+      const str = cellValue.trim();
+      if (str === "") return null;
+      let parts;
+      parts = str.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2}|\d{4})$/);
+      if (parts) {
+        let year = parseInt(parts[3], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+        if (year < 100) {
+          year += 2000;
+        }
+        if (month >= 0 && month < 12 && day > 0 && day <= 31) {
+          return new Date(Date.UTC(year, month, day));
+        }
+      }
+      parts = str.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/);
+      if (parts) {
+        const year = parseInt(parts[1], 10);
+        const month = parseInt(parts[2], 10) - 1;
+        const day = parseInt(parts[3], 10);
+        if (month >= 0 && month < 12 && day > 0 && day <= 31) {
+          return new Date(Date.UTC(year, month, day));
+        }
+      }
+    }
+    return null;
+  };
+
+  const totalEntries = expenses
+    ? Object.values(expenses).reduce(
+        (total, dayEntries) => total + dayEntries.length,
+        0
+      )
+    : 0;
 
   useEffect(() => {
     if (isOpen) {
-      setTempBudgets({ ...budgets });
-      setIsEditingBudget(false);
-      setHasChanges(false);
       updateStorageInfo();
     } else {
+      // MODIFIED: Reset delete confirmation state when modal closes
       setShowConfirmDelete(false);
+      setDeleteConfirmationInput("");
+      setShowConfirmImport(false);
+      setImportData(null);
     }
   }, [isOpen, budgets]);
 
+  useEffect(() => {
+    if (isOpen && totalEntries > 0) {
+      try {
+        const wb = generateExportWorkbook();
+        const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+
+        setExportFileInfo({
+          name: "Expense Tracker Data.xlsx",
+          size: formatBytes(wbout.byteLength),
+        });
+      } catch (error) {
+        console.error("Error calculating export file size:", error);
+        setExportFileInfo(null);
+      }
+    } else {
+      setExportFileInfo(null);
+    }
+  }, [isOpen, expenses]);
+
   const updateStorageInfo = () => {
     let used = 0;
-    const estimatedTotal = 5 * 1024; // 5MB in KB
-
+    const estimatedTotal = 5 * 1024;
     for (let key in localStorage) {
       if (localStorage.hasOwnProperty(key)) {
-        used += localStorage[key].length * 2; // Count characters as bytes
+        used += localStorage[key].length * 2;
       }
     }
-
     setStorageInfo({
-      used: (used / 1024).toFixed(2), // Convert used from bytes to KB
-      total: estimatedTotal.toFixed(2), // Total is already in KB
-      percentage: ((used / (estimatedTotal * 1024)) * 100).toFixed(1), // Adjust for KB to byte conversion
+      used: (used / 1024).toFixed(2),
+      total: estimatedTotal.toFixed(2),
+      percentage: ((used / (estimatedTotal * 1024)) * 100).toFixed(1),
     });
-  };
-
-  // Validate to ensure only two decimals
-  const handleBudgetChange = (field, value) => {
-    // Match up to two decimal points using regex
-    const regex = /^[0-9]*(\.[0-9]{0,2})?$/;
-    if (regex.test(value)) {
-      setTempBudgets({
-        ...tempBudgets,
-        [field]: Math.max(0, parseFloat(value) || 0),
-      });
-      setHasChanges(true);
-    }
-  };
-
-  const toggleEditBudget = () => {
-    if (isEditingBudget && !hasChanges) {
-      setIsEditingBudget(false);
-    } else if (isEditingBudget && hasChanges) {
-      setBudgets(tempBudgets);
-      setIsEditingBudget(false);
-      setHasChanges(false);
-      setNotification(
-        <span>
-          <Check size={28} className="inline text-green-500 " /> Budget settings
-          saved successfully.
-        </span>
-      );
-    } else {
-      setIsEditingBudget(true);
-    }
-  };
-
-  const handleReset = () => {
-    setTempBudgets({ ...budgets });
-    setHasChanges(false);
   };
 
   const handleClearRecords = () => {
@@ -116,6 +165,55 @@ const Settings = ({
     }
   };
 
+  const generateExportWorkbook = () => {
+    const sortedDates = Object.keys(expenses).sort(
+      (a, b) => new Date(a) - new Date(b)
+    );
+
+    const dataToExport = sortedDates.flatMap((date) => {
+      return expenses[date].map((item) => ({
+        date,
+        name: item.name,
+        amount: item.amount,
+        category: item.category,
+      }));
+    });
+
+    const headers = ["Date", "Description", "Amount", "Category"];
+    const dataWithHeaders = [
+      headers,
+      ...dataToExport.map((item) => {
+        const parts = item.date.split("-");
+        const dateObject = new Date(
+          Date.UTC(parts[0], parseInt(parts[1], 10) - 1, parts[2])
+        );
+        return [dateObject, item.name, item.amount, item.category];
+      }),
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(dataWithHeaders);
+    ws["!cols"] = [{ wpx: 120 }, { wpx: 100 }, { wpx: 100 }, { wpx: 100 }];
+
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+    for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+      const cell_ref = XLSX.utils.encode_cell({ c: 0, r: R });
+      if (ws[cell_ref] && (ws[cell_ref].t === "d" || ws[cell_ref].t === "n")) {
+        ws[cell_ref].z = "yyyy-mm-dd";
+      }
+    }
+
+    for (let col = range.s.c; col <= range.e.c; col++) {
+      const cell = ws[XLSX.utils.encode_cell({ r: 0, c: col })];
+      if (cell) {
+        cell.s = { font: { bold: true } };
+      }
+    }
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Expenses");
+    return wb;
+  };
+
   const handleExportData = () => {
     if (!expenses || Object.keys(expenses).length === 0) {
       setNotification(
@@ -126,76 +224,426 @@ const Settings = ({
       return;
     }
 
-    // Flatten the data (if there are multiple dates) and sort by date
-    const sortedDates = Object.keys(expenses).sort(
-      (a, b) => new Date(a) - new Date(b)
-    ); // Sort dates in ascending order
+    const wb = generateExportWorkbook();
+    const fileName = "Expense Tracker Data.xlsx";
+    XLSX.writeFile(wb, fileName);
 
-    // Map the sorted dates to their corresponding expenses
-    const dataToExport = sortedDates.flatMap((date) => {
-      return expenses[date].map((item) => ({
-        date, // Add the date to each item
-        name: item.name,
-        amount: item.amount,
-        category: item.category,
-      }));
-    });
+    setNotification(
+      <div className="flex items-center gap-2 max-w-sm">
+        <Check size={20} className="text-green-500 shrink-0" />
+        <span className="leading-tight">
+          Successfully exported your data to "{fileName}".
+        </span>
+      </div>
+    );
+  };
 
-    if (dataToExport.length === 0) {
+  const processImportFile = (file) => {
+    if (!file) return;
+
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
       setNotification(
         <span className="flex items-center gap-2">
-          <CircleX size={28} className="text-red-400" /> No records to export.
+          <CircleX size={20} className="text-red-400" />
+          File too large. Maximum size is 10MB.
         </span>
       );
       return;
     }
 
-    // Define custom headers, including date
-    const headers = ["Date", "Description", "Amount", "Category"];
-
-    // Add headers to the data
-    const dataWithHeaders = [
-      headers,
-      ...dataToExport.map((item) => [
-        item.date,
-        item.name,
-        item.amount,
-        item.category,
-      ]),
+    const allowedTypes = [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-excel",
+      "text/csv",
     ];
-
-    // Convert the data to a worksheet with custom headers
-    const ws = XLSX.utils.aoa_to_sheet(dataWithHeaders);
-
-    // Set column widths
-    const columnWidths = [
-      { wpx: 120 }, // Date column width
-      { wpx: 100 }, // Name column width
-      { wpx: 100 }, // Amount column width
-      { wpx: 100 }, // Category column width
-    ];
-    ws["!cols"] = columnWidths;
-
-    // Make the first row (headers) bold
-    const range = XLSX.utils.decode_range(ws["!ref"]); // Get range of the worksheet
-    for (let col = range.s.c; col <= range.e.c; col++) {
-      const cellAddress = { r: 0, c: col }; // First row (header)
-      const cell = ws[XLSX.utils.encode_cell(cellAddress)];
-      if (cell) {
-        cell.s = {
-          font: {
-            bold: true,
-          },
-        };
-      }
+    if (
+      !allowedTypes.includes(file.type) &&
+      !file.name.match(/\.(xlsx|xls|csv)$/i)
+    ) {
+      setNotification(
+        <span className="flex items-center gap-2">
+          <CircleX size={20} className="text-red-400" />
+          Unsupported file. Upload Excel or CSV.
+        </span>
+      );
+      return;
     }
 
-    // Create a new workbook and append the worksheet
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Expenses");
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array", cellDates: true });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet, { raw: false });
 
-    // Export the workbook to an Excel file
-    XLSX.writeFile(wb, "expenses-data.xlsx");
+        if (!json || json.length === 0) {
+          setNotification(
+            <span className="flex items-center gap-2">
+              <CircleX size={20} className="text-red-400" />
+              File is empty or contains no data rows.
+            </span>
+          );
+          return;
+        }
+
+        const expectedHeaders = ["Date", "Description", "Amount", "Category"];
+        const actualHeaders = Object.keys(json[0] || {});
+        const headerMapping = {};
+        const headerVariants = {
+          Date: ["date", "transaction date", "trans date", "dt"],
+          Description: [
+            "description",
+            "desc",
+            "details",
+            "transaction",
+            "memo",
+            "note",
+          ],
+          Amount: ["amount", "value", "sum", "total", "cost", "price"],
+          Category: ["category", "cat", "type", "classification"],
+        };
+
+        for (const expectedHeader of expectedHeaders) {
+          const variants = headerVariants[expectedHeader].map((v) =>
+            v.toLowerCase()
+          );
+          const matchedHeader = actualHeaders.find(
+            (header) =>
+              variants.includes(header.toLowerCase()) ||
+              header.toLowerCase() === expectedHeader.toLowerCase()
+          );
+          if (matchedHeader) {
+            headerMapping[expectedHeader] = matchedHeader;
+          }
+        }
+
+        const missingHeaders = expectedHeaders.filter(
+          (header) => !headerMapping[header]
+        );
+        if (missingHeaders.length > 0) {
+          setNotification(
+            <div className="flex items-start gap-2 max-w-sm">
+              <CircleX size={20} className="text-red-400 shrink-0 mt-0.5" />
+              <div className="leading-tight">
+                <div className="font-medium">Missing required columns:</div>
+                <div className="text-sm text-stone-300 mt-1">
+                  {missingHeaders.join(", ")}
+                </div>
+                <div className="text-xs text-stone-400 mt-2">
+                  Found columns: {actualHeaders.join(", ")}
+                </div>
+              </div>
+            </div>
+          );
+          return;
+        }
+
+        const validCategories = [
+          "Food",
+          "Transport",
+          "Shopping",
+          "Bills",
+          "Credit",
+          "Other",
+        ];
+        const validCategoriesLower = validCategories.map((cat) =>
+          cat.toLowerCase()
+        );
+        const validationErrors = [];
+        const processedData = [];
+
+        json.forEach((item, index) => {
+          const rowNumber = index + 2;
+          const errors = [];
+          const rawDate = item[headerMapping.Date];
+          const description = item[headerMapping.Description];
+          const amount = item[headerMapping.Amount];
+          const category = item[headerMapping.Category];
+
+          const parsedDate = parseDateCell(rawDate);
+          if (rawDate === null || rawDate === undefined) {
+            errors.push("Missing date");
+          } else if (!parsedDate) {
+            errors.push(`Invalid date format: "${String(rawDate)}"`);
+          }
+
+          if (!description || String(description).trim() === "") {
+            errors.push("Missing description");
+          }
+
+          const numericAmount = parseFloat(amount);
+          if (isNaN(numericAmount)) {
+            errors.push("Invalid amount (must be a number)");
+          } else if (numericAmount < 0) {
+            errors.push("Amount cannot be negative");
+          } else if (numericAmount > 1000000) {
+            errors.push("Amount cannot exceed 1,000,000");
+          }
+
+          const categoryLower = String(category || "")
+            .toLowerCase()
+            .trim();
+          if (!categoryLower) {
+            errors.push("Missing category");
+          } else if (!validCategoriesLower.includes(categoryLower)) {
+            errors.push(`Invalid category "${category}"`);
+          }
+
+          if (errors.length > 0) {
+            validationErrors.push({
+              row: rowNumber,
+              description: String(description || "").substring(0, 30),
+              errors: errors,
+            });
+          } else {
+            const categoryIndex = validCategoriesLower.indexOf(categoryLower);
+            const normalizedCategory = validCategories[categoryIndex];
+            processedData.push({
+              date: parsedDate.toISOString().split("T")[0],
+              name: String(description).trim(),
+              amount: numericAmount,
+              category: normalizedCategory,
+            });
+          }
+        });
+
+        if (validationErrors.length > 0) {
+          const errorSummary = validationErrors
+            .slice(0, 3)
+            .map(
+              (error) =>
+                `Row ${error.row}: ${error.errors.join(", ")} (${error.description})`
+            )
+            .join("\n");
+          const moreText =
+            validationErrors.length > 3
+              ? `\n...and ${validationErrors.length - 3} more errors`
+              : "";
+          setNotification(
+            <div className="flex items-start gap-2 max-w-sm">
+              <CircleX size={20} className="text-red-400 shrink-0 mt-0.5" />
+              <div className="leading-tight">
+                <div className="font-medium">
+                  Found {validationErrors.length} error
+                  {validationErrors.length > 1 ? "s" : ""}:
+                </div>
+                <div className="text-sm text-stone-300 mt-1 whitespace-pre-line font-mono">
+                  {errorSummary}
+                  {moreText}
+                </div>
+                <div className="text-xs text-stone-400 mt-2">
+                  Valid categories: {validCategories.join(", ")}
+                </div>
+              </div>
+            </div>
+          );
+          return;
+        }
+
+        const existingEntries = new Set();
+        const duplicateEntries = [];
+        Object.entries(expenses).forEach(([date, dayExpenses]) => {
+          dayExpenses.forEach((expense) => {
+            existingEntries.add(
+              `${date}-${expense.name.toLowerCase()}-${expense.category.toLowerCase()}`
+            );
+          });
+        });
+
+        processedData.forEach((item, index) => {
+          const key = `${item.date}-${item.name.toLowerCase()}-${item.category.toLowerCase()}`;
+          if (existingEntries.has(key)) {
+            duplicateEntries.push({ ...item, importIndex: index });
+          }
+        });
+
+        if (duplicateEntries.length > 0) {
+          setImportData({ processedData, duplicateEntries, file });
+          setShowConfirmImport(true);
+          return;
+        }
+
+        const importedExpenses = { ...expenses };
+        processedData.forEach((item) => {
+          if (!importedExpenses[item.date]) {
+            importedExpenses[item.date] = [];
+          }
+          importedExpenses[item.date].push({
+            name: item.name,
+            amount: item.amount,
+            category: item.category,
+          });
+        });
+        setExpenses(importedExpenses);
+        setNotification(
+          <div className="flex items-center gap-2 max-w-sm">
+            <Check size={20} className="text-green-500 shrink-0" />
+            <span className="leading-tight">
+              Successfully imported{" "}
+              <span className="text-green-400">{processedData.length}</span>{" "}
+              items from "{file.name}".
+            </span>
+          </div>
+        );
+        updateStorageInfo();
+        setIsOpen(false);
+      } catch (error) {
+        console.error("Import error:", error);
+        setNotification(
+          <span className="flex items-center gap-2">
+            <CircleX size={20} className="text-red-400" />
+            Error importing file: {error.message}
+          </span>
+        );
+      }
+    };
+    reader.onerror = () => {
+      setNotification(
+        <span className="flex items-center gap-2">
+          <CircleX size={20} className="text-red-400" />
+          Error reading file. Please try again.
+        </span>
+      );
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    processImportFile(file);
+    if (event.target) {
+      event.target.value = null;
+    }
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragging(false);
+    setIsDragInvalid(false);
+    const file = event.dataTransfer.files[0];
+    if (file) {
+      processImportFile(file);
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDragEnter = (event) => {
+    event.preventDefault();
+    setIsDragging(true);
+
+    const items = event.dataTransfer.items;
+    if (items && items.length > 0) {
+      const item = items[0];
+      const allowedTypes = [
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel",
+        "text/csv",
+      ];
+      if (item.kind === "file") {
+        if (item.type && !allowedTypes.includes(item.type)) {
+          setIsDragInvalid(true);
+        } else {
+          setIsDragInvalid(false);
+        }
+      } else {
+        setIsDragInvalid(true);
+      }
+    }
+  };
+
+  const handleDragLeave = (event) => {
+    event.preventDefault();
+    if (event.currentTarget.contains(event.relatedTarget)) {
+      return;
+    }
+    setIsDragging(false);
+    setIsDragInvalid(false);
+  };
+
+  const handleImportAction = (action) => {
+    if (!importData) return;
+
+    const { processedData, duplicateEntries, file } = importData;
+
+    if (action === "skip") {
+      setNotification(
+        <span className="flex items-center gap-2">
+          <CircleX size={20} className="text-yellow-500" />
+          Import cancelled by user.
+        </span>
+      );
+      setShowConfirmImport(false);
+      setImportData(null);
+      return;
+    }
+
+    const finalExpenses = { ...expenses };
+    let itemsToAdd = [];
+    let notificationMessage = "";
+
+    if (action === "replace") {
+      duplicateEntries.forEach((duplicate) => {
+        const existingDayExpenses = finalExpenses[duplicate.date] || [];
+        finalExpenses[duplicate.date] = existingDayExpenses.filter(
+          (expense) =>
+            !(
+              expense.name.toLowerCase() === duplicate.name.toLowerCase() &&
+              expense.category.toLowerCase() ===
+                duplicate.category.toLowerCase()
+            )
+        );
+      });
+      itemsToAdd = processedData;
+      notificationMessage = `Successfully imported ${processedData.length} item${processedData.length !== 1 ? "s" : ""}, updating ${duplicateEntries.length} duplicate${duplicateEntries.length !== 1 ? "s" : ""}.`;
+    } else if (action === "merge") {
+      itemsToAdd = processedData;
+      notificationMessage = `Successfully merged ${processedData.length} items from "${file.name}".`;
+    } else if (action === "skip_duplicates") {
+      const duplicateKeys = new Set(
+        duplicateEntries.map(
+          (d) => `${d.date}-${d.name.toLowerCase()}-${d.category.toLowerCase()}`
+        )
+      );
+      const newItems = processedData.filter((item) => {
+        const itemKey = `${item.date}-${item.name.toLowerCase()}-${item.category.toLowerCase()}`;
+        return !duplicateKeys.has(itemKey);
+      });
+      itemsToAdd = newItems;
+      notificationMessage = `Imported ${newItems.length} new item${newItems.length !== 1 ? "s" : ""} and skipped ${duplicateEntries.length} duplicate${duplicateEntries.length !== 1 ? "s" : ""}.`;
+    }
+
+    if (itemsToAdd.length > 0) {
+      itemsToAdd.forEach((item) => {
+        if (!finalExpenses[item.date]) {
+          finalExpenses[item.date] = [];
+        }
+        finalExpenses[item.date].push({
+          name: item.name,
+          amount: item.amount,
+          category: item.category,
+        });
+      });
+      setExpenses(finalExpenses);
+    }
+
+    setNotification(
+      <div className="flex items-center gap-2 max-w-sm">
+        <Check size={20} className="text-green-500 shrink-0" />
+        <span className="leading-tight">{notificationMessage}</span>
+      </div>
+    );
+
+    updateStorageInfo();
+    setShowConfirmImport(false);
+    setImportData(null);
+    setIsOpen(false);
   };
 
   return (
@@ -216,7 +664,6 @@ const Settings = ({
         >
           <div className="fixed inset-0 bg-[#333333]/30 backdrop-blur-sm transition-all" />
         </Transition.Child>
-
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Transition.Child
             as={Fragment}
@@ -228,8 +675,8 @@ const Settings = ({
             leaveTo="opacity-0"
           >
             <Dialog.Panel className="relative bg-stone-900 p-5 rounded-xl shadow-lg w-[40rem] max-w-[90%] max-h-[90vh] overflow-y-auto border-stone-500 border-1 custom-scrollbar">
-              <div className="flex justify-between items-center border-b border-white">
-                <Dialog.Title className="text-xl font-bold text-white">
+              <div className="flex justify-between items-center border-b border-stone-500">
+                <Dialog.Title className="text-xl font-semibold text-white">
                   <div className="flex items-center gap-2 mb-2">
                     <SettingsIcon size={30} className="text-stone-300" />{" "}
                     Settings
@@ -242,124 +689,18 @@ const Settings = ({
                   <X size={24} />
                 </button>
               </div>
-
               <div className="mt-4 space-y-4">
-                {/* Budget Settings */}
-                <div className="pb-0 flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <WalletMinimal size={20} className="text-stone-300" />
-                    <h2 className="text-sm font-medium text-white ">
-                      Budget Settings
-                    </h2>
-                  </div>
-                  <div className="flex space-x-2">
-                    {hasChanges && (
-                      <button
-                        onClick={handleReset}
-                        className="relative group text-stone-400 hover:text-white transition cursor-pointer"
-                      >
-                        <RotateCcw
-                          size={18}
-                          className="transition-transform duration-200 hover:scale-110"
-                        />
-
-                        {/* Tooltip */}
-                        <div className="absolute -top-8 -left-8 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition bg-stone-800 text-white text-xs px-2 py-1 rounded-md shadow-lg whitespace-nowrap">
-                          Reset changes
-                        </div>
-                      </button>
-                    )}
-
-                    {/* Button with Tooltip */}
-                    <button
-                      onClick={toggleEditBudget}
-                      className="relative group text-stone-400 hover:text-white transition cursor-pointer"
-                      disabled={showConfirmDelete}
-                    >
-                      {/* Tooltip */}
-                      <span className="absolute -top-8 -left-8 -translate-x-1/2 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
-                        {isEditingBudget
-                          ? hasChanges
-                            ? "Save changes"
-                            : "Cancel editing"
-                          : "Edit budget"}
-                      </span>
-
-                      {/* Icon */}
-                      {isEditingBudget ? (
-                        hasChanges ? (
-                          <Check
-                            size={22}
-                            className="text-green-500 transition-transform duration-200 hover:scale-120"
-                          />
-                        ) : (
-                          <Ban
-                            size={18}
-                            className="text-red-500 transition-transform duration-200 hover:scale-110"
-                          />
-                        )
-                      ) : (
-                        <Edit
-                          size={18}
-                          className="text-yellow-500 transition-transform duration-200 hover:scale-110"
-                        />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="-mt-3 grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-xs font-medium text-stone-300">
-                      1st to 15th Budget
-                    </label>
-                    <input
-                      type="number"
-                      value={tempBudgets.firstHalf}
-                      disabled={!isEditingBudget}
-                      onChange={(e) =>
-                        handleBudgetChange("firstHalf", e.target.value)
-                      }
-                      className={`w-full px-3 py-1 border rounded-lg text-sm text-white 
-                      ${
-                        isEditingBudget
-                          ? "bg-stone-800 border-stone-600 focus:outline-none focus:ring-2 focus:ring-teal-400/50 transition-all duration-200"
-                          : "bg-stone-700 border-stone-600"
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-stone-300">
-                      16th to End Budget
-                    </label>
-                    <input
-                      type="number"
-                      value={tempBudgets.secondHalf}
-                      disabled={!isEditingBudget}
-                      onChange={(e) =>
-                        handleBudgetChange("secondHalf", e.target.value)
-                      }
-                      className={`w-full px-3 py-1 border rounded-lg text-sm text-white 
-                      ${
-                        isEditingBudget
-                          ? "bg-stone-800 border-stone-600 focus:outline-none focus:ring-2 focus:ring-teal-400/50 transition-all duration-200"
-                          : "bg-stone-700 border-stone-600"
-                      }`}
-                    />
-                  </div>
-                </div>
-                {/* Storage Information Section */}
-                <div className="border-t border-stone-700 pt-3">
+                <div className="border-stone-700">
                   <div className="flex items-center gap-2">
                     <Database size={20} className="text-stone-300" />
-                    <h2 className="text-sm font-medium text-white">
+                    <h2 className="text-sm font-normal text-white">
                       Storage Usage
                     </h2>
                   </div>
                   <div className="mt-2">
-                    <div className="w-full bg-stone-700 rounded-full h-2.5">
+                    <div className="w-full bg-stone-700 rounded-full h-3.5 overflow-hidden">
                       <div
-                        className="bg-teal-300 h-2.5 rounded-full"
+                        className={`bg-emerald-300 h-3.5 ${storageInfo.percentage < 8 ? "rounded-full" : "rounded-l-full"}`}
                         style={{
                           width: `${Math.min(storageInfo.percentage, 100)}%`,
                         }}
@@ -381,36 +722,185 @@ const Settings = ({
                   </div>
                 </div>
 
-                {/* Export Data Section */}
                 <div className="border-t border-stone-700 pt-3">
                   <div className="flex items-center gap-2">
                     <MonitorDown size={20} className="text-stone-300" />
-                    <h2 className="text-sm font-medium text-white">
+                    <h2 className="text-sm font-normal text-white">
                       Export Data
                     </h2>
                   </div>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-2">
-                    <span className="text-sm text-stone-400">
-                      Download your expense records as an Excel spreadsheet
-                    </span>
-
-                    <button
-                      onClick={handleExportData}
-                      className="w-full md:w-auto mt-3 md:mt-0 cursor-pointer inline-flex items-center justify-center gap-2 py-0.5 px-0.5 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-teal-600 to-green-500 group-hover:from-teal-600 group-hover:to-green-500 hover:text-white dark:text-white shadow-lg hover:shadow-teal-500/50 duration-200"
-                    >
-                      <span className="flex items-center justify-center gap-2 px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-stone-900 rounded-md group-hover:bg-transparent w-full">
-                        <FileDown size={18} className="text-stone-300" />
-                        Export
+                    <div className="flex-grow">
+                      <span className="text-sm text-stone-400">
+                        Download your expense records as an Excel spreadsheet.
                       </span>
-                    </button>
+                      <div className="flex items-center flex-wrap gap-4 mt-2">
+                        {exportFileInfo && (
+                          <div className="flex flex-col md:flex-row md:items-center md:gap-6 text-xs text-stone-500">
+                            <p>
+                              <span className="font-normal text-stone-300 italic">
+                                {exportFileInfo.name}
+                              </span>
+                            </p>
+                            <p>
+                              <span className="font-normal text-stone-300 italic">
+                                {exportFileInfo.size}
+                              </span>
+                            </p>
+                          </div>
+                        )}
+                        <button
+                          onClick={handleExportData}
+                          disabled={totalEntries === 0}
+                          className="ml-auto cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stone-600 text-white text-sm font-medium shadow-sm hover:bg-stone-500 active:bg-stone-700 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
+                        >
+                          <Download size={18} />
+                          Export
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Delete Records Section */}
+                <div className="border-t border-stone-700 pt-3">
+                  <div className="flex items-center gap-2">
+                    <MonitorUp size={20} className="text-stone-300" />
+                    <h2 className="text-sm font-normal text-white">
+                      Import Data
+                    </h2>
+                  </div>
+                  <div className="flex flex-col mt-2">
+                    <label
+                      htmlFor="import-file"
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                      onDragEnter={handleDragEnter}
+                      onDragLeave={handleDragLeave}
+                      className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg cursor-pointer transition-colors duration-200 ${
+                        isDragInvalid
+                          ? "border-red-500 bg-red-500/10"
+                          : isDragging
+                          ? "border-emerald-400 bg-emerald-500/10"
+                          : "border-stone-600 hover:border-stone-500 hover:bg-stone-800/50"
+                      }`}
+                    >
+                      <div className="flex flex-col items-center justify-center text-center pointer-events-none">
+                        <Upload
+                          size={32}
+                          className={`mb-4 transition-colors duration-200 ${
+                            isDragInvalid
+                              ? "text-red-400"
+                              : isDragging
+                              ? "text-emerald-400"
+                              : "text-stone-400"
+                          }`}
+                        />
+                        <p
+                          className={`mb-2 text-sm ${
+                            isDragInvalid
+                              ? "text-red-300"
+                              : isDragging
+                              ? "text-white"
+                              : "text-stone-400"
+                          }`}
+                        >
+                          {isDragInvalid ? (
+                            <span className="font-medium text-red-400">
+                              Invalid File Type
+                            </span>
+                          ) : (
+                            <>
+                              <span className="font-medium text-emerald-300">
+                                Click to upload
+                              </span>{" "}
+                              or drag and drop
+                            </>
+                          )}
+                        </p>
+                        <p className="text-xs text-stone-500">
+                          XLSX, XLS, or CSV (MAX. 10MB)
+                        </p>
+                      </div>
+                      <input
+                        type="file"
+                        id="import-file"
+                        accept=".xlsx, .xls, .csv"
+                        onChange={handleFileSelect}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  {showConfirmImport && importData && (
+                    <div className="mt-5 bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                        <p className="text-sm font-medium text-white/90">
+                          {importData.duplicateEntries.length} duplicate{" "}
+                          {importData.duplicateEntries.length > 1
+                            ? "entries"
+                            : "entry"}{" "}
+                          found
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        <button
+                          onClick={() => handleImportAction("replace")}
+                          className="cursor-pointer group relative px-1 py-1 rounded-xl bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 transition-all duration-200"
+                        >
+                          <div className="text-sm font-medium text-blue-400 group-hover:text-blue-300">
+                            Update
+                          </div>
+                          <div className="text-xs text-blue-400/80 ">
+                            Replace existing
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => handleImportAction("merge")}
+                          className="cursor-pointer group relative px-1 py-1 rounded-xl bg-green-500/10 border border-green-500/20 hover:bg-green-500/20 hover:border-green-500/40 transition-all duration-200"
+                        >
+                          <div className="text-sm font-medium text-green-400 group-hover:text-green-300">
+                            Keep
+                          </div>
+                          <div className="text-xs text-green-400/80 ">
+                            Preserve both
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => handleImportAction("skip_duplicates")}
+                          className="cursor-pointer group relative px-px-1 py-1 rounded-xl bg-teal-500/10 border border-teal-500/20 hover:bg-teal-500/20 hover:border-teal-500/40 transition-all duration-200"
+                        >
+                          <div className="text-sm font-medium text-teal-400 group-hover:text-teal-300">
+                            Skip
+                          </div>
+                          <div className="text-xs text-teal-400/80 ">
+                            Ignore duplicates
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => handleImportAction("skip")}
+                          className="cursor-pointer group relative px-1 py-1 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-200"
+                        >
+                          <div className="text-sm font-medium text-white/80 group-hover:text-white">
+                            Cancel
+                          </div>
+                          <div className="text-xs text-white/50 ">
+                            Abort import
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* MODIFIED: This entire section is updated */}
                 <div className="border-t border-stone-700 pt-3">
                   <div className="flex items-center gap-2">
                     <Trash2 size={20} className="text-stone-300" />
-                    <h2 className="text-sm font-medium text-white">
+                    <h2 className="text-sm font-normal text-white">
                       Delete Records
                     </h2>
                   </div>
@@ -418,42 +908,69 @@ const Settings = ({
                     <span className="text-sm text-stone-400">
                       Remove all expense records permanently
                     </span>
-                    <button
-                      onClick={() => {
-                        setShowConfirmDelete(true);
-                        setIsEditingBudget(false);
-                        setHasChanges(false);
-                        setTempBudgets({ ...budgets });
-                      }}
-                      className="w-full md:w-auto mt-3 md:mt-0 cursor-pointer inline-flex items-center justify-center gap-2 py-0.5 px-0.5 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-red-400 to-red-500 shadow-lg hover:shadow-red-500/50 duration-200"
-                    >
-                      <span className="flex items-center justify-center gap-2 px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-stone-900 rounded-md group-hover:bg-transparent w-full">
+                    <div className="w-full flex justify-end md:w-auto mt-0 md:mt-0">
+                      <button
+                        onClick={() => setShowConfirmDelete(true)}
+                        disabled={totalEntries === 0}
+                        className="cursor-pointer mt-2 md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-700 text-white text-sm font-medium shadow-sm hover:bg-red-500 active:bg-red-800 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
+                      >
                         <Trash size={18} />
                         Delete All
-                      </span>
-                    </button>
+                      </button>
+                    </div>
                   </div>
                   {showConfirmDelete && (
-                    <div className="mt-4 bg-red-500/10 p-4 rounded-lg border border-red-500/20">
-                      <p className="text-sm text-red-300">
-                        Are you sure you want to delete all records? This action
-                        cannot be undone.
+                    <div className="mt-4 bg-white/5 p-4 rounded-lg border border-white/10">
+                      <p className="text-sm text-stone-300">
+                        Are you sure you want to delete all{" "}
+                        <span className="font-medium text-white">
+                          {totalEntries}
+                        </span>{" "}
+                        records?
                       </p>
+                      <p className="text-sm text-stone-300 mt-1">
+                        To proceed, type "
+                        <span className="font-semibold text-white">
+                          confirm
+                        </span>
+                        " in the box below.
+                      </p>
+                      <p className="text-sm text-red-400 mt-1">
+                        This action cannot be undone.
+                      </p>
+                      <div className="mt-3">
+                        <input
+                          type="text"
+                          value={deleteConfirmationInput}
+                          onChange={(e) =>
+                            setDeleteConfirmationInput(e.target.value)
+                          }
+                          className="w-full bg-stone-800 border border-stone-600 rounded-lg px-2 py- text-white text-center placeholder-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-500 transition"
+                          autoFocus
+                        />
+                      </div>
                       <div className="flex justify-center space-x-4 mt-3">
                         <button
-                          onClick={() => setShowConfirmDelete(false)}
-                          className="px-4 py-1 rounded-md bg-stone-700 text-white hover:bg-stone-600 transition cursor-pointer w-full"
+                          onClick={() => {
+                            setShowConfirmDelete(false);
+                            setDeleteConfirmationInput("");
+                          }}
+                          className="px-4 py-1 rounded-full bg-stone-700 text-white hover:bg-stone-600 transition cursor-pointer w-full"
                         >
                           Cancel
                         </button>
                         <button
                           onClick={() => {
                             handleClearRecords();
-                            setShowConfirmDelete(false); // Close the confirm delete dialog
+                            setShowConfirmDelete(false);
+                            setIsOpen(false);
                           }}
-                          className="px-4 py-1 rounded-md bg-red-600 text-white hover:bg-red-500 transition cursor-pointer"
+                          disabled={
+                            deleteConfirmationInput.toLowerCase() !== "confirm"
+                          }
+                          className="px-4 py-1 rounded-full bg-red-700 text-white hover:bg-red-500 active:bg-red-800 transition cursor-pointer w-full disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
                         >
-                          Confirm
+                          Confirm Delete
                         </button>
                       </div>
                     </div>

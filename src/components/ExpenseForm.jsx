@@ -53,10 +53,10 @@ const colourStyles = {
     background: isDisabled
       ? undefined
       : isSelected
-      ? "linear-gradient(to right, #166534, #115e59)" // Green to Teal
-      : isFocused
-      ? "#57534e"
-      : undefined,
+        ? "linear-gradient(to right, #166534, #115e59)"
+        : isFocused
+          ? "#57534e"
+          : undefined,
 
     color: isDisabled ? "#6b7280" : "white",
     cursor: isDisabled ? "not-allowed" : "pointer",
@@ -122,6 +122,17 @@ const ExpenseForm = ({
     handleAddExpense();
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        handleSubmit();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [newExpense, handleAddExpense]); // Added dependencies
+
   return (
     <>
       {notification && (
@@ -153,7 +164,9 @@ const ExpenseForm = ({
             }
             maxLength={20}
             className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
-              errors.name ? "border-red-400" : "border-stone-500 border-1"
+              errors.name
+                ? "border-red-400"
+                : "border-stone-500 border-1 focus:border-stone-300"
             } rounded-lg text-white text-sm`}
             placeholder="Description"
           />
@@ -167,7 +180,9 @@ const ExpenseForm = ({
                 setNewExpense((prev) => ({ ...prev, amount: e.target.value }))
               }
               className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
-                errors.amount ? "border-red-400" : "border-stone-500 border-1"
+                errors.amount
+                  ? "border-red-400"
+                  : "border-stone-500 border-1 focus:border-stone-300"
               } rounded-lg text-white text-sm`}
               placeholder="Amount"
               type="number"
@@ -216,19 +231,41 @@ const ExpenseForm = ({
             />
           </div>
         </div>
+        <div class="animated-border-wrapper">
+          <button
+            onClick={handleSubmit}
+            className="cursor-pointer flex gap-2 group 
+  group-hover:before:duration-500 group-hover:after:duration-500 
+  after:duration-500 
+  hover:border-emerald-300 active:border-orange-400
 
-        <button
-          onClick={handleSubmit}
-          className="w-full inline-flex items-center justify-center gap-2 py-0.5 px-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-stone-900 rounded-lg group bg-gradient-to-br from-teal-600 to-green-500 group-hover:from-teal-600 group-hover:to-green-500 hover:text-white dark:text-white shadow-md shadow-stone-950 hover:shadow-teal-500/50 dark:shadow-lg hover:dark:shadow-teal-800/80 cursor-pointer"
-        >
-          <span className="w-full flex items-center justify-center gap-2 px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-stone-950 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+  hover:before:[box-shadow:_20px_20px_20px_30px_#1c74af,_-15px_-15px_15px_25px_#ec4899] 
+  active:before:[box-shadow:_10px_10px_20px_20px_#f97316,_-10px_-10px_20px_20px_#fb923c] 
+  before:[box-shadow:_-10px_-10px_10px_20px_#ec4899] 
+
+  duration-500 before:duration-500 hover:duration-500 
+  hover:after:-right-8 
+  hover:before:right-12 hover:before:-bottom-8 
+  hover:before:blur origin-left 
+  hover:decoration-2 
+  hover:text-stone-50 active:text-orange-300
+
+  relative bg-stone-950 h-auto w-full border-0 text-left p-3 
+  text-stone-100 text-base font-bold rounded-lg overflow-hidden 
+
+  before:absolute before:w-12 before:h-12 before:content-[''] before:right-1 before:top-1 before:z-10 
+  before:bg-indigo-500 active:before:bg-orange-500 before:rounded-full before:blur-lg 
+
+  after:absolute after:z-10 after:w-20 after:h-20 after:content-[''] 
+  after:bg-emerald-300 active:after:bg-orange-300 after:right-8 after:top-3 after:rounded-full after:blur-lg"
+          >
             <Plus
-              size={20}
+              size={23}
               className="transition-transform duration-200 group-hover:rotate-90 group-hover:scale-110"
             />
             Add Expense
-          </span>
-        </button>
+          </button>
+        </div>
       </div>
     </>
   );

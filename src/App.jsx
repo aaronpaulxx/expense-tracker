@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "./components/Header";
-import BudgetPanel from "./components/BudgetPanel";
 import DateSelector from "./components/DateSelector";
 import ExpenseForm from "./components/ExpenseForm";
 
@@ -33,10 +32,12 @@ const App = () => {
 
   const [loading, setLoading] = useState(true);
 
-  // Option 1: Using toLocaleDateString
-  const currentDateKey = date.toLocaleDateString("en-CA", {
-    timeZone: "Asia/Manila",
-  }); // Will output YYYY-MM-DD format
+  const currentDateKey = new Date(
+    date.toLocaleString("en-US", { timeZone: "Asia/Manila" })
+  )
+    .toISOString()
+    .split("T")[0];
+  
   const currentDay = date.getDate();
   const isFirstHalf = currentDay <= 15;
   const currentBudget = isFirstHalf ? budgets.firstHalf : budgets.secondHalf;
@@ -163,6 +164,14 @@ const App = () => {
     }
   }, [budgets, expenses]); // Dependencies
 
+  const handleQuickFill = (expenseData) => {
+    setNewExpense({
+      name: expenseData.name,
+      amount: expenseData.amount,
+      category: expenseData.category,
+    });
+  };
+
   return (
     <div className="max-w-full h-screen bg-stone-950 flex flex-col custom-scrollbar">
       {loading && (
@@ -191,6 +200,7 @@ const App = () => {
         setBudgets={setBudgets}
         clearRecords={clearRecords}
         expenses={expenses}
+        setExpenses={setExpenses}
       />
 
       {/* Date Selector - Fixed at the top after header */}
@@ -206,22 +216,12 @@ const App = () => {
 
       <div className="flex flex-1 overflow-auto flex-col">
         {/* Budget Panel */}
-        <div className="w-full p-2 flex flex-col gap-2 mb-2">
-          <BudgetPanel
-            budgets={budgets}
-            setBudgets={setBudgets}
-            calculatePeriodExpenses={calculatePeriodExpenses}
-            currentBudget={currentBudget}
-            isFirstHalf={isFirstHalf}
-            expenses={expenses}
-            date={date}
-          />
-        </div>
+
 
         {/* Expense Entry Section */}
         <div className="w-full p-2 flex flex-col gap-2">
           <div className="w-full pl-2">
-            <label className="text-md border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full">
+            <label className="text-lg border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full mt-5">
               Expense Details
             </label>
           </div>
@@ -236,10 +236,8 @@ const App = () => {
 
         {/* Today's Expenses Section */}
         <div className="w-full p-2 flex flex-col gap-2">
-          <div className="w-full pl-2 mb-1">
-            <label className="text-md border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full">
-              Today&apos;s Expenses
-            </label>
+          <div className="w-full pl-2">
+
           </div>
           <ExpenseList
             date={date}
@@ -249,13 +247,15 @@ const App = () => {
             deletingIndex={deletingIndex}
             handleDeleteExpense={handleDeleteExpense}
             onUpdateExpense={handleUpdateExpense}
+            setExpenses={setExpenses}
+            onQuickFill={handleQuickFill} // Add this prop
           />
         </div>
 
         {/* Financial Insights Section */}
         <div className="w-full p-2 flex flex-col gap-2">
           <div className="w-full pl-2 mt-3">
-            <label className="text-md border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full">
+            <label className="text-lg border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full">
               Financial Insights
             </label>
           </div>

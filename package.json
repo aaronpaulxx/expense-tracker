@@ -28,7 +28,10 @@
       "splash.css"
     ],
     "win": {
-      "target": ["nsis", "zip"],
+      "target": [
+        "nsis",
+        "zip"
+      ],
       "icon": "/workspaces/expense-tracker/icon.ico"
     },
     "nsis": {
@@ -46,22 +49,28 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@headlessui/react": "^2.2.0",
+    "@hello-pangea/dnd": "^18.0.1",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.8",
+    "@react-spring/web": "^10.0.1",
     "@tailwindcss/vite": "^4.0.14",
     "axios": "^1.7.9",
     "chroma-js": "^3.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.6.2",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.475.0",
+    "prettier": "3.5.3",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-confetti": "^6.4.0",
     "react-datepicker": "^8.0.0",
     "react-day-picker": "^9.5.1",
     "react-dom": "^19.0.0",
+    "react-drag-reorder": "^1.2.0",
     "react-select": "^5.10.0",
     "recharts": "^2.15.1",
     "tailwind-merge": "^3.0.2",

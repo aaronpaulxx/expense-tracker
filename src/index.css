@@ -247,3 +247,132 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradient-flow-active {
+  0% { background-position: 100% 0%; }
+  50% { background-position: 0% 100%; }
+  100% { background-position: 100% 0%; }
+}
+
+.animated-border-wrapper {
+  position: relative;
+  padding: 1px;
+  border-radius: 10.5px;
+  background: #78716c;
+  transition: all 0.5s ease;
+  z-index: 0;
+}
+
+.animated-border-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0px;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(45deg, #ec4899, #6366f1, #6ee7b7, #4fcbe7, #73fa71, #fa719c);
+  background-size: 300% 300%;
+  filter: blur(5px);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+/* Hover effect (calm flowing gradient) */
+.animated-border-wrapper:hover {
+  background: linear-gradient(45deg, #ec4899, #6366f1, #6ee7b7, #4fcbe7, #73fa71, #fa719c);
+  background-size: 300% 300%;
+  animation: gradient-flow 6s ease infinite;
+}
+
+.animated-border-wrapper:hover::before {
+  opacity: 1;
+  animation: gradient-flow 6s ease infinite;
+}
+
+/* Active effect (different colors, faster flow) */
+.animated-border-wrapper:active {
+  background: linear-gradient(45deg, #f59e0b, #ef4444, #e17918, #f63b86);
+  background-size: 300% 300%;
+  animation: gradient-flow-active 2s ease infinite;
+}
+
+.animated-border-wrapper:active::before {
+  background: linear-gradient(45deg, #f59e0b, #ef4444, #e17918, #f63b86);
+  opacity: 1;
+  animation: gradient-flow-active 2s ease infinite;
+}
+
+.delete-button-small {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #44403c;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.delete-button-small .svgIcon {
+  width: 15px;
+  transition: 0.3s ease;
+}
+
+.delete-button-small .svgIcon path {
+  fill: #dc2626;
+}
+
+.delete-button-small::before {
+  position: absolute;
+  top: -22px;
+  content: "Delete List";
+  color: white;
+  transition: 0.3s ease;
+  font-size: 1px;
+}
+
+.delete-button-small:hover {
+  width: 110px;
+  border-radius: 40px;
+  background-color: #dc2626;
+}
+
+.delete-button-small:hover .svgIcon {
+  width: 36px;
+  transform: translateY(60%);
+}
+
+.delete-button-small:hover .svgIcon path {
+  fill: white;
+}
+
+.delete-button-small:hover::before {
+  font-size: 13px;
+  opacity: 1;
+  transform: translateY(24px);
+  font-weight: 600;
+}
+
+.delete-button-small.disabled {
+  opacity: 0.5;
+  background-color: #525252;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
