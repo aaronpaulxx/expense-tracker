@@ -231,7 +231,7 @@ const ExpenseForm = ({
             />
           </div>
         </div>
-        <div class="animated-border-wrapper">
+        <div className="animated-border-wrapper">
           <button
             onClick={handleSubmit}
             className="cursor-pointer flex gap-2 group 

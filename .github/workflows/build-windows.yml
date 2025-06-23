@@ -1,0 +1,41 @@
+# .github/workflows/build-windows.yml
+name: Build Windows Installer
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build Windows installer
+        run: npm run electron:build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: expense-tracker-windows-v${{ github.run_number }}
+          path: |
+            release/*.exe
+            release/*.zip
+          retention-days: 30
+          
+      - name: List built files
+        run: dir release\
