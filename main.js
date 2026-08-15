@@ -7,16 +7,20 @@ const __dirname = path.dirname(__filename);
 
 const isDev = !app.isPackaged;
 
+// Bound the renderer's V8 heap so GC stays frequent/small instead of
+// letting it grow unchecked for what's a small single-window app.
+app.commandLine.appendSwitch("js-flags", "--max-old-space-size=256");
+
 let mainWindow;
 let splashScreen;
 
 function createSplashScreen() {
   splashScreen = new BrowserWindow({
-    width: 550,
-    height: 280,
+    width: 600,
+    height: 300,
     frame: false,
     alwaysOnTop: true,
-    transparent: true,
+    transparent: false,
     resizable: false,
     show: false,
   });
@@ -33,6 +37,7 @@ function createSplashScreen() {
 
   splashScreen.once("ready-to-show", () => {
     splashScreen.show();
+    createMainWindow();
   });
 }
 
@@ -71,9 +76,10 @@ function createMainWindow() {
   });
 }
 
+app.disableHardwareAcceleration();
+
 app.whenReady().then(() => {
   createSplashScreen();
-  createMainWindow();
 });
 
 app.on("window-all-closed", () => {
