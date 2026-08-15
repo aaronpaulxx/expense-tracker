@@ -24,12 +24,6 @@ export default defineConfig({
     outDir: "dist", // Output the build into the 'dist' folder (default for Electron)
     emptyOutDir: true, // Clear out the 'dist' folder before building
     target: "esnext", // Ensure latest JS features are supported
-    rollupOptions: {
-      output: {
-        // Additional configuration for better chunking if needed
-        manualChunks: undefined, // Modify if needed for splitting chunks
-      },
-    },
   },
 
   define: {
