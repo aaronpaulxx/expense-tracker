@@ -12,8 +12,8 @@ let splashScreen;
 
 function createSplashScreen() {
   splashScreen = new BrowserWindow({
-    width: 1920,
-    height: 1080,
+    width: 550,
+    height: 280,
     frame: false,
     alwaysOnTop: true,
     transparent: true,
@@ -43,9 +43,9 @@ function createMainWindow() {
     resizable: false,
     webPreferences: {
       contextIsolation: true,
-      nodeIntegration: true,
+      nodeIntegration: false,
       webSecurity: true,
-      allowRunningInsecureContent: true,
+      spellcheck: false,
       preload: path.resolve(__dirname, "preload.cjs"),
     },
     show: false,
@@ -73,7 +73,7 @@ function createMainWindow() {
 
 app.whenReady().then(() => {
   createSplashScreen();
-  setTimeout(createMainWindow, 2000);
+  createMainWindow();
 });
 
 app.on("window-all-closed", () => {
