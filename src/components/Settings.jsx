@@ -13,7 +13,7 @@ import {
   CircleX,
 } from "lucide-react";
 import { Dialog, Transition } from "@headlessui/react";
-import * as XLSX from "xlsx";
+import * as XLSX from "xlsx/dist/xlsx.mini.min.js";
 
 const Settings = ({
   isOpen,
