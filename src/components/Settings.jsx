@@ -1,4 +1,5 @@
-import React, { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, useCallback, Fragment } from "react";
+import PropTypes from "prop-types";
 import {
   Settings as SettingsIcon,
   Check,
@@ -13,20 +14,26 @@ import {
   CircleX,
 } from "lucide-react";
 import { Dialog, Transition } from "@headlessui/react";
-import * as XLSX from "xlsx/dist/xlsx.mini.min.js";
+
+// Cached across opens/closes so re-opening Settings doesn't re-fetch the chunk.
+let xlsxModulePromise = null;
+const loadXLSX = () => {
+  if (!xlsxModulePromise) {
+    xlsxModulePromise = import("xlsx/dist/xlsx.mini.min.js");
+  }
+  return xlsxModulePromise;
+};
 
 const Settings = ({
   isOpen,
   setIsOpen,
   budgets,
-  setBudgets,
   clearRecords,
   expenses,
   setNotification,
   setExpenses,
 }) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-  // NEW: State for the delete confirmation input
   const [deleteConfirmationInput, setDeleteConfirmationInput] = useState("");
   const [showConfirmImport, setShowConfirmImport] = useState(false);
   const [importData, setImportData] = useState(null);
@@ -34,6 +41,16 @@ const Settings = ({
   const [isDragging, setIsDragging] = useState(false);
   const [exportFileInfo, setExportFileInfo] = useState(null);
   const [isDragInvalid, setIsDragInvalid] = useState(false);
+
+  // XLSX is loaded lazily (only when Settings is actually opened), and
+  // cached at module scope so it isn't re-fetched on every open.
+  const [XLSX, setXLSX] = useState(null);
+
+  useEffect(() => {
+    if (isOpen && !XLSX) {
+      loadXLSX().then(setXLSX);
+    }
+  }, [isOpen, XLSX]);
 
   const formatBytes = (bytes, decimals = 2) => {
     if (!+bytes) return "0 Bytes";
@@ -44,53 +61,56 @@ const Settings = ({
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
   };
 
-  const parseDateCell = (cellValue) => {
-    if (cellValue === null || cellValue === undefined) {
+  const parseDateCell = useCallback(
+    (cellValue) => {
+      if (cellValue === null || cellValue === undefined) {
+        return null;
+      }
+      if (typeof cellValue === "number") {
+        const d = XLSX.SSF.parse_date_code(cellValue);
+        if (d) {
+          return new Date(Date.UTC(d.y, d.m - 1, d.d));
+        }
+      }
+      if (cellValue instanceof Date && !isNaN(cellValue)) {
+        return new Date(
+          Date.UTC(
+            cellValue.getFullYear(),
+            cellValue.getMonth(),
+            cellValue.getDate()
+          )
+        );
+      }
+      if (typeof cellValue === "string") {
+        const str = cellValue.trim();
+        if (str === "") return null;
+        let parts;
+        parts = str.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2}|\d{4})$/);
+        if (parts) {
+          let year = parseInt(parts[3], 10);
+          const month = parseInt(parts[1], 10) - 1;
+          const day = parseInt(parts[2], 10);
+          if (year < 100) {
+            year += 2000;
+          }
+          if (month >= 0 && month < 12 && day > 0 && day <= 31) {
+            return new Date(Date.UTC(year, month, day));
+          }
+        }
+        parts = str.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/);
+        if (parts) {
+          const year = parseInt(parts[1], 10);
+          const month = parseInt(parts[2], 10) - 1;
+          const day = parseInt(parts[3], 10);
+          if (month >= 0 && month < 12 && day > 0 && day <= 31) {
+            return new Date(Date.UTC(year, month, day));
+          }
+        }
+      }
       return null;
-    }
-    if (typeof cellValue === "number") {
-      const d = XLSX.SSF.parse_date_code(cellValue);
-      if (d) {
-        return new Date(Date.UTC(d.y, d.m - 1, d.d));
-      }
-    }
-    if (cellValue instanceof Date && !isNaN(cellValue)) {
-      return new Date(
-        Date.UTC(
-          cellValue.getFullYear(),
-          cellValue.getMonth(),
-          cellValue.getDate()
-        )
-      );
-    }
-    if (typeof cellValue === "string") {
-      const str = cellValue.trim();
-      if (str === "") return null;
-      let parts;
-      parts = str.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2}|\d{4})$/);
-      if (parts) {
-        let year = parseInt(parts[3], 10);
-        const month = parseInt(parts[1], 10) - 1;
-        const day = parseInt(parts[2], 10);
-        if (year < 100) {
-          year += 2000;
-        }
-        if (month >= 0 && month < 12 && day > 0 && day <= 31) {
-          return new Date(Date.UTC(year, month, day));
-        }
-      }
-      parts = str.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/);
-      if (parts) {
-        const year = parseInt(parts[1], 10);
-        const month = parseInt(parts[2], 10) - 1;
-        const day = parseInt(parts[3], 10);
-        if (month >= 0 && month < 12 && day > 0 && day <= 31) {
-          return new Date(Date.UTC(year, month, day));
-        }
-      }
-    }
-    return null;
-  };
+    },
+    [XLSX]
+  );
 
   const totalEntries = expenses
     ? Object.values(expenses).reduce(
@@ -103,7 +123,6 @@ const Settings = ({
     if (isOpen) {
       updateStorageInfo();
     } else {
-      // MODIFIED: Reset delete confirmation state when modal closes
       setShowConfirmDelete(false);
       setDeleteConfirmationInput("");
       setShowConfirmImport(false);
@@ -111,61 +130,7 @@ const Settings = ({
     }
   }, [isOpen, budgets]);
 
-  useEffect(() => {
-    if (isOpen && totalEntries > 0) {
-      try {
-        const wb = generateExportWorkbook();
-        const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-
-        setExportFileInfo({
-          name: "Expense Tracker Data.xlsx",
-          size: formatBytes(wbout.byteLength),
-        });
-      } catch (error) {
-        console.error("Error calculating export file size:", error);
-        setExportFileInfo(null);
-      }
-    } else {
-      setExportFileInfo(null);
-    }
-  }, [isOpen, expenses]);
-
-  const updateStorageInfo = () => {
-    let used = 0;
-    const estimatedTotal = 5 * 1024;
-    for (let key in localStorage) {
-      if (localStorage.hasOwnProperty(key)) {
-        used += localStorage[key].length * 2;
-      }
-    }
-    setStorageInfo({
-      used: (used / 1024).toFixed(2),
-      total: estimatedTotal.toFixed(2),
-      percentage: ((used / (estimatedTotal * 1024)) * 100).toFixed(1),
-    });
-  };
-
-  const handleClearRecords = () => {
-    if (!expenses || expenses.length === 0) {
-      setNotification(
-        <span className="flex items-center gap-2">
-          <CircleX size={28} className=" text-red-400" /> No records found.
-        </span>
-      );
-    } else {
-      clearRecords();
-      setShowConfirmDelete(false);
-      setNotification(
-        <span className="flex items-center gap-2">
-          <Check size={28} className="w-6 h-6 text-green-500" /> All records
-          deleted successfully.
-        </span>
-      );
-      updateStorageInfo();
-    }
-  };
-
-  const generateExportWorkbook = () => {
+  const generateExportWorkbook = useCallback(() => {
     const sortedDates = Object.keys(expenses).sort(
       (a, b) => new Date(a) - new Date(b)
     );
@@ -212,9 +177,63 @@ const Settings = ({
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Expenses");
     return wb;
+  }, [expenses, XLSX]);
+
+  useEffect(() => {
+    if (isOpen && totalEntries > 0 && XLSX) {
+      try {
+        const wb = generateExportWorkbook();
+        const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+
+        setExportFileInfo({
+          name: "Expense Tracker Data.xlsx",
+          size: formatBytes(wbout.byteLength),
+        });
+      } catch (error) {
+        console.error("Error calculating export file size:", error);
+        setExportFileInfo(null);
+      }
+    } else {
+      setExportFileInfo(null);
+    }
+  }, [isOpen, expenses, XLSX, totalEntries, generateExportWorkbook]);
+
+  const updateStorageInfo = () => {
+    let used = 0;
+    const estimatedTotal = 5 * 1024;
+    for (let key in localStorage) {
+      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
+        used += localStorage[key].length * 2;
+      }
+    }
+    setStorageInfo({
+      used: (used / 1024).toFixed(2),
+      total: estimatedTotal.toFixed(2),
+      percentage: ((used / (estimatedTotal * 1024)) * 100).toFixed(1),
+    });
   };
 
-  const handleExportData = () => {
+  const handleClearRecords = () => {
+    if (!expenses || expenses.length === 0) {
+      setNotification(
+        <span className="flex items-center gap-2">
+          <CircleX size={28} className=" text-red-400" /> No records found.
+        </span>
+      );
+    } else {
+      clearRecords();
+      setShowConfirmDelete(false);
+      setNotification(
+        <span className="flex items-center gap-2">
+          <Check size={28} className="w-6 h-6 text-green-500" /> All records
+          deleted successfully.
+        </span>
+      );
+      updateStorageInfo();
+    }
+  };
+
+  const handleExport = async () => {
     if (!expenses || Object.keys(expenses).length === 0) {
       setNotification(
         <span className="flex items-center gap-2">
@@ -224,15 +243,19 @@ const Settings = ({
       return;
     }
 
+    // Defensive fallback in case the effect hasn't resolved yet.
+    const xlsx = XLSX || (await loadXLSX());
+    if (!XLSX) setXLSX(xlsx);
+
     const wb = generateExportWorkbook();
     const fileName = "Expense Tracker Data.xlsx";
-    XLSX.writeFile(wb, fileName);
+    xlsx.writeFile(wb, fileName);
 
     setNotification(
       <div className="flex items-center gap-2 max-w-sm">
         <Check size={20} className="text-green-500 shrink-0" />
         <span className="leading-tight">
-          Successfully exported your data to "{fileName}".
+          Successfully exported your data to &quot;{fileName}&quot;.
         </span>
       </div>
     );
@@ -271,13 +294,16 @@ const Settings = ({
     }
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
+        const xlsx = XLSX || (await loadXLSX());
+        if (!XLSX) setXLSX(xlsx);
+
         const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array", cellDates: true });
+        const workbook = xlsx.read(data, { type: "array", cellDates: true });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        const json = XLSX.utils.sheet_to_json(worksheet, { raw: false });
+        const json = xlsx.utils.sheet_to_json(worksheet, { raw: false });
 
         if (!json || json.length === 0) {
           setNotification(
@@ -484,7 +510,7 @@ const Settings = ({
             <span className="leading-tight">
               Successfully imported{" "}
               <span className="text-green-400">{processedData.length}</span>{" "}
-              items from "{file.name}".
+              items from &quot;{file.name}&quot;.
             </span>
           </div>
         );
@@ -750,7 +776,7 @@ const Settings = ({
                           </div>
                         )}
                         <button
-                          onClick={handleExportData}
+                          onClick={handleExport}
                           disabled={totalEntries === 0}
                           className="ml-auto cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stone-600 text-white text-sm font-medium shadow-sm hover:bg-stone-500 active:bg-stone-700 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
                         >
@@ -896,7 +922,6 @@ const Settings = ({
                   )}
                 </div>
 
-                {/* MODIFIED: This entire section is updated */}
                 <div className="border-t border-stone-700 pt-3">
                   <div className="flex items-center gap-2">
                     <Trash2 size={20} className="text-stone-300" />
@@ -929,11 +954,11 @@ const Settings = ({
                         records?
                       </p>
                       <p className="text-sm text-stone-300 mt-1">
-                        To proceed, type "
+                        To proceed, type &quot;
                         <span className="font-semibold text-white">
                           confirm
                         </span>
-                        " in the box below.
+                        &quot; in the box below.
                       </p>
                       <p className="text-sm text-red-400 mt-1">
                         This action cannot be undone.
@@ -983,6 +1008,16 @@ const Settings = ({
       </Dialog>
     </Transition.Root>
   );
+};
+
+Settings.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  setIsOpen: PropTypes.func.isRequired,
+  budgets: PropTypes.object,
+  clearRecords: PropTypes.func.isRequired,
+  expenses: PropTypes.object,
+  setNotification: PropTypes.func.isRequired,
+  setExpenses: PropTypes.func.isRequired,
 };
 
 export default Settings;
