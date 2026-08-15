@@ -17,7 +17,7 @@
       "output": "release/"
     },
     "afterPack": "build/afterPack.cjs",
-    "compression": "maximum",
+    "compression": "normal",
     "files": [
       "dist/**/*",
       "main.js",
@@ -30,10 +30,7 @@
       "splash.css"
     ],
     "win": {
-      "target": [
-        "nsis",
-        "zip"
-      ],
+      "target": "nsis",
       "icon": "icon.ico"
     },
     "nsis": {
