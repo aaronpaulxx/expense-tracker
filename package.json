@@ -8,7 +8,8 @@
     "dev": "vite",
     "electron:dev": "concurrently \"vite dev\" \"electron .\"",
     "electron:build": "vite build && electron-builder",
-    "electron:preview": "vite build && electron ."
+    "electron:preview": "vite build && electron .",
+    "lint": "eslint ."
   },
   "build": {
     "appId": "com.expense-tracker.app",
