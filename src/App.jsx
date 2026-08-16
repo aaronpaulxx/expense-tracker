@@ -8,6 +8,7 @@ import ExpenseList from "./components/ExpenseList";
 import FinancialInsights from "./components/FinancialInsights";
 
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import { useExpenses } from "./hooks/useExpenses";
 import { useExpenseCalculations } from "./hooks/useExpenseCalculations";
 import Footer from "./components/Footer";
 
@@ -18,111 +19,34 @@ const App = () => {
     firstHalf: 7379.31,
     secondHalf: 8488.75,
   });
-  const [expenses, setExpenses] = useLocalStorage("expenses", {});
-  const [newExpense, setNewExpense] = useState({
-    name: "",
-    amount: "",
-    category: "Food",
-  });
-  const [errors, setErrors] = useState({});
-  const [deletingIndex, setDeletingIndex] = useState(null);
+  const {
+    expenses,
+    setExpenses,
+    newExpense,
+    setNewExpense,
+    errors,
+    deletingIndex,
+    newlyAddedId,
+    currentDateKey,
+    handleAddExpense,
+    handleDeleteExpense,
+    handleUpdateExpense,
+    clearRecords,
+    handleQuickFill,
+  } = useExpenses(date);
   const dateInputRef = useRef(null);
 
   const [selectedYear, setSelectedYear] = useState(date.getFullYear());
 
   const [loading, setLoading] = useState(true);
 
-  const currentDateKey = new Date(
-    date.toLocaleString("en-US", { timeZone: "Asia/Manila" })
-  )
-    .toISOString()
-    .split("T")[0];
-  
-  const [newlyAddedId, setNewlyAddedId] = useState(null);
-
   const { categoryTotals, categoryTotalsForToday, totalForToday } =
     useExpenseCalculations(expenses, date);
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!newExpense.name.trim()) {
-      newErrors.name = "Description is required";
-    }
-    if (!newExpense.amount || parseFloat(newExpense.amount) <= 0) {
-      newErrors.amount = "Amount must be greater than 0";
-    } else {
-      const amount = parseFloat(newExpense.amount);
-      if (isNaN(amount)) {
-        newErrors.amount = "Amount must be a valid number";
-      } else if (amount > 1000000) {
-        newErrors.amount = "Amount cannot exceed 1,000,000";
-      } else if (!Number.isInteger(amount * 100)) {
-        newErrors.amount = "Amount cannot have more than 2 decimal places";
-      }
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleAddExpense = () => {
-    if (validateForm()) {
-      const amount = parseFloat(newExpense.amount);
-      // Generate unique ID using current date and time
-      const expenseId = Date.now().toString();
-
-      setExpenses((prev) => {
-        const updatedExpenses = {
-          ...prev,
-          [currentDateKey]: [
-            {
-              ...newExpense,
-              amount,
-              id: expenseId,
-            },
-            ...(prev[currentDateKey] || []),
-          ],
-        };
-
-        setNewExpense({ name: "", amount: "", category: "Food" });
-        setErrors({});
-
-        // Set the newly added ID instead of a boolean
-        setNewlyAddedId(expenseId);
-
-        // Clear the newly added ID after animation completes
-        setTimeout(() => setNewlyAddedId(null), 300);
-
-        return updatedExpenses;
-      });
-    }
-  };
-
-  const handleDeleteExpense = (index) => {
-    setDeletingIndex(index);
-    setTimeout(() => {
-      setExpenses((prev) => ({
-        ...prev,
-        [currentDateKey]: prev[currentDateKey].filter((_, i) => i !== index),
-      }));
-      setDeletingIndex(null);
-    }, 400);
-  };
-
-  const handleUpdateExpense = (index, updatedExpense) => {
-    const newExpenses = { ...expenses };
-    newExpenses[currentDateKey][index] = updatedExpense;
-    setExpenses(newExpenses);
-  };
 
   const handleDateClick = () => {
     if (dateInputRef.current) {
       dateInputRef.current.setOpen(true);
     }
-  };
-
-  const clearRecords = () => {
-    setExpenses([]);
-    localStorage.removeItem("expenses");
   };
 
   const selectedMonth = date.toLocaleString("default", {
@@ -155,14 +79,6 @@ const App = () => {
       endLoading();
     }
   }, [budgets, expenses]); // Dependencies
-
-  const handleQuickFill = (expenseData) => {
-    setNewExpense({
-      name: expenseData.name,
-      amount: expenseData.amount,
-      category: expenseData.category,
-    });
-  };
 
   return (
     <div className="max-w-full h-screen bg-stone-950 flex flex-col custom-scrollbar">
