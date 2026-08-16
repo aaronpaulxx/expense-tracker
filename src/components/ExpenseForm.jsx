@@ -1,91 +1,26 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Plus, Save, AlertCircle, X } from "lucide-react";
-import Select from "react-select";
+import {
+  Plus,
+  Save,
+  AlertCircle,
+  X,
+  ChevronsUpDown,
+  Check,
+} from "lucide-react";
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOptions,
+  ListboxOption,
+} from "@headlessui/react";
 import { CATEGORIES } from "../constants/categories";
 
-const colourStyles = {
-  control: (styles) => ({
-    ...styles,
-    backgroundColor: "#0c0a09", // stone-800
-    borderColor: "#78716c", // Same border color regardless of focus state
-    borderRadius: "9px", // Add border-radius
-    borderWidth: "1px", // Same border width regardless of focus state
-    "&:hover": {
-      backgroundColor: "#292524", // stone-800
-    },
-    boxShadow: "none", // Removed focus ring shadow
-    transition: "all 200ms",
-    minHeight: "30px",
-    height: "30px",
-  }),
-  valueContainer: (styles) => ({
-    ...styles,
-    padding: "0 8px",
-  }),
-  input: (styles) => ({
-    ...styles,
-    color: "white",
-    margin: "0",
-    padding: "0",
-  }),
-  dropdownIndicator: (styles, { isFocused }) => ({
-    ...styles,
-    padding: "0 6px",
-    color: isFocused ? "#22c55e" : "#9ca3af",
-    transition: "color 200ms",
-    "&:hover": {
-      color: "#22c55e",
-    },
-  }),
-  menu: (styles) => ({
-    ...styles,
-    backgroundColor: "#292524",
-    border: "1px solid #374151",
-    borderRadius: "8px", // Add border-radius
-    boxShadow:
-      "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-  }),
-  option: (styles, { isDisabled, isFocused, isSelected }) => ({
-    ...styles,
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    background: isDisabled
-      ? undefined
-      : isSelected
-        ? "linear-gradient(to right, #166534, #115e59)"
-        : isFocused
-          ? "#57534e"
-          : undefined,
-
-    color: isDisabled ? "#6b7280" : "white",
-    cursor: isDisabled ? "not-allowed" : "pointer",
-    padding: "4px 8px",
-  }),
-  placeholder: (styles) => ({
-    ...styles,
-    color: "#9ca3af",
-    margin: "0",
-  }),
-};
-
-const CategorySingleValue = ({ data }) => (
-  <div className="flex items-center gap-2 text-sm text-white -mt-6">
-    {data.icon && (
-      <data.icon size={16} className={CATEGORIES[data.value].color} />
-    )}
-    {data.label}
-  </div>
-);
-
-CategorySingleValue.propTypes = {
-  data: PropTypes.shape({
-    icon: PropTypes.elementType,
-    value: PropTypes.string,
-    label: PropTypes.string,
-  }).isRequired,
-};
+const categoryOptions = Object.keys(CATEGORIES).map((category) => ({
+  value: category,
+  label: category,
+  icon: CATEGORIES[category].icon,
+}));
 
 const ExpenseForm = ({
   newExpense,
@@ -131,12 +66,6 @@ const ExpenseForm = ({
       setIsClosing(false);
     }, 300);
   };
-
-  const categoryOptions = Object.keys(CATEGORIES).map((category) => ({
-    value: category,
-    label: category,
-    icon: CATEGORIES[category].icon,
-  }));
 
   const handleSubmit = () => {
     onSubmit();
@@ -216,33 +145,64 @@ const ExpenseForm = ({
           </div>
 
           <div className="w-1/2">
-            <Select
-              className="shadow-md shadow-stone-950 border-amber-400"
-              options={categoryOptions}
-              value={categoryOptions.find(
-                (option) => option.value === newExpense.category,
-              )}
-              onChange={(selectedOption) =>
-                setNewExpense((prev) => ({
-                  ...prev,
-                  category: selectedOption.value,
-                }))
+            <Listbox
+              value={newExpense.category}
+              onChange={(value) =>
+                setNewExpense((prev) => ({ ...prev, category: value }))
               }
-              styles={colourStyles}
-              isSearchable={false}
-              placeholder="Category"
-              getOptionLabel={(e) => (
-                <div className="flex items-center gap-2 text-sm">
-                  {e.icon && (
-                    <e.icon size={16} className={CATEGORIES[e.value].color} />
-                  )}
-                  {e.label}
-                </div>
-              )}
-              components={{
-                SingleValue: CategorySingleValue,
+            >
+              {({ open }) => {
+                const selected = categoryOptions.find(
+                  (option) => option.value === newExpense.category,
+                );
+                return (
+                  <div className="relative">
+                    <ListboxButton className="shadow-md shadow-stone-950 w-full h-[30px] flex items-center justify-between gap-2 px-2 bg-stone-800 border border-stone-500 rounded-lg text-sm text-white cursor-pointer transition-colors duration-200 hover:bg-stone-700 focus:outline-none">
+                      <span className="flex items-center gap-2 truncate">
+                        {selected?.icon && (
+                          <selected.icon
+                            size={16}
+                            className={CATEGORIES[selected.value].color}
+                          />
+                        )}
+                        {selected?.label || (
+                          <span className="text-stone-400">Category</span>
+                        )}
+                      </span>
+                      <ChevronsUpDown
+                        size={16}
+                        className={`shrink-0 transition-colors duration-200 ${
+                          open ? "text-green-500" : "text-stone-400"
+                        }`}
+                      />
+                    </ListboxButton>
+                    <ListboxOptions
+                      anchor="bottom start"
+                      transition
+                      className="w-[var(--button-width)] mt-1 bg-stone-800 border border-stone-700 rounded-lg shadow-lg z-50 focus:outline-none p-1 origin-top transition duration-150 ease-out data-[closed]:opacity-0 data-[closed]:scale-95"
+                    >
+                      {categoryOptions.map((option) => (
+                        <ListboxOption
+                          key={option.value}
+                          value={option.value}
+                          className="group flex items-center gap-2 px-2 py-1.5 text-sm text-white cursor-pointer rounded-md data-[focus]:bg-stone-700 data-[selected]:bg-gradient-to-r data-[selected]:from-green-800 data-[selected]:to-teal-800"
+                        >
+                          <option.icon
+                            size={16}
+                            className={CATEGORIES[option.value].color}
+                          />
+                          {option.label}
+                          <Check
+                            size={16}
+                            className="ml-auto hidden text-green-400 group-data-[selected]:block"
+                          />
+                        </ListboxOption>
+                      ))}
+                    </ListboxOptions>
+                  </div>
+                );
               }}
-            />
+            </Listbox>
           </div>
         </div>
         <div className="flex gap-2">
