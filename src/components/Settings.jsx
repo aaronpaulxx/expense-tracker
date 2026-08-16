@@ -207,7 +207,7 @@ const Settings = ({
                     </h2>
                   </div>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-2">
-                    <div className="flex-grow">
+                    <div className="w-full">
                       <span className="text-sm text-stone-400">
                         Download your expense records as an Excel spreadsheet.
                       </span>

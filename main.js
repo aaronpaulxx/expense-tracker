@@ -9,14 +9,17 @@ const isDev = !app.isPackaged;
 
 // Bound the renderer's V8 heap so GC stays frequent/small instead of
 // letting it grow unchecked for what's a small single-window app.
-app.commandLine.appendSwitch("js-flags", "--max-old-space-size=256 --optimize-for-size");
+app.commandLine.appendSwitch(
+  "js-flags",
+  "--max-old-space-size=256 --optimize-for-size",
+);
 
 let mainWindow;
 let splashScreen;
 
 function createSplashScreen() {
   splashScreen = new BrowserWindow({
-    width: 600,
+    width: 650,
     height: 300,
     frame: false,
     alwaysOnTop: true,
@@ -43,7 +46,7 @@ function createSplashScreen() {
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 500,
+    width: 700,
     height: 1080,
     resizable: false,
     webPreferences: {
