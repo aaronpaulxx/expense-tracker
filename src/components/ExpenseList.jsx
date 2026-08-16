@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import {
   Trash,
@@ -7,6 +7,7 @@ import {
   Copy,
   ClipboardX,
 } from "lucide-react";
+import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { CATEGORIES } from "../constants/categories";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import Toast from "./Toast";
@@ -32,64 +33,10 @@ const ExpenseList = ({
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [showDeleteAllToast, setShowDeleteAllToast] = useState(null);
 
-  // --- State for the floating action menu ---
-  const [openActionMenuIndex, setOpenActionMenuIndex] = useState(null);
-  const [activeExpense, setActiveExpense] = useState(null);
-  const [menuPosition, setMenuPosition] = useState(null);
-  const menuRef = useRef(null);
-  // ---
-
   const truncateText = (text, maxLength = 20) => {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + "...";
   };
-
-  const closeActionMenu = () => {
-    setOpenActionMenuIndex(null);
-    setMenuPosition(null);
-    setActiveExpense(null);
-  };
-
-  const toggleActionMenu = (index, expense, event) => {
-    event.stopPropagation();
-    if (openActionMenuIndex === index) {
-      closeActionMenu();
-    } else {
-      const buttonRect = event.currentTarget.getBoundingClientRect();
-      setOpenActionMenuIndex(index);
-      setActiveExpense(expense);
-      // Position the menu based on the button's location
-      setMenuPosition({
-        top: buttonRect.bottom + window.scrollY + 4, // Add 4px offset from the button
-        right: window.innerWidth - buttonRect.right, // Align right edges
-      });
-    }
-  };
-
-  const handleEditClick = (expense, index) => {
-    onEditClick(expense, index);
-    closeActionMenu();
-  };
-
-  const handleQuickFillClick = (expense) => {
-    if (onQuickFill) {
-      onQuickFill(expense);
-    }
-    closeActionMenu();
-  };
-
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      // Close if the menu is open and the click is not on the menu itself
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        closeActionMenu();
-      }
-    };
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []); // Empty dependency array ensures this runs only once
 
   const handleDeleteAllToday = () => {
     setIsDeleteConfirmOpen(true);
@@ -246,22 +193,61 @@ const ExpenseList = ({
                               </div>
                             </div>
 
-                            <button
-                              onClick={(e) =>
-                                toggleActionMenu(index, expense, e)
-                              }
-                              className={`relative p-2 rounded-lg transition-all duration-200 ${
-                                openActionMenuIndex === index
-                                  ? "bg-stone-600 text-stone-100 scale-105"
-                                  : "text-stone-400 hover:bg-stone-600 hover:text-stone-100 hover:scale-105"
-                              }`}
-                              aria-label="More options"
-                            >
-                              <MoreVertical
-                                size={18}
-                                className="cursor-pointer"
-                              />
-                            </button>
+                            <Menu as="div" className="relative">
+                              <MenuButton
+                                className="relative p-2 rounded-lg text-stone-400 hover:bg-stone-600 hover:text-stone-100 hover:scale-105 data-[active]:bg-stone-600 data-[active]:text-stone-100 data-[active]:scale-105 transition-all duration-200"
+                                aria-label="More options"
+                              >
+                                <MoreVertical
+                                  size={18}
+                                  className="cursor-pointer"
+                                />
+                              </MenuButton>
+                              <MenuItems
+                                anchor="bottom end"
+                                transition
+                                className="z-50 w-36 origin-top-right rounded-md bg-stone-800 shadow-lg ring-1 ring-stone-500 focus:outline-none py-1 [--anchor-gap:4px] transition duration-100 ease-out data-[closed]:opacity-0 data-[closed]:scale-95"
+                              >
+                                <MenuItem>
+                                  <button
+                                    onClick={() =>
+                                      onQuickFill && onQuickFill(expense)
+                                    }
+                                    className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-stone-300 data-[focus]:bg-stone-700 data-[focus]:text-white"
+                                  >
+                                    <Copy
+                                      size={18}
+                                      className="mr-2 text-blue-400"
+                                    />{" "}
+                                    Quick Fill
+                                  </button>
+                                </MenuItem>
+                                <MenuItem>
+                                  <button
+                                    onClick={() => onEditClick(expense, index)}
+                                    className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-stone-300 data-[focus]:bg-stone-700 data-[focus]:text-white"
+                                  >
+                                    <PencilLine
+                                      size={18}
+                                      className="mr-2 text-yellow-400"
+                                    />{" "}
+                                    Edit
+                                  </button>
+                                </MenuItem>
+                                <MenuItem>
+                                  <button
+                                    onClick={() => handleDeleteExpense(index)}
+                                    className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-stone-300 data-[focus]:bg-stone-700 data-[focus]:text-white"
+                                  >
+                                    <Trash
+                                      size={18}
+                                      className="mr-2 text-red-400"
+                                    />{" "}
+                                    Delete
+                                  </button>
+                                </MenuItem>
+                              </MenuItems>
+                            </Menu>
                           </div>
                         </div>
                       )}
@@ -288,45 +274,6 @@ const ExpenseList = ({
           </Droppable>
         </DragDropContext>
       </div>
-
-      {/* --- This is the single, floating Action Menu --- */}
-      {openActionMenuIndex !== null && menuPosition && (
-        <div
-          ref={menuRef} // Keep menuRef here for outside click detection
-          style={{
-            position: "fixed",
-            top: `${menuPosition.top}px`,
-            right: `${menuPosition.right}px`,
-          }}
-          className="z-50 w-36 origin-top-right rounded-md bg-stone-800 shadow-lg ring-1 ring-stone-500 focus:outline-none animate-[fadeIn_0.1s_ease-out]"
-        >
-          <div className="py-1">
-            <button
-              onClick={() => handleQuickFillClick(activeExpense)}
-              className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-stone-300 hover:bg-stone-700 hover:text-white"
-            >
-              <Copy size={18} className="mr-2 text-blue-400" /> Quick Fill
-            </button>
-            <button
-              onClick={() =>
-                handleEditClick(activeExpense, openActionMenuIndex)
-              }
-              className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-stone-300 hover:bg-stone-700 hover:text-white"
-            >
-              <PencilLine size={18} className="mr-2 text-yellow-400" /> Edit
-            </button>
-            <button
-              onClick={() => {
-                handleDeleteExpense(openActionMenuIndex);
-                closeActionMenu();
-              }}
-              className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-stone-300 hover:bg-stone-700 hover:text-white"
-            >
-              <Trash size={18} className="mr-2 text-red-400" /> Delete
-            </button>
-          </div>
-        </div>
-      )}
 
       {showDeleteAllToast && (
         <Toast
