@@ -1,26 +1,16 @@
-import { useState, useEffect, useRef, Fragment } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import Select from "react-select";
 import {
   Trash,
   PencilLine,
-  X,
-  Save,
-  AlertCircle,
   MoreVertical,
   Copy,
   ClipboardX,
 } from "lucide-react";
 import { CATEGORIES } from "../constants/categories";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { Dialog, Transition } from "@headlessui/react";
 import Toast from "./Toast";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import {
-  categoryOptions,
-  colourStyles,
-  CategorySingleValue,
-} from "./expenseCategorySelectConfig";
 
 const formatNumber = (num) =>
   num.toLocaleString("en-US", {
@@ -35,21 +25,11 @@ const ExpenseList = ({
   deletingIndex,
   handleDeleteExpense,
   date,
-  onUpdateExpense,
   setExpenses,
   onQuickFill,
+  onEditClick,
 }) => {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [editingExpense, setEditingExpense] = useState(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [originalExpense, setOriginalExpense] = useState(null);
-  const [editForm, setEditForm] = useState({
-    name: "",
-    amount: "",
-    category: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [showToast, setShowToast] = useState(false);
   const [showDeleteAllToast, setShowDeleteAllToast] = useState(null);
 
   // --- State for the floating action menu ---
@@ -59,62 +39,9 @@ const ExpenseList = ({
   const menuRef = useRef(null);
   // ---
 
-  const hasChanges = () => {
-    if (!originalExpense) return false;
-    return (
-      editForm.name !== originalExpense.name ||
-      parseFloat(editForm.amount) !== originalExpense.amount ||
-      editForm.category !== originalExpense.category
-    );
-  };
-
   const truncateText = (text, maxLength = 20) => {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + "...";
-  };
-
-  const validateField = (field, value) => {
-    const newErrors = { ...errors };
-    switch (field) {
-      case "name":
-        if (!value.trim()) {
-          newErrors.name = "Description is required";
-        } else {
-          delete newErrors.name;
-        }
-        break;
-      case "amount":
-        if (!value || parseFloat(value) <= 0) {
-          newErrors.amount = "Amount must be greater than 0";
-        } else {
-          const amount = parseFloat(value);
-          if (isNaN(amount)) {
-            newErrors.amount = "Amount must be a valid number";
-          } else if (amount > 1000000) {
-            newErrors.amount = "Amount cannot exceed 1,000,000";
-          } else if (!Number.isInteger(amount * 100)) {
-            newErrors.amount = "Amount cannot exceed 2 decimal places";
-          } else {
-            delete newErrors.amount;
-          }
-        }
-        break;
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleFormChange = (field, value) => {
-    const newForm = { ...editForm, [field]: value };
-    setEditForm(newForm);
-    validateField(field, value);
-  };
-
-  const validateForm = () => {
-    let isValid = true;
-    isValid = validateField("name", editForm.name) && isValid;
-    isValid = validateField("amount", editForm.amount) && isValid;
-    return isValid;
   };
 
   const closeActionMenu = () => {
@@ -140,15 +67,7 @@ const ExpenseList = ({
   };
 
   const handleEditClick = (expense, index) => {
-    setEditingExpense(index);
-    setOriginalExpense(expense);
-    setEditForm({
-      name: expense.name,
-      amount: expense.amount,
-      category: expense.category,
-    });
-    setErrors({});
-    setIsDialogOpen(true);
+    onEditClick(expense, index);
     closeActionMenu();
   };
 
@@ -171,23 +90,6 @@ const ExpenseList = ({
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []); // Empty dependency array ensures this runs only once
-
-  const handleClose = () => {
-    setIsDialogOpen(false);
-    setEditingExpense(null);
-    setOriginalExpense(null);
-    setErrors({});
-  };
-
-  const handleSave = () => {
-    if (validateForm() && hasChanges()) {
-      const amount = parseFloat(editForm.amount);
-      onUpdateExpense(editingExpense, { ...editForm, amount });
-      handleClose(); // Close the dialog first
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 5000);
-    }
-  };
 
   const handleDeleteAllToday = () => {
     setIsDeleteConfirmOpen(true);
@@ -426,162 +328,6 @@ const ExpenseList = ({
         </div>
       )}
 
-      {/* Edit Expense Dialog Modal */}
-      <Transition appear show={isDialogOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={handleClose}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
-          </Transition.Child>
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-auto max-w-md transform overflow-hidden rounded-xl bg-stone-900 p-4 text-left align-middle shadow-xl transition-all border border-stone-500">
-                  <Dialog.Title
-                    as="div"
-                    className="flex justify-between items-center mb-4 border-b border-stone-400"
-                  >
-                    <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                      <PencilLine size={24} className="text-stone-300" /> Edit
-                      Expense
-                    </h2>
-                    <button
-                      onClick={handleClose}
-                      className="text-stone-400 hover:text-stone-200 p-2 transition-all duration-200 cursor-pointer"
-                    >
-                      <X size={24} />
-                    </button>
-                  </Dialog.Title>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-stone-200 mb-2">
-                        Description
-                      </label>
-                      <input
-                        type="text"
-                        value={editForm.name}
-                        maxLength={20}
-                        onChange={(e) =>
-                          handleFormChange("name", e.target.value)
-                        }
-                        className={`w-full px-2 py-1 border outline-none transition-all duration-200 focus:bg-stone-950 ${errors.name ? "border-red-400" : "border-stone-500"} rounded-lg text-white text-sm bg-stone-900`}
-                        placeholder="Enter expense description"
-                      />
-                      {errors.name && (
-                        <div className="mt-1 flex items-center gap-1 text-red-400">
-                          <AlertCircle size={15} />
-                          <p className="text-xs">{errors.name}</p>
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-stone-200 mb-2">
-                        Amount
-                      </label>
-                      <input
-                        type="number"
-                        value={editForm.amount}
-                        onChange={(e) =>
-                          handleFormChange("amount", e.target.value)
-                        }
-                        className={`w-full px-2 py-1 border outline-none transition-all duration-200 focus:bg-stone-950 ${errors.amount ? "border-red-400" : "border-stone-500"} rounded-lg text-white text-sm bg-stone-900`}
-                        placeholder="Enter amount"
-                      />
-                      {errors.amount && (
-                        <div className="mt-1 flex items-center gap-1 text-red-400">
-                          <AlertCircle size={15} />
-                          <p className="text-xs">{errors.amount}</p>
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-stone-200 mb-2">
-                        Category
-                      </label>
-                      <Select
-                        options={categoryOptions}
-                        value={categoryOptions.find(
-                          (option) => option.value === editForm.category,
-                        )}
-                        onChange={(selectedOption) =>
-                          handleFormChange("category", selectedOption.value)
-                        }
-                        styles={{
-                          ...colourStyles,
-                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                        }}
-                        menuPortalTarget={document.body}
-                        menuShouldScrollIntoView={false}
-                        isSearchable={false}
-                        placeholder="Category"
-                        getOptionLabel={(e) => (
-                          <div className="flex items-center gap-2 text-sm">
-                            {e.icon && (
-                              <e.icon
-                                size={16}
-                                className={CATEGORIES[e.value].color}
-                              />
-                            )}
-                            {e.label}
-                          </div>
-                        )}
-                        components={{
-                          SingleValue: CategorySingleValue,
-                        }}
-                      />
-                    </div>
-                    <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-stone-500">
-                      <button
-                        onClick={handleClose}
-                        className="w-auto h-9 px-5 text-sm font-medium text-white bg-stone-600 hover:bg-stone-500 active:bg-red-800 rounded-full transition-colors duration-200 flex items-center gap-2 cursor-pointer"
-                      >
-                        Cancel
-                      </button>
-
-                      <button
-                        onClick={handleSave}
-                        disabled={
-                          !hasChanges() || Object.keys(errors).length > 0
-                        }
-                        className={`w-auto inline-flex items-center justify-center gap-2 px-5 py-1 text-sm font-medium text-white rounded-full shadow-sm transition-colors duration-200 ${
-                          !hasChanges() || Object.keys(errors).length > 0
-                            ? "opacity-50 bg-stone-600"
-                            : "bg-green-700 hover:bg-green-600 active:bg-green-800 cursor-pointer"
-                        }`}
-                      >
-                        <Save size={16} className="text-white" />
-                        Save Changes
-                      </button>
-                    </div>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
-
-      {showToast && (
-        <Toast
-          message="Expense updated successfully"
-          onClose={() => setShowToast(false)}
-        />
-      )}
       {showDeleteAllToast && (
         <Toast
           message={
@@ -621,9 +367,9 @@ ExpenseList.propTypes = {
   deletingIndex: PropTypes.number,
   handleDeleteExpense: PropTypes.func.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
-  onUpdateExpense: PropTypes.func.isRequired,
   setExpenses: PropTypes.func.isRequired,
   onQuickFill: PropTypes.func,
+  onEditClick: PropTypes.func.isRequired,
 };
 
 export default ExpenseList;

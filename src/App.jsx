@@ -12,7 +12,6 @@ import { useExpenses } from "./hooks/useExpenses";
 import { useExpenseCalculations } from "./hooks/useExpenseCalculations";
 import Footer from "./components/Footer";
 
-
 const App = () => {
   const [date, setDate] = useState(new Date());
   const [budgets, setBudgets] = useLocalStorage("budgets", {
@@ -28,13 +27,16 @@ const App = () => {
     deletingIndex,
     newlyAddedId,
     currentDateKey,
-    handleAddExpense,
+    isEditing,
+    handleSubmitExpense,
+    handleStartEdit,
+    handleCancelEdit,
     handleDeleteExpense,
-    handleUpdateExpense,
     clearRecords,
     handleQuickFill,
   } = useExpenses(date);
   const dateInputRef = useRef(null);
+  const formSectionRef = useRef(null);
 
   const [selectedYear, setSelectedYear] = useState(date.getFullYear());
 
@@ -47,6 +49,17 @@ const App = () => {
     if (dateInputRef.current) {
       dateInputRef.current.setOpen(true);
     }
+  };
+
+  // Editing happens in the same form used for adding, up at the top of
+  // the page — scroll it into view so it's obvious something changed
+  // when the user clicks "Edit" on an item further down the list.
+  const handleEditClick = (expense, index) => {
+    handleStartEdit(expense, index);
+    formSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   const selectedMonth = date.toLocaleString("default", {
@@ -125,12 +138,11 @@ const App = () => {
       <div className="flex flex-1 overflow-auto flex-col">
         {/* Budget Panel */}
 
-
         {/* Expense Entry Section */}
-        <div className="w-full p-2 flex flex-col gap-2">
+        <div className="w-full p-2 flex flex-col gap-2" ref={formSectionRef}>
           <div className="w-full pl-2">
             <label className="text-lg border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full mt-5">
-              Expense Details
+              {isEditing ? "Edit Expense" : "Expense Details"}
             </label>
           </div>
 
@@ -138,15 +150,15 @@ const App = () => {
             newExpense={newExpense}
             setNewExpense={setNewExpense}
             errors={errors}
-            handleAddExpense={handleAddExpense}
+            onSubmit={handleSubmitExpense}
+            isEditing={isEditing}
+            onCancelEdit={handleCancelEdit}
           />
         </div>
 
         {/* Today's Expenses Section */}
         <div className="w-full p-2 flex flex-col gap-2">
-          <div className="w-full pl-2">
-
-          </div>
+          <div className="w-full pl-2"></div>
           <ExpenseList
             date={date}
             expenses={expenses}
@@ -154,9 +166,9 @@ const App = () => {
             newlyAddedId={newlyAddedId}
             deletingIndex={deletingIndex}
             handleDeleteExpense={handleDeleteExpense}
-            onUpdateExpense={handleUpdateExpense}
             setExpenses={setExpenses}
-            onQuickFill={handleQuickFill} // Add this prop
+            onQuickFill={handleQuickFill}
+            onEditClick={handleEditClick}
           />
         </div>
 
@@ -178,7 +190,7 @@ const App = () => {
             date={date}
           />
           <div className="w-full flex justify-center mt-3">
-            <Footer/>
+            <Footer />
           </div>
         </div>
       </div>

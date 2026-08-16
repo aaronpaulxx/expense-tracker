@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Plus, AlertCircle, X } from "lucide-react";
+import { Plus, Save, AlertCircle, X } from "lucide-react";
 import Select from "react-select";
 import { CATEGORIES } from "../constants/categories";
 
@@ -91,7 +91,9 @@ const ExpenseForm = ({
   newExpense,
   setNewExpense,
   errors,
-  handleAddExpense,
+  onSubmit,
+  isEditing,
+  onCancelEdit,
 }) => {
   const [notification, setNotification] = useState("");
   const [isClosing, setIsClosing] = useState(false);
@@ -137,19 +139,23 @@ const ExpenseForm = ({
   }));
 
   const handleSubmit = () => {
-    handleAddExpense();
+    onSubmit();
   };
 
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Enter") {
-        handleAddExpense();
+        onSubmit();
+      }
+      // Escape cancels an in-progress edit, same as clicking Cancel.
+      if (event.key === "Escape" && isEditing) {
+        onCancelEdit();
       }
     };
     document.addEventListener("keydown", handleKeyDown);
 
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [handleAddExpense]);
+  }, [onSubmit, isEditing, onCancelEdit]);
 
   return (
     <>
@@ -214,7 +220,7 @@ const ExpenseForm = ({
               className="shadow-md shadow-stone-950 border-amber-400"
               options={categoryOptions}
               value={categoryOptions.find(
-                (option) => option.value === newExpense.category
+                (option) => option.value === newExpense.category,
               )}
               onChange={(selectedOption) =>
                 setNewExpense((prev) => ({
@@ -239,10 +245,11 @@ const ExpenseForm = ({
             />
           </div>
         </div>
-        <div className="animated-border-wrapper">
-          <button
-            onClick={handleSubmit}
-            className="cursor-pointer flex gap-2 group 
+        <div className="flex gap-2">
+          <div className="animated-border-wrapper flex-1">
+            <button
+              onClick={handleSubmit}
+              className="cursor-pointer flex gap-2 group 
   group-hover:before:duration-500 group-hover:after:duration-500 
   after:duration-500 
   hover:border-emerald-300 active:border-orange-400
@@ -266,13 +273,30 @@ const ExpenseForm = ({
 
   after:absolute after:z-10 after:w-20 after:h-20 after:content-[''] 
   after:bg-emerald-300 active:after:bg-orange-300 after:right-8 after:top-3 after:rounded-full after:blur-lg"
-          >
-            <Plus
-              size={23}
-              className="transition-transform duration-200 group-hover:rotate-90 group-hover:scale-110"
-            />
-            Add Expense
-          </button>
+            >
+              {isEditing ? (
+                <Save
+                  size={23}
+                  className="transition-transform duration-200 group-hover:scale-110"
+                />
+              ) : (
+                <Plus
+                  size={23}
+                  className="transition-transform duration-200 group-hover:rotate-90 group-hover:scale-110"
+                />
+              )}
+              {isEditing ? "Update Expense" : "Add Expense"}
+            </button>
+          </div>
+          {isEditing && (
+            <button
+              onClick={onCancelEdit}
+              className="cursor-pointer flex items-center gap-2 px-5 rounded-lg border border-stone-500 text-stone-300 text-sm font-medium hover:bg-stone-700 hover:text-white transition-colors duration-200"
+            >
+              <X size={18} />
+              Cancel
+            </button>
+          )}
         </div>
       </div>
     </>
@@ -290,7 +314,9 @@ ExpenseForm.propTypes = {
     name: PropTypes.string,
     amount: PropTypes.string,
   }).isRequired,
-  handleAddExpense: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  isEditing: PropTypes.bool,
+  onCancelEdit: PropTypes.func,
 };
 
 export default ExpenseForm;
