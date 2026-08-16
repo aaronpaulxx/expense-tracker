@@ -24,6 +24,7 @@ jobs:
         run: |
           npm cache clean --force
           npm ci
+          npm install
         
       - name: Build Windows installer
         run: npm run electron:build
