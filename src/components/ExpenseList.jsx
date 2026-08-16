@@ -5,7 +5,6 @@ import {
   Trash,
   PencilLine,
   X,
-  Check,
   Save,
   AlertCircle,
   MoreVertical,
@@ -15,175 +14,19 @@ import {
 import { CATEGORIES } from "../constants/categories";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Dialog, Transition } from "@headlessui/react";
-
-const Toast = ({ message, onClose }) => {
-  const [isClosing, setIsClosing] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    // Set a timer to start the closing animation after a certain duration
-    const timer = setTimeout(() => setIsClosing(true), 4700);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleClose = () => {
-    setIsClosing(true);
-  };
-
-  const handleAnimationEnd = (e) => {
-    if (e.animationName === "slideOut") {
-      setIsVisible(false);
-      onClose(); // Notify parent to unmount after animation
-    }
-  };
-  return (
-    // Only render if isVisible is true
-    isVisible && (
-      <div
-        className={`fixed bottom-4 right-4 z-50 ${
-          isClosing
-            ? "animate-[slideOut_0.3s_ease-in_forwards]"
-            : "animate-[slideIn_0.2s_ease-out]"
-        }`}
-        onAnimationEnd={handleAnimationEnd}
-      >
-        <div className="bg-stone-900 border border-stone-600 text-sm text-white p-2 rounded-lg shadow-lg flex items-center gap-2">
-          <Check size={28} className="w-6 h-6 text-green-500" />
-          <span>{message}</span>
-          <button
-            onClick={handleClose}
-            className="cursor-pointer text-stone-400 hover:text-white"
-          >
-            <X size={18} />
-          </button>
-        </div>
-      </div>
-    )
-  );
-};
-
-Toast.propTypes = {
-  message: PropTypes.node,
-  onClose: PropTypes.func.isRequired,
-};
-
-const DeleteConfirmationModal = ({
-  isOpen,
-  onClose,
-  onConfirm,
-  date,
-  expenseCount,
-}) => {
-  const dayName = new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-
-  return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-stone-900 p-6 text-left align-middle shadow-xl transition-all border border-stone-500">
-                <Dialog.Title
-                  as="h3"
-                  className="text-xl font-semibold leading-6 text-white border-b border-stone-500 pb-3 mb-4 flex items-center gap-2"
-                >
-                  <AlertCircle size={35} className="text-red-500" /> Confirm
-                  Deletion
-                </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-stone-300">
-                    Are you sure you want to delete all{" "}
-                    <span className="font-semibold text-red-500 text-lg">
-                      {expenseCount}
-                    </span>{" "}
-                    expenses for{" "}
-                    <span className="font-semibold text-stone-200">
-                      {dayName}
-                    </span>
-                    ? This action cannot be undone.
-                  </p>
-                </div>
-
-                <div className="mt-4 flex justify-end gap-3">
-                  <button
-                    type="button"
-                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-stone-700 px-4 py-2 text-sm font-normal text-stone-200 hover:bg-stone-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 focus-visible:ring-offset-2 transition-colors duration-200"
-                    onClick={onClose}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-red-700 px-4 py-2 text-sm font-normal text-white hover:bg-red-500 active:bg-red-800 transition-colors duration-200"
-                    onClick={onConfirm}
-                  >
-                    Confirm
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
-  );
-};
-
-DeleteConfirmationModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  date: PropTypes.instanceOf(Date).isRequired,
-  expenseCount: PropTypes.number,
-};
+import Toast from "./Toast";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import {
+  categoryOptions,
+  colourStyles,
+  CategorySingleValue,
+} from "./expenseCategorySelectConfig";
 
 const formatNumber = (num) =>
   num.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-
-const CategorySingleValue = ({ data }) => (
-  <div className="flex items-center gap-2 text-sm text-white -mt-6">
-    {data.icon && (
-      <data.icon size={16} className={CATEGORIES[data.value].color} />
-    )}
-    {data.label}
-  </div>
-);
-
-CategorySingleValue.propTypes = {
-  data: PropTypes.shape({
-    icon: PropTypes.elementType,
-    value: PropTypes.string,
-    label: PropTypes.string,
-  }).isRequired,
-};
 
 const ExpenseList = ({
   expenses,
@@ -215,66 +58,6 @@ const ExpenseList = ({
   const [menuPosition, setMenuPosition] = useState(null);
   const menuRef = useRef(null);
   // ---
-
-  const categoryOptions = Object.keys(CATEGORIES).map((category) => ({
-    value: category,
-    label: category,
-    icon: CATEGORIES[category].icon,
-  }));
-
-  const colourStyles = {
-    control: (styles) => ({
-      ...styles,
-      backgroundColor: "#1c1917", // Example: yellow on focus
-      borderColor: "#78716c",
-      borderRadius: "9px",
-      borderWidth: "1px",
-      "&:hover": { backgroundColor: "#292524" },
-      boxShadow: "none",
-      transition: "all 200ms",
-      minHeight: "30px",
-      height: "33px",
-    }),
-    valueContainer: (styles) => ({ ...styles, padding: "0px 8px" }),
-    input: (styles) => ({
-      ...styles,
-      color: "white",
-      margin: "0",
-      padding: "0",
-    }),
-    dropdownIndicator: (styles, { isFocused }) => ({
-      ...styles,
-      padding: "0 6px",
-      color: isFocused ? "#14b8a680" : "#9ca3af",
-      transition: "color 200ms",
-      "&:hover": { color: "#22c55e" },
-    }),
-    menu: (styles) => ({
-      ...styles,
-      backgroundColor: "#292524",
-      border: "1px solid #374151",
-      borderRadius: "8px",
-      boxShadow:
-        "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-    }),
-    option: (styles, { isDisabled, isFocused, isSelected }) => ({
-      ...styles,
-      display: "flex",
-      alignItems: "center",
-      gap: "8px",
-      background: isDisabled
-        ? undefined
-        : isSelected
-          ? "linear-gradient(to right, #166534, #115e59)"
-          : isFocused
-            ? "#57534e"
-            : undefined,
-      color: isDisabled ? "#6b7280" : "white",
-      cursor: isDisabled ? "not-allowed" : "pointer",
-      padding: "4px 8px",
-    }),
-    placeholder: (styles) => ({ ...styles, color: "#9ca3af", margin: "0" }),
-  };
 
   const hasChanges = () => {
     if (!originalExpense) return false;
@@ -451,9 +234,6 @@ const ExpenseList = ({
     id: expense.id || `expense-${currentDateKey}-${index}`,
   }));
 
-
-  
-
   return (
     <>
       <div className="ml-2 mr-2">
@@ -527,8 +307,8 @@ const ExpenseList = ({
                                       : expense.category === "Credit"
                                         ? "bg-red-400"
                                         : expense.category === "Other"
-                                        ? "bg-gray-300"
-                                        : "bg-gray-400"
+                                          ? "bg-gray-300"
+                                          : "bg-gray-400"
                             }`}
                           />
                           <div
@@ -575,7 +355,10 @@ const ExpenseList = ({
                               }`}
                               aria-label="More options"
                             >
-                              <MoreVertical size={18} className="cursor-pointer"/>
+                              <MoreVertical
+                                size={18}
+                                className="cursor-pointer"
+                              />
                             </button>
                           </div>
                         </div>
@@ -733,7 +516,7 @@ const ExpenseList = ({
                       <Select
                         options={categoryOptions}
                         value={categoryOptions.find(
-                          (option) => option.value === editForm.category
+                          (option) => option.value === editForm.category,
                         )}
                         onChange={(selectedOption) =>
                           handleFormChange("category", selectedOption.value)
