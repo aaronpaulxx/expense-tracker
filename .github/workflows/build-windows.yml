@@ -20,17 +20,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
           
-      - name: Clean npm cache
-        run: npm cache clean --force
-
-      - name: Remove node_modules and package-lock
-        run: |
-          if (Test-Path node_modules) { Remove-Item -Recurse -Force node_modules }
-          if (Test-Path package-lock.json) { Remove-Item package-lock.json }
-        shell: pwsh
-
       - name: Install dependencies
-        run: npm install
+        run: npm ci
         
       - name: Build Windows installer
         run: npm run electron:build
