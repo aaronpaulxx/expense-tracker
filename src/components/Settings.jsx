@@ -214,7 +214,7 @@ const Settings = ({
   };
 
   const handleClearRecords = () => {
-    if (!expenses || expenses.length === 0) {
+    if (!expenses || Object.keys(expenses).length === 0) {
       setNotification(
         <span className="flex items-center gap-2">
           <CircleX size={28} className=" text-red-400" /> No records found.
@@ -933,7 +933,7 @@ const Settings = ({
                     <span className="text-sm text-stone-400">
                       Remove all expense records permanently
                     </span>
-                    <div className="w-full flex justify-end md:w-auto mt-0 md:mt-0">
+                    <div className="w-full flex flex-col items-end md:w-auto mt-0 md:mt-0">
                       <button
                         onClick={() => setShowConfirmDelete(true)}
                         disabled={totalEntries === 0}
@@ -942,6 +942,12 @@ const Settings = ({
                         <Trash size={18} />
                         Delete All
                       </button>
+                       {totalEntries === 0 && (
+                        <span className="flex items-center gap-1 text-xs text-stone-500 mt-1.5">
+                          <CircleX size={14} />
+                          No records found.
+                        </span>
+                      )}
                     </div>
                   </div>
                   {showConfirmDelete && (
