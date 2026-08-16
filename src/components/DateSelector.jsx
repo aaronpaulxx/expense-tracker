@@ -1,5 +1,5 @@
 // src/components/DateSelector.jsx
-import React from "react";
+import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "../styles/datepicker.css";
@@ -78,6 +78,17 @@ const DateSelector = ({
       </button>
     </div>
   );
+
+  CustomHeader.propTypes = {
+    date: PropTypes.instanceOf(Date).isRequired,
+    decreaseMonth: PropTypes.func.isRequired,
+    increaseMonth: PropTypes.func.isRequired,
+    prevMonthButtonDisabled: PropTypes.bool,
+    nextMonthButtonDisabled: PropTypes.bool,
+    changeYear: PropTypes.func.isRequired,
+    changeMonth: PropTypes.func.isRequired,
+    months: PropTypes.arrayOf(PropTypes.string).isRequired,
+  };
 
   return (
     <div className="flex items-center">
@@ -175,6 +186,17 @@ const DateSelector = ({
       </button>
     </div>
   );
+};
+
+DateSelector.propTypes = {
+  date: PropTypes.instanceOf(Date).isRequired,
+  setDate: PropTypes.func.isRequired,
+  onYearChange: PropTypes.func.isRequired,
+  dateInputRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.any }),
+  ]),
+  handleDateClick: PropTypes.func.isRequired,
 };
 
 export default DateSelector;

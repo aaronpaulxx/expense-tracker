@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 import { Wallet } from "lucide-react";
 import { CATEGORIES } from "../constants/categories";
 
@@ -49,6 +49,12 @@ const Summary = ({ categoryTotals, totalForDay, date }) => {
       </div>
     </div>
   );
+};
+
+Summary.propTypes = {
+  categoryTotals: PropTypes.objectOf(PropTypes.number),
+  totalForDay: PropTypes.number.isRequired,
+  date: PropTypes.instanceOf(Date).isRequired,
 };
 
 export default Summary;

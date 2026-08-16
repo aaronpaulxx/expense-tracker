@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { Settings as SettingsIcon, X } from "lucide-react";
 import Settings from "./Settings";
 
@@ -101,6 +102,14 @@ const Header = ({ budgets, setBudgets, clearRecords, expenses, setExpenses }) =>
       )}
     </>
   );
+};
+
+Header.propTypes = {
+  budgets: PropTypes.object,
+  setBudgets: PropTypes.func,
+  clearRecords: PropTypes.func.isRequired,
+  expenses: PropTypes.object,
+  setExpenses: PropTypes.func.isRequired,
 };
 
 export default Header;

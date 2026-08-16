@@ -38,18 +38,10 @@ const App = () => {
     .toISOString()
     .split("T")[0];
   
-  const currentDay = date.getDate();
-  const isFirstHalf = currentDay <= 15;
-  const currentBudget = isFirstHalf ? budgets.firstHalf : budgets.secondHalf;
-
   const [newlyAddedId, setNewlyAddedId] = useState(null);
 
-  const {
-    calculatePeriodExpenses,
-    categoryTotals,
-    categoryTotalsForToday,
-    totalForToday,
-  } = useExpenseCalculations(expenses, date);
+  const { categoryTotals, categoryTotalsForToday, totalForToday } =
+    useExpenseCalculations(expenses, date);
 
   const validateForm = () => {
     const newErrors = {};

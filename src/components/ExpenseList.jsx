@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
+import PropTypes from "prop-types";
 import Select from "react-select";
 import {
   Trash,
   PencilLine,
   X,
-  Ban,
   Check,
   Save,
   AlertCircle,
@@ -15,7 +15,6 @@ import {
 import { CATEGORIES } from "../constants/categories";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
 
 const Toast = ({ message, onClose }) => {
   const [isClosing, setIsClosing] = useState(false);
@@ -24,7 +23,8 @@ const Toast = ({ message, onClose }) => {
   useEffect(() => {
     // Set a timer to start the closing animation after a certain duration
     const timer = setTimeout(() => setIsClosing(true), 4700);
-  });
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleClose = () => {
     setIsClosing(true);
@@ -60,6 +60,11 @@ const Toast = ({ message, onClose }) => {
       </div>
     )
   );
+};
+
+Toast.propTypes = {
+  message: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
 };
 
 const DeleteConfirmationModal = ({
@@ -149,11 +154,36 @@ const DeleteConfirmationModal = ({
   );
 };
 
+DeleteConfirmationModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  date: PropTypes.instanceOf(Date).isRequired,
+  expenseCount: PropTypes.number,
+};
+
 const formatNumber = (num) =>
   num.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+
+const CategorySingleValue = ({ data }) => (
+  <div className="flex items-center gap-2 text-sm text-white -mt-6">
+    {data.icon && (
+      <data.icon size={16} className={CATEGORIES[data.value].color} />
+    )}
+    {data.label}
+  </div>
+);
+
+CategorySingleValue.propTypes = {
+  data: PropTypes.shape({
+    icon: PropTypes.elementType,
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }).isRequired,
+};
 
 const ExpenseList = ({
   expenses,
@@ -193,7 +223,7 @@ const ExpenseList = ({
   }));
 
   const colourStyles = {
-    control: (styles, { isFocused }) => ({
+    control: (styles) => ({
       ...styles,
       backgroundColor: "#1c1917", // Example: yellow on focus
       borderColor: "#78716c",
@@ -227,7 +257,7 @@ const ExpenseList = ({
       boxShadow:
         "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
     }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+    option: (styles, { isDisabled, isFocused, isSelected }) => ({
       ...styles,
       display: "flex",
       alignItems: "center",
@@ -728,17 +758,7 @@ const ExpenseList = ({
                           </div>
                         )}
                         components={{
-                          SingleValue: ({ data }) => (
-                            <div className="flex items-center gap-2 text-sm text-white -mt-6">
-                              {data.icon && (
-                                <data.icon
-                                  size={16}
-                                  className={CATEGORIES[data.value].color}
-                                />
-                              )}
-                              {data.label}
-                            </div>
-                          ),
+                          SingleValue: CategorySingleValue,
                         }}
                       />
                     </div>
@@ -809,6 +829,18 @@ const ExpenseList = ({
       />
     </>
   );
+};
+
+ExpenseList.propTypes = {
+  expenses: PropTypes.object,
+  currentDateKey: PropTypes.string.isRequired,
+  newlyAddedId: PropTypes.string,
+  deletingIndex: PropTypes.number,
+  handleDeleteExpense: PropTypes.func.isRequired,
+  date: PropTypes.instanceOf(Date).isRequired,
+  onUpdateExpense: PropTypes.func.isRequired,
+  setExpenses: PropTypes.func.isRequired,
+  onQuickFill: PropTypes.func,
 };
 
 export default ExpenseList;

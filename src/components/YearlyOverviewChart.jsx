@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
+import PropTypes from "prop-types";
 import {
   LineChart,
   Line,
@@ -125,7 +126,20 @@ const CustomYearlyTooltip = ({ active, payload, label, data }) => {
   return null;
 };
 
-const CategoryTotalTooltip = ({ category, total, color }) => {
+CustomYearlyTooltip.propTypes = {
+  active: PropTypes.bool,
+  payload: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      value: PropTypes.number,
+      color: PropTypes.string,
+    })
+  ),
+  label: PropTypes.string,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
+
+const CategoryTotalTooltip = ({ total, color }) => {
   return (
     <div
       className="p-2 rounded-lg text-white pointer-events-none"
@@ -146,6 +160,11 @@ const CategoryTotalTooltip = ({ category, total, color }) => {
   );
 };
 
+CategoryTotalTooltip.propTypes = {
+  total: PropTypes.number.isRequired,
+  color: PropTypes.string,
+};
+
 const MinimalTraveller = (props) => {
   const { x, y, width, height } = props;
   const handleWidth = 8;
@@ -163,6 +182,13 @@ const MinimalTraveller = (props) => {
       rx="4"
     />
   );
+};
+
+MinimalTraveller.propTypes = {
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
 };
 
 // --- MODIFICATION START: New custom legend component ---
@@ -208,6 +234,19 @@ const CustomLegend = ({
       })}
     </div>
   );
+};
+
+CustomLegend.propTypes = {
+  payload: PropTypes.arrayOf(
+    PropTypes.shape({
+      dataKey: PropTypes.string,
+      color: PropTypes.string,
+      value: PropTypes.string,
+    })
+  ).isRequired,
+  onMouseEnter: PropTypes.func.isRequired,
+  onMouseLeave: PropTypes.func.isRequired,
+  hoveredCategory: PropTypes.string,
 };
 // --- MODIFICATION END ---
 
@@ -426,6 +465,11 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
       </ResponsiveContainer>
     </div>
   );
+};
+
+YearlyOverviewChart.propTypes = {
+  expenses: PropTypes.object,
+  selectedYear: PropTypes.number,
 };
 
 export default YearlyOverviewChart;

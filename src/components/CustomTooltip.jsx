@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 
 export const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) {
@@ -33,4 +33,18 @@ export const CustomTooltip = ({ active, payload, label }) => {
       })}
     </div>
   );
+};
+
+CustomTooltip.propTypes = {
+  active: PropTypes.bool,
+  payload: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      value: PropTypes.number,
+      payload: PropTypes.shape({
+        color: PropTypes.string,
+      }),
+    })
+  ),
+  label: PropTypes.node,
 };

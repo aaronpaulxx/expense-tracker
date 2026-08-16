@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
+import PropTypes from "prop-types";
 // --- MODIFIED: Import Sector for the active shape ---
 import {
   PieChart,
@@ -215,6 +216,11 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
       </div>
     </div>
   );
+};
+
+ExpenseCategoriesChart.propTypes = {
+  categoryTotals: PropTypes.objectOf(PropTypes.number),
+  selectedMonth: PropTypes.string,
 };
 
 export default ExpenseCategoriesChart;

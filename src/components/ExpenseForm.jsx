@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { Plus, AlertCircle, X } from "lucide-react";
 import Select from "react-select";
 import { CATEGORIES } from "../constants/categories";
 
 const colourStyles = {
-  control: (styles, { isFocused }) => ({
+  control: (styles) => ({
     ...styles,
     backgroundColor: "#0c0a09", // stone-800
     borderColor: "#78716c", // Same border color regardless of focus state
@@ -45,7 +46,7 @@ const colourStyles = {
     boxShadow:
       "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
   }),
-  option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+  option: (styles, { isDisabled, isFocused, isSelected }) => ({
     ...styles,
     display: "flex",
     alignItems: "center",
@@ -67,6 +68,23 @@ const colourStyles = {
     color: "#9ca3af",
     margin: "0",
   }),
+};
+
+const CategorySingleValue = ({ data }) => (
+  <div className="flex items-center gap-2 text-sm text-white -mt-6">
+    {data.icon && (
+      <data.icon size={16} className={CATEGORIES[data.value].color} />
+    )}
+    {data.label}
+  </div>
+);
+
+CategorySingleValue.propTypes = {
+  data: PropTypes.shape({
+    icon: PropTypes.elementType,
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }).isRequired,
 };
 
 const ExpenseForm = ({
@@ -125,13 +143,13 @@ const ExpenseForm = ({
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Enter") {
-        handleSubmit();
+        handleAddExpense();
       }
     };
     document.addEventListener("keydown", handleKeyDown);
 
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [newExpense, handleAddExpense]); // Added dependencies
+  }, [handleAddExpense]);
 
   return (
     <>
@@ -216,17 +234,7 @@ const ExpenseForm = ({
                 </div>
               )}
               components={{
-                SingleValue: ({ data }) => (
-                  <div className="flex items-center gap-2 text-sm text-white -mt-6">
-                    {data.icon && (
-                      <data.icon
-                        size={16}
-                        className={CATEGORIES[data.value].color}
-                      />
-                    )}
-                    {data.label}
-                  </div>
-                ),
+                SingleValue: CategorySingleValue,
               }}
             />
           </div>
@@ -269,6 +277,20 @@ const ExpenseForm = ({
       </div>
     </>
   );
+};
+
+ExpenseForm.propTypes = {
+  newExpense: PropTypes.shape({
+    name: PropTypes.string,
+    amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    category: PropTypes.string,
+  }).isRequired,
+  setNewExpense: PropTypes.func.isRequired,
+  errors: PropTypes.shape({
+    name: PropTypes.string,
+    amount: PropTypes.string,
+  }).isRequired,
+  handleAddExpense: PropTypes.func.isRequired,
 };
 
 export default ExpenseForm;
