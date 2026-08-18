@@ -59,7 +59,7 @@ const DateSelector = ({
         >
           {Array.from(
             { length: 100 },
-            (_, i) => new Date().getFullYear() - 50 + i
+            (_, i) => new Date().getFullYear() - 50 + i,
           ).map((year) => (
             <option key={year} value={year}>
               {year}
@@ -95,7 +95,7 @@ const DateSelector = ({
       {/* Previous Day Button */}
       <button
         onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}
-        className="h-[50px] group px-3 py-2 text-white duration-200 hover:bg-stone-800 text-sm flex items-center justify-center cursor-pointer "
+        className="h-12.5 group px-3 py-2 text-white duration-200 hover:bg-stone-800 text-sm flex items-center justify-center cursor-pointer "
       >
         {/* Tooltip */}
         <div className="absolute left-1 top-15 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
@@ -151,7 +151,7 @@ const DateSelector = ({
           <CustomHeader
             {...props}
             months={Array.from({ length: 12 }, (_, i) =>
-              new Date(0, i).toLocaleString("en", { month: "long" })
+              new Date(0, i).toLocaleString("en", { month: "long" }),
             )}
           />
         )}
@@ -173,7 +173,7 @@ const DateSelector = ({
       {/* Next Day Button */}
       <button
         onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}
-        className="h-[50px] group px-3 py-2 text-white duration-200 hover:bg-stone-800 text-sm flex items-center justify-center cursor-pointer "
+        className="h-12.5 group px-3 py-2 text-white duration-200 hover:bg-stone-800 text-sm flex items-center justify-center cursor-pointer "
       >
         {/* Tooltip */}
         <div className="absolute right-1 top-15 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">

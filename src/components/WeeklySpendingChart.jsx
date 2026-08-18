@@ -131,7 +131,7 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
   );
 
   return (
-    <div className="border-stone-500 border-1 rounded-xl p-2 shadow-md shadow-stone-950">
+    <div className="border-stone-500 border rounded-xl p-2 shadow-md shadow-stone-950">
       <h3 className="text-sm font-medium text-stone-300 mb-5 pb-2 border-b border-stone-500 flex justify-between items-center">
         <span>Weekly Spending</span>
         <span className="text-stone-300">

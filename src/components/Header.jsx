@@ -3,7 +3,13 @@ import PropTypes from "prop-types";
 import { Settings as SettingsIcon, X } from "lucide-react";
 import Settings from "./Settings";
 
-const Header = ({ budgets, setBudgets, clearRecords, expenses, setExpenses }) => {
+const Header = ({
+  budgets,
+  setBudgets,
+  clearRecords,
+  expenses,
+  setExpenses,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notification, setNotification] = useState("");
   const [isHovered, setIsHovered] = useState(false);
@@ -45,7 +51,7 @@ const Header = ({ budgets, setBudgets, clearRecords, expenses, setExpenses }) =>
           onClick={() => window.location.reload()}
         >
           <h1 className="text-[20px] font-bold titleh1">
-            <span className="bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">
               Expense Tracker
             </span>
           </h1>
@@ -85,7 +91,7 @@ const Header = ({ budgets, setBudgets, clearRecords, expenses, setExpenses }) =>
 
       {notification && (
         <div
-          className={`fixed bottom-4 right-5 bg-stone-900 text-white p-2 rounded-lg text-sm border-1 border-stone-600 shadow-lg flex items-center gap-4 z-1000 ${
+          className={`fixed bottom-4 right-5 bg-stone-900 text-white p-2 rounded-lg text-sm border border-stone-600 shadow-lg flex items-center gap-4 z-1000 ${
             isClosing
               ? "animate-[slideOut_0.3s_ease-in_forwards]"
               : "animate-[slideIn_0.2s_ease-out]"

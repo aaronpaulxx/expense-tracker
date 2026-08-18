@@ -25,13 +25,17 @@ const TabButton = ({ label, isActive, Icon, onClick, onPrefetch }) => (
     onMouseEnter={onPrefetch}
     onFocus={onPrefetch}
     className={`relative flex-1 px-4 py-3 text-xs font-medium flex items-center justify-center gap-2 transition-transform duration-300 ${
-      isActive ? "text-green-300 scale-105" : "text-stone-300 hover:text-stone-100 hover:scale-105 group"
+      isActive
+        ? "text-green-300 scale-105"
+        : "text-stone-300 hover:text-stone-100 hover:scale-105 group"
     }`}
   >
     <Icon
       size={18}
       className={`transition-transform duration-300 ${
-        isActive ? "text-green-300 scale-105" : "text-stone-300 group-hover:text-stone-100 group-hover:scale-105"
+        isActive
+          ? "text-green-300 scale-105"
+          : "text-stone-300 group-hover:text-stone-100 group-hover:scale-105"
       }`}
     />
     {label}
@@ -57,32 +61,65 @@ const FinancialInsights = ({
 }) => {
   const [activeTab, setActiveTab] = useState("daily");
 
-  const tabs = useMemo(() => [
-    { 
-      label: "Daily", 
-      key: "daily", 
-      icon: CalendarDays,
-      component: <Summary categoryTotals={categoryTotalsForToday} totalForDay={totalForToday} date={date} />
-    },
-    { 
-      label: "Weekly", 
-      key: "weekly", 
-      icon: BarChart3,
-      component: <WeeklySpendingChart expenses={expenses} selectedMonth={selectedMonth} date={date} />
-    },
-    { 
-      label: "Monthly", 
-      key: "monthly", 
-      icon: PieChart,
-      component: <ExpenseCategoriesChart categoryTotals={categoryTotals} selectedMonth={selectedMonth} />
-    },
-    { 
-      label: "Yearly", 
-      key: "yearly", 
-      icon: AreaChart,
-      component: <YearlyOverviewChart expenses={expenses} selectedYear={selectedYear} />
-    }
-  ], [categoryTotals, categoryTotalsForToday, totalForToday, expenses, selectedMonth, selectedYear, date]);
+  const tabs = useMemo(
+    () => [
+      {
+        label: "Daily",
+        key: "daily",
+        icon: CalendarDays,
+        component: (
+          <Summary
+            categoryTotals={categoryTotalsForToday}
+            totalForDay={totalForToday}
+            date={date}
+          />
+        ),
+      },
+      {
+        label: "Weekly",
+        key: "weekly",
+        icon: BarChart3,
+        component: (
+          <WeeklySpendingChart
+            expenses={expenses}
+            selectedMonth={selectedMonth}
+            date={date}
+          />
+        ),
+      },
+      {
+        label: "Monthly",
+        key: "monthly",
+        icon: PieChart,
+        component: (
+          <ExpenseCategoriesChart
+            categoryTotals={categoryTotals}
+            selectedMonth={selectedMonth}
+          />
+        ),
+      },
+      {
+        label: "Yearly",
+        key: "yearly",
+        icon: AreaChart,
+        component: (
+          <YearlyOverviewChart
+            expenses={expenses}
+            selectedYear={selectedYear}
+          />
+        ),
+      },
+    ],
+    [
+      categoryTotals,
+      categoryTotalsForToday,
+      totalForToday,
+      expenses,
+      selectedMonth,
+      selectedYear,
+      date,
+    ],
+  );
 
   const activeIndex = tabs.findIndex((tab) => tab.key === activeTab);
 
@@ -91,19 +128,19 @@ const FinancialInsights = ({
       {/* Navigation Tabs */}
       <div className="flex w-full border-b border-stone-500 text-stone-400 relative">
         {tabs.map(({ label, key, icon: Icon }) => (
-          <TabButton 
-            key={key} 
-            label={label} 
-            Icon={Icon} 
-            isActive={activeTab === key} 
-            onClick={() => setActiveTab(key)} 
+          <TabButton
+            key={key}
+            label={label}
+            Icon={Icon}
+            isActive={activeTab === key}
+            onClick={() => setActiveTab(key)}
             onPrefetch={() => prefetchers[key]?.()}
           />
         ))}
         {/* Sliding underline — one shared element, shifted via transform instead
             of framer-motion's layoutId shared-layout animation. */}
         <div
-          className="absolute bottom-0 left-0 h-[2px] bg-green-300 rounded-full transition-transform duration-300 ease-in-out"
+          className="absolute bottom-0 left-0 h-0.5 bg-green-300 rounded-full transition-transform duration-300 ease-in-out"
           style={{
             width: `${100 / tabs.length}%`,
             transform: `translateX(${activeIndex * 100}%)`,
@@ -121,7 +158,7 @@ const FinancialInsights = ({
             </div>
           }
         >
-          {tabs.find(tab => tab.key === activeTab)?.component}
+          {tabs.find((tab) => tab.key === activeTab)?.component}
         </Suspense>
       </div>
     </div>

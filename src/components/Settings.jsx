@@ -139,7 +139,7 @@ const Settings = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-[#333333]/30 backdrop-blur-sm transition-all" />
+          <div className="fixed inset-0 bg-[#333333]/80 transition-all" />
         </Transition.Child>
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Transition.Child
@@ -151,7 +151,7 @@ const Settings = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Panel className="relative bg-stone-900 p-5 rounded-xl shadow-lg w-[40rem] max-w-[90%] max-h-[90vh] overflow-y-auto border-stone-500 border-1 custom-scrollbar">
+            <Dialog.Panel className="relative bg-stone-900 p-5 rounded-xl shadow-lg w-160 max-w-[90%] max-h-[90vh] overflow-y-auto border-stone-500 border custom-scrollbar">
               <div className="flex justify-between items-center border-b border-stone-500">
                 <Dialog.Title className="text-xl font-semibold text-white">
                   <div className="flex items-center gap-2 mb-2">
@@ -308,7 +308,7 @@ const Settings = ({
                     </label>
                   </div>
                   {showConfirmImport && importData && (
-                    <div className="mt-5 bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
+                    <div className="mt-5 bg-white/5 p-5 rounded-2xl border border-white/10">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-2 h-2 rounded-full bg-amber-400"></div>
                         <p className="text-sm font-medium text-white/90">

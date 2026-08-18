@@ -16,7 +16,7 @@ const Summary = ({ categoryTotals, totalForDay, date }) => {
   }).format(date);
 
   return (
-    <div className="mt-auto p-2 rounded-xl border-stone-500 border-1 text-sm h-auto shadow-md shadow-stone-950">
+    <div className="mt-auto p-2 rounded-xl border-stone-500 border text-sm h-auto shadow-md shadow-stone-950">
       <h3 className="text-sm font-medium text-stone-300 mb-2 pb-2 border-b border-stone-500 flex justify-between items-center">
         <span>Daily Summary</span>
         <span className="text-stone-300 font-style">{dayName}</span>

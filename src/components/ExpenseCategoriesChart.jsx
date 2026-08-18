@@ -1,14 +1,7 @@
 import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 // --- MODIFIED: Import Sector for the active shape ---
-import {
-  PieChart,
-  Pie,
-  Cell,
-
-  ResponsiveContainer,
-  Sector,
-} from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Sector } from "recharts";
 
 import { ClipboardX } from "lucide-react";
 
@@ -58,18 +51,18 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
 
   const formattedData = useMemo(
     () => formatCategoryData(categoryTotals),
-    [categoryTotals]
+    [categoryTotals],
   );
 
   const totalAmount = useMemo(
     () => formattedData.reduce((sum, item) => sum + item.value, 0),
-    [formattedData]
+    [formattedData],
   );
 
   // --- NEW: Calculate the index of the active slice ---
   const activeIndex = useMemo(
     () => formattedData.findIndex((entry) => entry.name === hoveredCategory),
-    [formattedData, hoveredCategory]
+    [formattedData, hoveredCategory],
   );
 
   let displayAmount = totalAmount;
@@ -78,7 +71,7 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
 
   if (hoveredCategory) {
     const hoveredData = formattedData.find(
-      (item) => item.name === hoveredCategory
+      (item) => item.name === hoveredCategory,
     );
     if (hoveredData) {
       displayAmount = hoveredData.value;
@@ -201,14 +194,12 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
                       {displayLabel}
                     </tspan>
                   </text>
-
-
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </div>
         ) : (
-          <div className="text-stone-500 min-h-[200px] py-8 flex flex-col items-center">
+          <div className="text-stone-500 min-h-50 py-8 flex flex-col items-center">
             <ClipboardX size={40} className="opacity-70 mb-5" />
             <span className="text-sm">No data available for this month.</span>
           </div>
