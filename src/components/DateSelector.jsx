@@ -160,14 +160,6 @@ const DateSelector = ({
         showYearDropdown
         dropdownMode="select"
         popperClassName="react-datepicker-popper"
-        popperModifiers={[
-          {
-            name: "offset",
-            options: {
-              offset: [0, 8],
-            },
-          },
-        ]}
       />
 
       {/* Next Day Button */}
