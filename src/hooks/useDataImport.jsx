@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { CircleX, Check } from "lucide-react";
 import { loadXLSX } from "../lib/loadXLSX";
+import { notifySuccess, notifyError, notifyWarning } from "../lib/toast";
 
 const VALID_CATEGORIES = [
   "Food",
@@ -44,7 +44,6 @@ export const useDataImport = ({
   setExpenses,
   XLSX,
   setXLSX,
-  setNotification,
   updateStorageInfo,
   setIsOpen,
 }) => {
@@ -113,12 +112,7 @@ export const useDataImport = ({
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE) {
-      setNotification(
-        <span className="flex items-center gap-2">
-          <CircleX size={20} className="text-red-400" />
-          File too large. Maximum size is 10MB.
-        </span>,
-      );
+      notifyError("File too large. Maximum size is 10MB.");
       return;
     }
 
@@ -126,12 +120,7 @@ export const useDataImport = ({
       !ALLOWED_MIME_TYPES.includes(file.type) &&
       !file.name.match(/\.(xlsx|xls|csv)$/i)
     ) {
-      setNotification(
-        <span className="flex items-center gap-2">
-          <CircleX size={20} className="text-red-400" />
-          Unsupported file. Upload Excel or CSV.
-        </span>,
-      );
+      notifyError("Unsupported file. Upload Excel or CSV.");
       return;
     }
 
@@ -148,12 +137,7 @@ export const useDataImport = ({
         const json = xlsx.utils.sheet_to_json(worksheet, { raw: false });
 
         if (!json || json.length === 0) {
-          setNotification(
-            <span className="flex items-center gap-2">
-              <CircleX size={20} className="text-red-400" />
-              File is empty or contains no data rows.
-            </span>,
-          );
+          notifyError("File is empty or contains no data rows.");
           return;
         }
 
@@ -179,17 +163,14 @@ export const useDataImport = ({
           (header) => !headerMapping[header],
         );
         if (missingHeaders.length > 0) {
-          setNotification(
-            <div className="flex items-start gap-2 max-w-sm">
-              <CircleX size={20} className="text-red-400 shrink-0 mt-0.5" />
-              <div className="leading-tight">
-                <div className="font-medium">Missing required columns:</div>
-                <div className="text-sm text-stone-300 mt-1">
-                  {missingHeaders.join(", ")}
-                </div>
-                <div className="text-xs text-stone-400 mt-2">
-                  Found columns: {actualHeaders.join(", ")}
-                </div>
+          notifyError(
+            <div className="leading-tight">
+              <div className="font-medium">Missing required columns:</div>
+              <div className="text-sm text-stone-300 mt-1">
+                {missingHeaders.join(", ")}
+              </div>
+              <div className="text-xs text-stone-400 mt-2">
+                Found columns: {actualHeaders.join(", ")}
               </div>
             </div>,
           );
@@ -269,21 +250,18 @@ export const useDataImport = ({
             validationErrors.length > 3
               ? `\n...and ${validationErrors.length - 3} more errors`
               : "";
-          setNotification(
-            <div className="flex items-start gap-2 max-w-sm">
-              <CircleX size={20} className="text-red-400 shrink-0 mt-0.5" />
-              <div className="leading-tight">
-                <div className="font-medium">
-                  Found {validationErrors.length} error
-                  {validationErrors.length > 1 ? "s" : ""}:
-                </div>
-                <div className="text-sm text-stone-300 mt-1 whitespace-pre-line font-mono">
-                  {errorSummary}
-                  {moreText}
-                </div>
-                <div className="text-xs text-stone-400 mt-2">
-                  Valid categories: {VALID_CATEGORIES.join(", ")}
-                </div>
+          notifyError(
+            <div className="leading-tight">
+              <div className="font-medium">
+                Found {validationErrors.length} error
+                {validationErrors.length > 1 ? "s" : ""}:
+              </div>
+              <div className="text-sm text-stone-300 mt-1 whitespace-pre-line font-mono">
+                {errorSummary}
+                {moreText}
+              </div>
+              <div className="text-xs text-stone-400 mt-2">
+                Valid categories: {VALID_CATEGORIES.join(", ")}
               </div>
             </div>,
           );
@@ -325,35 +303,22 @@ export const useDataImport = ({
           });
         });
         setExpenses(importedExpenses);
-        setNotification(
-          <div className="flex items-center gap-2 max-w-sm">
-            <Check size={20} className="text-green-500 shrink-0" />
-            <span className="leading-tight">
-              Successfully imported{" "}
-              <span className="text-green-400">{processedData.length}</span>{" "}
-              items from &quot;{file.name}&quot;.
-            </span>
-          </div>,
+        notifySuccess(
+          <span className="leading-tight">
+            Successfully imported{" "}
+            <span className="text-green-400">{processedData.length}</span> items
+            from &quot;{file.name}&quot;.
+          </span>,
         );
         updateStorageInfo();
         setIsOpen(false);
       } catch (error) {
         console.error("Import error:", error);
-        setNotification(
-          <span className="flex items-center gap-2">
-            <CircleX size={20} className="text-red-400" />
-            Error importing file: {error.message}
-          </span>,
-        );
+        notifyError(`Error importing file: ${error.message}`);
       }
     };
     reader.onerror = () => {
-      setNotification(
-        <span className="flex items-center gap-2">
-          <CircleX size={20} className="text-red-400" />
-          Error reading file. Please try again.
-        </span>,
-      );
+      notifyError("Error reading file. Please try again.");
     };
     reader.readAsArrayBuffer(file);
   };
@@ -415,12 +380,7 @@ export const useDataImport = ({
     const { processedData, duplicateEntries, file } = importData;
 
     if (action === "skip") {
-      setNotification(
-        <span className="flex items-center gap-2">
-          <CircleX size={20} className="text-yellow-500" />
-          Import cancelled by user.
-        </span>,
-      );
+      notifyWarning("Import cancelled by user.");
       resetImportState();
       return;
     }
@@ -475,12 +435,7 @@ export const useDataImport = ({
       setExpenses(finalExpenses);
     }
 
-    setNotification(
-      <div className="flex items-center gap-2 max-w-sm">
-        <Check size={20} className="text-green-500 shrink-0" />
-        <span className="leading-tight">{notificationMessage}</span>
-      </div>,
-    );
+    notifySuccess(notificationMessage);
 
     updateStorageInfo();
     resetImportState();

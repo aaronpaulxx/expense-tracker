@@ -10,8 +10,8 @@ import {
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { CATEGORIES } from "../constants/categories";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import Toast from "./Toast";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { notifySuccess } from "../lib/toast";
 
 const formatNumber = (num) =>
   num.toLocaleString("en-US", {
@@ -31,7 +31,6 @@ const ExpenseList = ({
   onEditClick,
 }) => {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [showDeleteAllToast, setShowDeleteAllToast] = useState(null);
 
   const truncateText = (text, maxLength = 20) => {
     if (text.length <= maxLength) return text;
@@ -51,8 +50,21 @@ const ExpenseList = ({
     });
     setIsDeleteConfirmOpen(false);
     const toastDate = new Date(date); // Ensure date is a Date object
-    setShowDeleteAllToast({ count: deletedCount, date: toastDate });
-    setTimeout(() => setShowDeleteAllToast(false), 5000);
+    notifySuccess(
+      <span className="leading-snug">
+        <span className="font-semibold text-red-500">
+          ({deletedCount})
+        </span>{" "}
+        expense{deletedCount !== 1 ? "s" : ""} for{" "}
+        <span className="font-semibold text-stone-200">
+          {new Intl.DateTimeFormat("en-US", {
+            day: "numeric",
+            month: "long",
+          }).format(toastDate)}
+        </span>{" "}
+        deleted successfully
+      </span>,
+    );
   };
 
   const handleCancelDeleteAll = () => {
@@ -257,27 +269,6 @@ const ExpenseList = ({
           </Droppable>
         </DragDropContext>
       </div>
-
-      {showDeleteAllToast && (
-        <Toast
-          message={
-            <>
-              <span className="font-semibold text-red-500 text-lg">
-                {showDeleteAllToast.count}
-              </span>{" "}
-              expense{showDeleteAllToast.count !== 1 ? "s" : ""} for{" "}
-              <span className="font-semibold text-stone-200">
-                {new Intl.DateTimeFormat("en-US", {
-                  day: "numeric",
-                  month: "long",
-                }).format(showDeleteAllToast.date)}
-              </span>{" "}
-              deleted successfully
-            </>
-          }
-          onClose={() => setShowDeleteAllToast(false)}
-        />
-      )}
 
       <DeleteConfirmationModal
         isOpen={isDeleteConfirmOpen}

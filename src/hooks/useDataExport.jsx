@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
-import { CircleX, Check } from "lucide-react";
 import { loadXLSX } from "../lib/loadXLSX";
+import { notifySuccess, notifyError } from "../lib/toast";
 
 const formatBytes = (bytes, decimals = 2) => {
   if (!+bytes) return "0 Bytes";
@@ -22,7 +22,6 @@ export const useDataExport = ({
   totalEntries,
   XLSX,
   setXLSX,
-  setNotification,
 }) => {
   const [exportFileInfo, setExportFileInfo] = useState(null);
 
@@ -98,11 +97,7 @@ export const useDataExport = ({
 
   const handleExport = async () => {
     if (!expenses || Object.keys(expenses).length === 0) {
-      setNotification(
-        <span className="flex items-center gap-2">
-          <CircleX size={28} className="text-red-400" /> No records to export.
-        </span>,
-      );
+      notifyError("No records to export.");
       return;
     }
 
@@ -114,14 +109,7 @@ export const useDataExport = ({
     const fileName = "Expense Tracker Data.xlsx";
     xlsx.writeFile(wb, fileName);
 
-    setNotification(
-      <div className="flex items-center gap-2 max-w-sm">
-        <Check size={20} className="text-green-500 shrink-0" />
-        <span className="leading-tight">
-          Successfully exported your data to &quot;{fileName}&quot;.
-        </span>
-      </div>,
-    );
+    notifySuccess(`Successfully exported your data to "${fileName}".`);
   };
 
   return { exportFileInfo, handleExport };

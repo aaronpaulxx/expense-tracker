@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "./components/Header";
 import DateSelector from "./components/DateSelector";
@@ -95,6 +96,8 @@ const App = () => {
 
   return (
     <div className="max-w-full h-screen bg-stone-950 flex flex-col custom-scrollbar">
+      <Toaster position="bottom-right" gutter={8} />
+
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-[rgba(33,33,33,0.85)] z-50 transition-opacity duration-500 ease-in-out">
           {/* Centered content (Spinner + Title on the Right) */}

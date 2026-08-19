@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
-import { Settings as SettingsIcon, X } from "lucide-react";
+import { Settings as SettingsIcon } from "lucide-react";
 import Settings from "./Settings";
 
 const Header = ({
@@ -11,34 +11,7 @@ const Header = ({
   setExpenses,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [notification, setNotification] = useState("");
   const [isHovered, setIsHovered] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => {
-        // Start closing animation before removing
-        setIsClosing(true);
-
-        // Wait for animation to complete before clearing notification
-        setTimeout(() => {
-          setNotification("");
-          setIsClosing(false);
-        }, 300); // Match this with the CSS animation duration
-      }, 5000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
-
-  const closeNotification = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setNotification("");
-      setIsClosing(false);
-    }, 300); // Match this with the CSS animation duration
-  };
 
   return (
     <>
@@ -85,27 +58,8 @@ const Header = ({
         setBudgets={setBudgets}
         clearRecords={clearRecords}
         expenses={expenses}
-        setNotification={setNotification}
         setExpenses={setExpenses}
       />
-
-      {notification && (
-        <div
-          className={`fixed bottom-4 right-5 bg-stone-900 text-white p-2 rounded-lg text-sm border border-stone-600 shadow-lg flex items-center gap-4 z-1000 ${
-            isClosing
-              ? "animate-[slideOut_0.3s_ease-in_forwards]"
-              : "animate-[slideIn_0.2s_ease-out]"
-          }`}
-        >
-          <div className="flex-1">{notification}</div>
-          <button
-            onClick={closeNotification}
-            className="text-stone-400 hover:text-white cursor-pointer"
-          >
-            <X size={18} />
-          </button>
-        </div>
-      )}
     </>
   );
 };

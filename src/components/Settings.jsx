@@ -2,7 +2,6 @@ import { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import {
   Settings as SettingsIcon,
-  Check,
   X,
   Trash,
   Database,
@@ -17,6 +16,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { loadXLSX } from "../lib/loadXLSX.js";
 import { useDataExport } from "../hooks/useDataExport";
 import { useDataImport } from "../hooks/useDataImport";
+import { notifySuccess, notifyError } from "../lib/toast";
 
 const Settings = ({
   isOpen,
@@ -24,7 +24,6 @@ const Settings = ({
   budgets,
   clearRecords,
   expenses,
-  setNotification,
   setExpenses,
 }) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -79,7 +78,6 @@ const Settings = ({
     totalEntries,
     XLSX,
     setXLSX,
-    setNotification,
   });
 
   const {
@@ -98,27 +96,17 @@ const Settings = ({
     setExpenses,
     XLSX,
     setXLSX,
-    setNotification,
     updateStorageInfo,
     setIsOpen,
   });
 
   const handleClearRecords = () => {
     if (!expenses || Object.keys(expenses).length === 0) {
-      setNotification(
-        <span className="flex items-center gap-2">
-          <CircleX size={28} className=" text-red-400" /> No records found.
-        </span>,
-      );
+      notifyError("No records found.");
     } else {
       clearRecords();
       setShowConfirmDelete(false);
-      setNotification(
-        <span className="flex items-center gap-2">
-          <Check size={28} className="w-6 h-6 text-green-500" /> All records
-          deleted successfully.
-        </span>,
-      );
+      notifySuccess("All records deleted successfully.");
       updateStorageInfo();
     }
   };
@@ -473,7 +461,6 @@ Settings.propTypes = {
   budgets: PropTypes.object,
   clearRecords: PropTypes.func.isRequired,
   expenses: PropTypes.object,
-  setNotification: PropTypes.func.isRequired,
   setExpenses: PropTypes.func.isRequired,
 };
 
