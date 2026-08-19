@@ -1,6 +1,12 @@
+import toast from "react-hot-toast";
 import { useState, useCallback } from "react";
 import { loadXLSX } from "../lib/loadXLSX";
-import { notifySuccess, notifyError, notifyWarning } from "../lib/toast";
+import {
+  notifySuccess,
+  notifyError,
+  notifyWarning,
+  notifyLoading,
+} from "../lib/toast";
 
 const VALID_CATEGORIES = [
   "Food",
@@ -113,7 +119,7 @@ export const useDataImport = ({
 
     if (file.size > MAX_FILE_SIZE) {
       notifyError("File too large. Maximum size is 10MB.", {
-        id: "import-error",
+        id: "import",
       });
       return;
     }
@@ -123,10 +129,12 @@ export const useDataImport = ({
       !file.name.match(/\.(xlsx|xls|csv)$/i)
     ) {
       notifyError("Unsupported file. Upload Excel or CSV.", {
-        id: "import-error",
+        id: "import",
       });
       return;
     }
+
+    notifyLoading("Reading file...", { id: "import" });
 
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -142,7 +150,7 @@ export const useDataImport = ({
 
         if (!json || json.length === 0) {
           notifyError("File is empty or contains no data rows.", {
-            id: "import-error",
+            id: "import",
           });
           return;
         }
@@ -179,7 +187,7 @@ export const useDataImport = ({
                 Found columns: {actualHeaders.join(", ")}
               </div>
             </div>,
-            { id: "import-error" },
+            { id: "import" },
           );
           return;
         }
@@ -271,7 +279,7 @@ export const useDataImport = ({
                 Valid categories: {VALID_CATEGORIES.join(", ")}
               </div>
             </div>,
-            { id: "import-error" },
+            { id: "import" },
           );
           return;
         }
@@ -294,6 +302,7 @@ export const useDataImport = ({
         });
 
         if (duplicateEntries.length > 0) {
+          toast.dismiss("import");
           setImportData({ processedData, duplicateEntries, file });
           setShowConfirmImport(true);
           return;
@@ -317,19 +326,20 @@ export const useDataImport = ({
             <span className="text-green-400">{processedData.length}</span> items
             from &quot;{file.name}&quot;.
           </span>,
+          { id: "import" },
         );
         updateStorageInfo();
         setIsOpen(false);
       } catch (error) {
         console.error("Import error:", error);
         notifyError(`Error importing file: ${error.message}`, {
-          id: "import-error",
+          id: "import",
         });
       }
     };
     reader.onerror = () => {
       notifyError("Error reading file. Please try again.", {
-        id: "import-error",
+        id: "import",
       });
     };
     reader.readAsArrayBuffer(file);

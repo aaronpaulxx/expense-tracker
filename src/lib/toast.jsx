@@ -9,7 +9,6 @@ const baseOptions = {
     border: "1px solid #57534e", // stone-600
     borderRadius: "0.5rem",
     fontSize: "0.875rem",
-    maxWidth: "530px",
     boxShadow:
       "0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3)",
   },
@@ -49,4 +48,25 @@ export const notifyWarning = (message, options = {}) =>
     ...baseOptions,
     ...options,
     icon: <AlertCircle size={28} className="text-amber-400 shrink-0" />,
+  });
+
+export const notifyLoading = (message, options = {}) =>
+  toast.loading(message, {
+    ...baseOptions,
+    ...options,
+  });
+
+export const notifyPromise = (promise, messages, options = {}) =>
+  toast.promise(promise, messages, {
+    ...baseOptions,
+    ...options,
+    success: {
+      icon: <Check size={28} className="text-green-500 shrink-0" />,
+      ...options.success,
+    },
+    error: {
+      icon: <CircleX size={28} className="text-red-400 shrink-0" />,
+      duration: 8000,
+      ...options.error,
+    },
   });

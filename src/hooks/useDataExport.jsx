@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { loadXLSX } from "../lib/loadXLSX";
-import { notifySuccess, notifyError } from "../lib/toast";
+import { notifyError, notifyPromise } from "../lib/toast";
 
 const formatBytes = (bytes, decimals = 2) => {
   if (!+bytes) return "0 Bytes";
@@ -101,15 +101,21 @@ export const useDataExport = ({
       return;
     }
 
-    // Defensive fallback in case the lazy-load effect hasn't resolved yet.
-    const xlsx = XLSX || (await loadXLSX());
-    if (!XLSX) setXLSX(xlsx);
-
-    const wb = generateExportWorkbook();
     const fileName = "Expense Tracker Data.xlsx";
-    xlsx.writeFile(wb, fileName);
 
-    notifySuccess(`Successfully exported your data to "${fileName}".`);
+    const exportPromise = (async () => {
+      const xlsx = XLSX || (await loadXLSX());
+      if (!XLSX) setXLSX(xlsx);
+
+      const wb = generateExportWorkbook();
+      xlsx.writeFile(wb, fileName);
+    })();
+
+    notifyPromise(exportPromise, {
+      loading: "Exporting...",
+      success: `Successfully exported your data to "${fileName}".`,
+      error: (error) => `Error exporting file: ${error.message}`,
+    });
   };
 
   return { exportFileInfo, handleExport };
