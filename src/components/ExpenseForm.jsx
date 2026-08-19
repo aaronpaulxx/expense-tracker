@@ -28,7 +28,12 @@ const ExpenseForm = ({
     if (Object.keys(errors).length > 0) {
       // Combine all error messages, using line breaks instead of "|"
       const errorMessages = Object.values(errors).filter(Boolean).join("\n");
-      notifyError(<span className="whitespace-pre-wrap">{errorMessages}</span>);
+      notifyError(
+        <span className="whitespace-pre-wrap">{errorMessages}</span>,
+        {
+          id: "expense-form-error",
+        },
+      );
     }
   }, [errors]);
 

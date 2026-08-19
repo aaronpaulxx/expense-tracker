@@ -112,7 +112,9 @@ export const useDataImport = ({
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE) {
-      notifyError("File too large. Maximum size is 10MB.");
+      notifyError("File too large. Maximum size is 10MB.", {
+        id: "import-error",
+      });
       return;
     }
 
@@ -120,7 +122,9 @@ export const useDataImport = ({
       !ALLOWED_MIME_TYPES.includes(file.type) &&
       !file.name.match(/\.(xlsx|xls|csv)$/i)
     ) {
-      notifyError("Unsupported file. Upload Excel or CSV.");
+      notifyError("Unsupported file. Upload Excel or CSV.", {
+        id: "import-error",
+      });
       return;
     }
 
@@ -137,7 +141,9 @@ export const useDataImport = ({
         const json = xlsx.utils.sheet_to_json(worksheet, { raw: false });
 
         if (!json || json.length === 0) {
-          notifyError("File is empty or contains no data rows.");
+          notifyError("File is empty or contains no data rows.", {
+            id: "import-error",
+          });
           return;
         }
 
@@ -173,6 +179,7 @@ export const useDataImport = ({
                 Found columns: {actualHeaders.join(", ")}
               </div>
             </div>,
+            { id: "import-error" },
           );
           return;
         }
@@ -264,6 +271,7 @@ export const useDataImport = ({
                 Valid categories: {VALID_CATEGORIES.join(", ")}
               </div>
             </div>,
+            { id: "import-error" },
           );
           return;
         }
@@ -314,11 +322,15 @@ export const useDataImport = ({
         setIsOpen(false);
       } catch (error) {
         console.error("Import error:", error);
-        notifyError(`Error importing file: ${error.message}`);
+        notifyError(`Error importing file: ${error.message}`, {
+          id: "import-error",
+        });
       }
     };
     reader.onerror = () => {
-      notifyError("Error reading file. Please try again.");
+      notifyError("Error reading file. Please try again.", {
+        id: "import-error",
+      });
     };
     reader.readAsArrayBuffer(file);
   };

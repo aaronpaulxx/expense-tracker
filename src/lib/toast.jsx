@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { Check, CircleX, AlertCircle } from "lucide-react";
+import { Check, CircleX, AlertCircle, X } from "lucide-react";
 
 const baseOptions = {
   duration: 5000,
@@ -23,11 +23,26 @@ export const notifySuccess = (message, options = {}) =>
   });
 
 export const notifyError = (message, options = {}) =>
-  toast.error(message, {
-    ...baseOptions,
-    ...options,
-    icon: <CircleX size={28} className="text-red-400 shrink-0" />,
-  });
+  toast.error(
+    (t) => (
+      <div className="flex items-start gap-3 w-full">
+        <div className="flex-1">{message}</div>
+        <button
+          onClick={() => toast.dismiss(t.id)}
+          aria-label="Dismiss"
+          className="shrink-0 text-stone-400 hover:text-white transition-colors"
+        >
+          <X size={16} />
+        </button>
+      </div>
+    ),
+    {
+      ...baseOptions,
+      duration: 8000,
+      ...options,
+      icon: <CircleX size={28} className="text-red-400 shrink-0" />,
+    },
+  );
 
 export const notifyWarning = (message, options = {}) =>
   toast(message, {

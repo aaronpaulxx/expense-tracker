@@ -52,10 +52,8 @@ const ExpenseList = ({
     const toastDate = new Date(date); // Ensure date is a Date object
     notifySuccess(
       <span className="leading-snug">
-        <span className="font-semibold text-red-500">
-          ({deletedCount})
-        </span>{" "}
-        expense{deletedCount !== 1 ? "s" : ""} for{" "}
+        <span className="font-semibold">{deletedCount}</span> expense
+        {deletedCount !== 1 ? "s" : ""} for{" "}
         <span className="font-semibold text-stone-200">
           {new Intl.DateTimeFormat("en-US", {
             day: "numeric",
