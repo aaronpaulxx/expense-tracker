@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
+import { Switch } from "@headlessui/react";
 import {
   LineChart,
   Line,
@@ -133,7 +134,7 @@ CustomYearlyTooltip.propTypes = {
       name: PropTypes.string,
       value: PropTypes.number,
       color: PropTypes.string,
-    })
+    }),
   ),
   label: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -221,7 +222,7 @@ const CustomLegend = ({
             <span
               className="text-xs transition-colors"
               style={{
-                color: '#e7e5e4', // Fallback to stone-400 (#a8a29e)
+                color: "#e7e5e4", // Fallback to stone-400 (#a8a29e)
                 borderBottom: isHovered
                   ? `1px solid ${color}`
                   : "1px solid transparent",
@@ -242,7 +243,7 @@ CustomLegend.propTypes = {
       dataKey: PropTypes.string,
       color: PropTypes.string,
       value: PropTypes.string,
-    })
+    }),
   ).isRequired,
   onMouseEnter: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func.isRequired,
@@ -258,7 +259,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
 
   const data = useMemo(
     () => formatYearlyData(expenses, selectedYear),
-    [expenses, selectedYear]
+    [expenses, selectedYear],
   );
 
   const categoryTotals = useMemo(() => {
@@ -266,7 +267,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
     Object.keys(COLORS).forEach((category) => {
       totals[category] = data.reduce(
         (acc, month) => acc + (month[category] || 0),
-        0
+        0,
       );
     });
     return totals;
@@ -307,17 +308,21 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
             ? `Yearly Overview - ${selectedYear}`
             : "Yearly Overview"}
         </h3>
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            checked={chartType === "area"}
-            onChange={() =>
-              setChartType(chartType === "line" ? "area" : "line")
-            }
-            className="sr-only peer"
+        <Switch
+          checked={chartType === "area"}
+          onChange={(checked) => setChartType(checked ? "area" : "line")}
+          className={`relative inline-flex items-center h-5 w-9 rounded-full p-0.5 transition-colors cursor-pointer ${
+            chartType === "area" ? "bg-indigo-500" : "bg-green-500"
+          }`}
+        >
+          <span className="sr-only">Switch between line and area chart</span>
+          <span
+            aria-hidden="true"
+            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              chartType === "area" ? "translate-x-full" : "translate-x-0"
+            }`}
           />
-          <div className="w-9 h-5 bg-green-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-indigo-500 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
-        </label>
+        </Switch>
       </div>
 
       {hoveredCategory && categoryTotals[hoveredCategory] > 0 && (
