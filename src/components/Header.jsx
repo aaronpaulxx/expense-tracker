@@ -3,13 +3,7 @@ import PropTypes from "prop-types";
 import { Settings as SettingsIcon } from "lucide-react";
 import Settings from "./Settings";
 
-const Header = ({
-  budgets,
-  setBudgets,
-  clearRecords,
-  expenses,
-  setExpenses,
-}) => {
+const Header = ({ clearRecords, expenses, setExpenses }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -54,8 +48,6 @@ const Header = ({
       <Settings
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        budgets={budgets}
-        setBudgets={setBudgets}
         clearRecords={clearRecords}
         expenses={expenses}
         setExpenses={setExpenses}
@@ -65,8 +57,6 @@ const Header = ({
 };
 
 Header.propTypes = {
-  budgets: PropTypes.object,
-  setBudgets: PropTypes.func,
   clearRecords: PropTypes.func.isRequired,
   expenses: PropTypes.object,
   setExpenses: PropTypes.func.isRequired,

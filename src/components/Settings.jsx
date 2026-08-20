@@ -20,7 +20,6 @@ import { notifySuccess, notifyError, Count, pluralize } from "../lib/toast";
 const Settings = ({
   isOpen,
   setIsOpen,
-  budgets,
   clearRecords,
   expenses,
   setExpenses,
@@ -69,7 +68,7 @@ const Settings = ({
       setShowConfirmDelete(false);
       setDeleteConfirmationInput("");
     }
-  }, [isOpen, budgets]);
+  }, [isOpen]);
 
   const { exportFileInfo, handleExport } = useDataExport({
     isOpen,
@@ -460,7 +459,6 @@ const Settings = ({
 Settings.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,
-  budgets: PropTypes.object,
   clearRecords: PropTypes.func.isRequired,
   expenses: PropTypes.object,
   setExpenses: PropTypes.func.isRequired,

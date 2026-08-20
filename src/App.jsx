@@ -8,17 +8,12 @@ import ExpenseForm from "./components/ExpenseForm";
 import ExpenseList from "./components/ExpenseList";
 import FinancialInsights from "./components/FinancialInsights";
 
-import { useLocalStorage } from "./hooks/useLocalStorage";
 import { useExpenses } from "./hooks/useExpenses";
 import { useExpenseCalculations } from "./hooks/useExpenseCalculations";
 import Footer from "./components/Footer";
 
 const App = () => {
   const [date, setDate] = useState(new Date());
-  const [budgets, setBudgets] = useLocalStorage("budgets", {
-    firstHalf: 7379.31,
-    secondHalf: 8488.75,
-  });
   const {
     expenses,
     setExpenses,
@@ -75,7 +70,7 @@ const App = () => {
 
     // Check if data is ready
     const isDataReady = () => {
-      return budgets && Object.keys(budgets).length > 0 && expenses !== null;
+      return expenses !== null;
     };
 
     // Function to end loading after minimum time
@@ -92,7 +87,7 @@ const App = () => {
     if (isDataReady()) {
       endLoading();
     }
-  }, [budgets, expenses]); // Dependencies
+  }, [expenses]); // Dependencies
 
   return (
     <div className="max-w-full h-screen bg-stone-950 flex flex-col custom-scrollbar">
@@ -101,7 +96,7 @@ const App = () => {
           <ToastBar toast={t}>
             {({ icon, message }) => (
               <div
-                className="flex items-center gap-3 w-full"
+                className="flex items-center gap-1 w-full"
                 onClick={() => t.type !== "loading" && toast.dismiss(t.id)}
               >
                 {icon}
@@ -134,8 +129,6 @@ const App = () => {
       )}
 
       <Header
-        budgets={budgets}
-        setBudgets={setBudgets}
         clearRecords={clearRecords}
         expenses={expenses}
         setExpenses={setExpenses}
@@ -153,8 +146,6 @@ const App = () => {
       </div>
 
       <div className="flex flex-1 overflow-auto flex-col">
-        {/* Budget Panel */}
-
         {/* Expense Entry Section */}
         <div className="w-full p-2 flex flex-col gap-2" ref={formSectionRef}>
           <div className="w-full pl-2">
