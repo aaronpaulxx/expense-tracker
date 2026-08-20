@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster, ToastBar } from "react-hot-toast";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "./components/Header";
 import DateSelector from "./components/DateSelector";
@@ -96,7 +96,21 @@ const App = () => {
 
   return (
     <div className="max-w-full h-screen bg-stone-950 flex flex-col custom-scrollbar">
-      <Toaster position="bottom-right" gutter={8} />
+      <Toaster position="bottom-right" gutter={8}>
+        {(t) => (
+          <ToastBar toast={t}>
+            {({ icon, message }) => (
+              <div
+                className="flex items-center gap-3 w-full"
+                onClick={() => t.type !== "loading" && toast.dismiss(t.id)}
+              >
+                {icon}
+                <div className="flex-1">{message}</div>
+              </div>
+            )}
+          </ToastBar>
+        )}
+      </Toaster>
 
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-[rgba(33,33,33,0.85)] z-50 transition-opacity duration-500 ease-in-out">

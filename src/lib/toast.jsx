@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { Check, CircleX, AlertCircle, X } from "lucide-react";
+import { Check, CircleX, AlertCircle } from "lucide-react";
 
 const baseOptions = {
   duration: 5000,
@@ -11,6 +11,8 @@ const baseOptions = {
     fontSize: "0.875rem",
     boxShadow:
       "0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3)",
+    cursor: "pointer", // click-to-dismiss, wired up in App.jsx's
+    // custom Toaster renderer
   },
 };
 
@@ -22,26 +24,12 @@ export const notifySuccess = (message, options = {}) =>
   });
 
 export const notifyError = (message, options = {}) =>
-  toast.error(
-    (t) => (
-      <div className="flex items-start gap-3 w-full">
-        <div className="flex-1">{message}</div>
-        <button
-          onClick={() => toast.dismiss(t.id)}
-          aria-label="Dismiss"
-          className="shrink-0 text-stone-400 hover:text-white transition-colors"
-        >
-          <X size={16} />
-        </button>
-      </div>
-    ),
-    {
-      ...baseOptions,
-      duration: 8000,
-      ...options,
-      icon: <CircleX size={28} className="text-red-400 shrink-0" />,
-    },
-  );
+  toast.error(message, {
+    ...baseOptions,
+    duration: 8000,
+    ...options,
+    icon: <CircleX size={28} className="text-red-400 shrink-0" />,
+  });
 
 export const notifyWarning = (message, options = {}) =>
   toast(message, {
@@ -54,12 +42,17 @@ export const notifyLoading = (message, options = {}) =>
   toast.loading(message, {
     ...baseOptions,
     ...options,
+    style: { ...baseOptions.style, cursor: "default", ...options.style },
   });
 
 export const notifyPromise = (promise, messages, options = {}) =>
   toast.promise(promise, messages, {
     ...baseOptions,
     ...options,
+    loading: {
+      style: { ...baseOptions.style, cursor: "default" },
+      ...options.loading,
+    },
     success: {
       icon: <Check size={28} className="text-green-500 shrink-0" />,
       ...options.success,
