@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { loadXLSX } from "../lib/loadXLSX";
 import {
   notifyError,
@@ -81,25 +81,45 @@ export const useDataExport = ({
     return wb;
   }, [expenses, XLSX]);
 
-  // Preview the export file's size while Settings is open, so the user
-  // sees it before actually clicking Export.
+  const sizePreviewCache = useRef({ expenses: null, info: null });
+
   useEffect(() => {
-    if (isOpen && totalEntries > 0 && XLSX) {
+    if (!isOpen || totalEntries === 0 || !XLSX) {
+      setExportFileInfo(null);
+      return;
+    }
+
+    if (sizePreviewCache.current.expenses === expenses) {
+      setExportFileInfo(sizePreviewCache.current.info);
+      return;
+    }
+
+    let cancelled = false;
+    const computeSize = () => {
+      if (cancelled) return;
       try {
         const wb = generateExportWorkbook();
         const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-
-        setExportFileInfo({
+        const info = {
           name: "Expense Tracker Data.xlsx",
           size: formatBytes(wbout.byteLength),
-        });
+        };
+        sizePreviewCache.current = { expenses, info };
+        setExportFileInfo(info);
       } catch (error) {
         console.error("Error calculating export file size:", error);
         setExportFileInfo(null);
       }
-    } else {
-      setExportFileInfo(null);
-    }
+    };
+
+    const idleId = window.requestIdleCallback
+      ? window.requestIdleCallback(computeSize, { timeout: 500 })
+      : window.setTimeout(computeSize, 0);
+
+    return () => {
+      cancelled = true;
+      (window.cancelIdleCallback || window.clearTimeout)(idleId);
+    };
   }, [isOpen, expenses, XLSX, totalEntries, generateExportWorkbook]);
 
   const handleExport = async () => {
