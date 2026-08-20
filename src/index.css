@@ -104,31 +104,9 @@ body {
   width: 8px;
   border-radius: 5px !important;
 }
-@keyframes slideDown {
-  0% {
-    transform: translateY(-10px); /* Start slightly above */
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0); /* End at its normal position */
-    opacity: 1;
-  }
-}
-
 @keyframes spinning82341 {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(200px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0px);
-    opacity: 1;
   }
 }
 
@@ -335,7 +313,7 @@ body {
 }
 
 .delete-button-small .svgIcon path {
-  fill: #ff6467;
+  fill: #dc2626;
 }
 
 .delete-button-small::before {
@@ -350,7 +328,7 @@ body {
 .delete-button-small:hover {
   width: 110px;
   border-radius: 40px;
-  background-color: #fb2c36;
+  background-color: #dc2626;
 }
 
 .delete-button-small:hover .svgIcon {
@@ -366,7 +344,7 @@ body {
   font-size: 13px;
   opacity: 1;
   transform: translateY(24px);
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .delete-button-small.disabled {

@@ -93,7 +93,7 @@ const App = () => {
     <div className="max-w-full h-screen bg-stone-950 flex flex-col custom-scrollbar">
       <Toaster position="bottom-right" gutter={8}>
         {(t) => (
-          <ToastBar toast={t}>
+          <ToastBar toast={t} position="bottom-right">
             {({ icon, message }) => (
               <div
                 className="flex items-center gap-1 w-full"
