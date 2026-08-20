@@ -12,7 +12,7 @@ import {
   Trash2,
   CircleX,
 } from "lucide-react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition, CloseButton } from "@headlessui/react";
 import { loadXLSX } from "../lib/loadXLSX.js";
 import { useDataExport } from "../hooks/useDataExport";
 import { useDataImport } from "../hooks/useDataImport";
@@ -147,12 +147,9 @@ const Settings = ({
                     Settings
                   </div>
                 </Dialog.Title>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-stone-400 hover:text-white transition-all duration-200 cursor-pointer"
-                >
+                <CloseButton className="text-stone-400 hover:text-white transition-all duration-200 cursor-pointer">
                   <X size={24} />
-                </button>
+                </CloseButton>
               </div>
               <div className="mt-4 space-y-4">
                 <div className="border-stone-700">
