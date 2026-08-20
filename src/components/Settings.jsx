@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, useMemo, Fragment } from "react";
 import PropTypes from "prop-types";
 import {
   X,
@@ -40,12 +40,16 @@ const Settings = ({
     }
   }, [isOpen, XLSX]);
 
-  const totalEntries = expenses
-    ? Object.values(expenses).reduce(
-        (total, dayEntries) => total + dayEntries.length,
-        0,
-      )
-    : 0;
+  const totalEntries = useMemo(
+    () =>
+      expenses
+        ? Object.values(expenses).reduce(
+            (total, dayEntries) => total + dayEntries.length,
+            0,
+          )
+        : 0,
+    [expenses],
+  );
 
   const updateStorageInfo = () => {
     let used = 0;
