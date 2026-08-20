@@ -99,7 +99,11 @@ export const useDataExport = ({
       if (cancelled) return;
       try {
         const wb = generateExportWorkbook();
-        const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const wbout = XLSX.write(wb, {
+          bookType: "xlsx",
+          type: "array",
+          compression: true,
+        });
         const info = {
           name: "Expense Tracker Data.xlsx",
           size: formatBytes(wbout.byteLength),
@@ -138,7 +142,11 @@ export const useDataExport = ({
       if (!XLSX) setXLSX(xlsx);
 
       const wb = generateExportWorkbook();
-      const buffer = xlsx.write(wb, { bookType: "xlsx", type: "buffer" });
+      const buffer = xlsx.write(wb, {
+        bookType: "xlsx",
+        type: "buffer",
+        compression: true,
+      });
 
       const result = await window.electronAPI.exportFile(buffer, fileName);
 
