@@ -1,6 +1,12 @@
+import toast from "react-hot-toast";
 import { useState, useCallback, useEffect } from "react";
 import { loadXLSX } from "../lib/loadXLSX";
-import { notifyError, notifyPromise, pluralize } from "../lib/toast";
+import {
+  notifyError,
+  notifySuccess,
+  notifyLoading,
+  pluralize,
+} from "../lib/toast";
 import ToastCount from "../components/ToastCount";
 
 const formatBytes = (bytes, decimals = 2) => {
@@ -105,28 +111,32 @@ export const useDataExport = ({
     const fileName = "Expense Tracker Data.xlsx";
     const recordCount = totalEntries;
 
-    const exportPromise = (async () => {
+    notifyLoading("Exporting...", { id: "export" });
+
+    try {
       const xlsx = XLSX || (await loadXLSX());
       if (!XLSX) setXLSX(xlsx);
 
       const wb = generateExportWorkbook();
-      xlsx.writeFile(wb, fileName);
-    })();
+      const buffer = xlsx.write(wb, { bookType: "xlsx", type: "buffer" });
 
-    notifyPromise(
-      exportPromise,
-      {
-        loading: "Exporting...",
-        success: (
-          <span>
-            Exported <ToastCount>{recordCount}</ToastCount>{" "}
-            {pluralize(recordCount, "record")} to &quot;{fileName}&quot;.
-          </span>
-        ),
-        error: (error) => `Failed to export: ${error.message}`,
-      },
-      { id: "export" },
-    );
+      const result = await window.electronAPI.exportFile(buffer, fileName);
+
+      if (result.canceled) {
+        toast.dismiss("export");
+        return;
+      }
+
+      notifySuccess(
+        <span>
+          Exported <ToastCount>{recordCount}</ToastCount>{" "}
+          {pluralize(recordCount, "record")} to &quot;{fileName}&quot;.
+        </span>,
+        { id: "export" },
+      );
+    } catch (error) {
+      notifyError(`Failed to export: ${error.message}`, { id: "export" });
+    }
   };
 
   return { exportFileInfo, handleExport };

@@ -60,6 +60,7 @@ export const notifyWarning = (message, options = {}) =>
 export const notifyLoading = (message, options = {}) =>
   toast.loading(message, {
     ...baseOptions,
+    duration: Infinity,
     ...options,
     style: styleWithAccent(
       ACCENT.loading,
@@ -73,6 +74,7 @@ export const notifyPromise = (promise, messages, options = {}) =>
     ...baseOptions,
     ...options,
     loading: {
+      duration: Infinity,
       style: styleWithAccent(ACCENT.loading, { cursor: "default" }),
       ...options.loading,
     },

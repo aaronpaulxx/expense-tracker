@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -80,6 +81,21 @@ function createMainWindow() {
 }
 
 app.disableHardwareAcceleration();
+
+ipcMain.handle("export-file", async (_event, data, defaultFileName) => {
+  const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+    title: "Export Expense Data",
+    defaultPath: defaultFileName,
+    filters: [{ name: "Excel Workbook", extensions: ["xlsx"] }],
+  });
+
+  if (canceled || !filePath) {
+    return { canceled: true };
+  }
+
+  fs.writeFileSync(filePath, Buffer.from(data));
+  return { canceled: false, filePath };
+});
 
 app.whenReady().then(() => {
   createSplashScreen();

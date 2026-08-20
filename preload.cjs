@@ -1,4 +1,9 @@
-const { contextBridge } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
+
+contextBridge.exposeInMainWorld("electronAPI", {
+  exportFile: (data, defaultFileName) =>
+    ipcRenderer.invoke("export-file", data, defaultFileName),
+});
 
 window.addEventListener("DOMContentLoaded", () => {
   const replaceText = (selector, text) => {
