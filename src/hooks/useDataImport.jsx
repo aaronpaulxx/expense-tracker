@@ -8,7 +8,7 @@ import {
   notifyLoading,
   pluralize,
 } from "../lib/toast";
-import Count from "../components/Count";
+import ToastCount from "../components/ToastCount";
 
 const VALID_CATEGORIES = [
   "Food",
@@ -270,7 +270,7 @@ export const useDataImport = ({
           notifyError(
             <div className="leading-tight">
               <div className="font-medium">
-                Found <Count tone="error">{validationErrors.length}</Count>{" "}
+                Found <ToastCount tone="error">{validationErrors.length}</ToastCount>{" "}
                 {pluralize(validationErrors.length, "error")}:
               </div>
               <div className="text-sm text-stone-300 mt-1 whitespace-pre-line font-mono">
@@ -324,7 +324,7 @@ export const useDataImport = ({
         setExpenses(importedExpenses);
         notifySuccess(
           <span className="leading-tight">
-            Imported <Count>{processedData.length}</Count>{" "}
+            Imported <ToastCount>{processedData.length}</ToastCount>{" "}
             {pluralize(processedData.length, "item")} from &quot;{file.name}
             &quot;.
           </span>,
@@ -428,9 +428,9 @@ export const useDataImport = ({
       itemsToAdd = processedData;
       notificationMessage = (
         <span>
-          Imported <Count>{processedData.length}</Count>{" "}
+          Imported <ToastCount>{processedData.length}</ToastCount>{" "}
           {pluralize(processedData.length, "item")}, replaced{" "}
-          <Count>{duplicateEntries.length}</Count>{" "}
+          <ToastCount>{duplicateEntries.length}</ToastCount>{" "}
           {pluralize(duplicateEntries.length, "duplicate")}.
         </span>
       );
@@ -438,7 +438,7 @@ export const useDataImport = ({
       itemsToAdd = processedData;
       notificationMessage = (
         <span>
-          Imported <Count>{processedData.length}</Count>{" "}
+          Imported <ToastCount>{processedData.length}</ToastCount>{" "}
           {pluralize(processedData.length, "item")} from &quot;{file.name}
           &quot;.
         </span>
@@ -457,9 +457,9 @@ export const useDataImport = ({
       itemsToAdd = newItems;
       notificationMessage = (
         <span>
-          Imported <Count>{newItems.length}</Count> new{" "}
+          Imported <ToastCount>{newItems.length}</ToastCount> new{" "}
           {pluralize(newItems.length, "item")}, skipped{" "}
-          <Count>{duplicateEntries.length}</Count>{" "}
+          <ToastCount>{duplicateEntries.length}</ToastCount>{" "}
           {pluralize(duplicateEntries.length, "duplicate")}.
         </span>
       );

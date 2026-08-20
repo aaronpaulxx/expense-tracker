@@ -12,7 +12,7 @@ import { CATEGORIES } from "../constants/categories";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { notifySuccess, pluralize } from "../lib/toast";
-import Count from "./Count";
+import ToastCount from "./ToastCount";
 
 const formatNumber = (num) =>
   num.toLocaleString("en-US", {
@@ -53,7 +53,7 @@ const ExpenseList = ({
     const toastDate = new Date(date); // Ensure date is a Date object
     notifySuccess(
       <span className="leading-snug">
-        Deleted <Count>{deletedCount}</Count>{" "}
+        Deleted <ToastCount>{deletedCount}</ToastCount>{" "}
         {pluralize(deletedCount, "expense")} for{" "}
         {new Intl.DateTimeFormat("en-US", {
           day: "numeric",

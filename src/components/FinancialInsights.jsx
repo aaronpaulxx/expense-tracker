@@ -2,13 +2,13 @@ import { useState, useMemo, lazy, Suspense } from "react";
 import PropTypes from "prop-types";
 import { CalendarDays, BarChart3, PieChart, AreaChart } from "lucide-react";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/react";
-import Summary from "./Summary";
+import DailySummary from "./DailySummary";
 
 // Chart components (and the recharts they import) are only pulled into a
 // separate chunk and fetched when their tab is actually opened, instead of
 // being parsed/compiled into the main bundle on every app launch.
 const WeeklySpendingChart = lazy(() => import("./WeeklySpendingChart"));
-const ExpenseCategoriesChart = lazy(() => import("./ExpenseCategoriesChart"));
+const MonthlyCategoriesChart = lazy(() => import("./MonthlyCategoriesChart"));
 const YearlyOverviewChart = lazy(() => import("./YearlyOverviewChart"));
 
 // Same dynamic imports as above, exposed separately so hovering/focusing a
@@ -16,7 +16,7 @@ const YearlyOverviewChart = lazy(() => import("./YearlyOverviewChart"));
 // the click lands, the chunk is usually already loaded, avoiding the blink.
 const prefetchers = {
   weekly: () => import("./WeeklySpendingChart"),
-  monthly: () => import("./ExpenseCategoriesChart"),
+  monthly: () => import("./MonthlyCategoriesChart"),
   yearly: () => import("./YearlyOverviewChart"),
 };
 
@@ -38,7 +38,7 @@ const FinancialInsights = ({
         key: "daily",
         icon: CalendarDays,
         component: (
-          <Summary
+          <DailySummary
             categoryTotals={categoryTotalsForToday}
             totalForDay={totalForToday}
             date={date}
@@ -62,7 +62,7 @@ const FinancialInsights = ({
         key: "monthly",
         icon: PieChart,
         component: (
-          <ExpenseCategoriesChart
+          <MonthlyCategoriesChart
             categoryTotals={categoryTotals}
             selectedMonth={selectedMonth}
           />

@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { loadXLSX } from "../lib/loadXLSX";
 import { notifyError, notifyPromise, pluralize } from "../lib/toast";
-import Count from "../components/Count";
+import ToastCount from "../components/ToastCount";
 
 const formatBytes = (bytes, decimals = 2) => {
   if (!+bytes) return "0 Bytes";
@@ -119,7 +119,7 @@ export const useDataExport = ({
         loading: "Exporting...",
         success: (
           <span>
-            Exported <Count>{recordCount}</Count>{" "}
+            Exported <ToastCount>{recordCount}</ToastCount>{" "}
             {pluralize(recordCount, "record")} to &quot;{fileName}&quot;.
           </span>
         ),

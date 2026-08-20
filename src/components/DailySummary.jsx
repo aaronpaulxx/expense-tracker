@@ -8,7 +8,7 @@ const formatNumber = (num) =>
     maximumFractionDigits: 2,
   });
 
-const Summary = ({ categoryTotals, totalForDay, date }) => {
+const DailySummary = ({ categoryTotals, totalForDay, date }) => {
   const dayName = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     day: "numeric",
@@ -51,10 +51,10 @@ const Summary = ({ categoryTotals, totalForDay, date }) => {
   );
 };
 
-Summary.propTypes = {
+DailySummary.propTypes = {
   categoryTotals: PropTypes.objectOf(PropTypes.number),
   totalForDay: PropTypes.number.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
 };
 
-export default Summary;
+export default DailySummary;

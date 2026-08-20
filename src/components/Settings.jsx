@@ -16,7 +16,7 @@ import { loadXLSX } from "../lib/loadXLSX.js";
 import { useDataExport } from "../hooks/useDataExport";
 import { useDataImport } from "../hooks/useDataImport";
 import { notifySuccess, notifyError, pluralize } from "../lib/toast";
-import Count from "./Count";
+import ToastCount from "./ToastCount.jsx";
 
 const Settings = ({
   isOpen,
@@ -108,7 +108,7 @@ const Settings = ({
       setShowConfirmDelete(false);
       notifySuccess(
         <span>
-          Deleted <Count>{deletedCount}</Count>{" "}
+          Deleted <ToastCount>{deletedCount}</ToastCount>{" "}
           {pluralize(deletedCount, "record")}.
         </span>,
         { id: "clear-records" },
