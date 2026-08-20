@@ -102,11 +102,13 @@ const Settings = ({
 
   const handleClearRecords = () => {
     if (!expenses || Object.keys(expenses).length === 0) {
-      notifyError("No records found.");
+      notifyError("No records found.", { id: "clear-records" });
     } else {
       clearRecords();
       setShowConfirmDelete(false);
-      notifySuccess("All records deleted successfully.");
+      notifySuccess("All records deleted successfully.", {
+        id: "clear-records",
+      });
       updateStorageInfo();
     }
   };

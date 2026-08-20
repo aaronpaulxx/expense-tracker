@@ -97,7 +97,7 @@ export const useDataExport = ({
 
   const handleExport = async () => {
     if (!expenses || Object.keys(expenses).length === 0) {
-      notifyError("No records to export.");
+      notifyError("No records to export.", { id: "export" });
       return;
     }
 
@@ -111,11 +111,15 @@ export const useDataExport = ({
       xlsx.writeFile(wb, fileName);
     })();
 
-    notifyPromise(exportPromise, {
-      loading: "Exporting...",
-      success: `Successfully exported your data to "${fileName}".`,
-      error: (error) => `Error exporting file: ${error.message}`,
-    });
+    notifyPromise(
+      exportPromise,
+      {
+        loading: "Exporting...",
+        success: `Successfully exported your data to "${fileName}".`,
+        error: (error) => `Error exporting file: ${error.message}`,
+      },
+      { id: "export" },
+    );
   };
 
   return { exportFileInfo, handleExport };

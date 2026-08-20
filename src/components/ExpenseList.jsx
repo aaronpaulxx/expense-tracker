@@ -62,6 +62,7 @@ const ExpenseList = ({
         </span>{" "}
         deleted successfully
       </span>,
+      { id: "delete-all" },
     );
   };
 
