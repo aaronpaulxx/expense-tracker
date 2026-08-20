@@ -375,7 +375,7 @@ const Settings = ({
                       <button
                         onClick={() => setShowConfirmDelete(true)}
                         disabled={totalEntries === 0}
-                        className="cursor-pointer mt-2 md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-700 text-white text-sm font-medium shadow-sm hover:bg-red-500 active:bg-red-800 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
+                        className="cursor-pointer mt-2 md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 text-white text-sm font-medium shadow-sm hover:bg-red-400 active:bg-red-800 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
                       >
                         <Trash size={18} />
                         Delete All

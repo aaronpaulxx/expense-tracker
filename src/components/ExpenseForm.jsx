@@ -106,7 +106,7 @@ const ExpenseForm = ({
               );
               return (
                 <div className="relative">
-                  <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 bg-stone-800 border border-stone-500 rounded-lg text-sm text-white cursor-pointer transition-colors duration-200 hover:bg-stone-700 focus:outline-none">
+                  <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 border border-stone-500 rounded-lg text-sm text-white cursor-pointer transition-colors duration-200 hover:bg-stone-700 focus:outline-none">
                     <span className="flex items-center gap-2 truncate">
                       {selected?.icon && (
                         <selected.icon
@@ -128,13 +128,13 @@ const ExpenseForm = ({
                   <ListboxOptions
                     anchor="bottom start"
                     transition
-                    className="w-(--button-width) mt-1 bg-stone-800 border border-stone-700 rounded-lg shadow-lg z-50 focus:outline-none p-1 origin-top transition duration-150 ease-out data-closed:opacity-0 data-closed:scale-95"
+                    className="w-(--button-width) mt-1 bg-stone-800 border border-stone-600 rounded-lg shadow-lg z-50 focus:outline-none p-1 origin-top transition duration-150 ease-out data-closed:opacity-0 data-closed:scale-95"
                   >
                     {categoryOptions.map((option) => (
                       <ListboxOption
                         key={option.value}
                         value={option.value}
-                        className="group flex items-center gap-2 px-2 py-1.5 text-sm text-white cursor-pointer rounded-md data-focus:bg-stone-700 data-selected:bg-linear-to-r data-selected:from-green-800 data-selected:to-teal-800"
+                        className="group flex items-center mb-1 gap-2 px-2 py-1.5 text-sm text-white cursor-pointer rounded-md data-focus:bg-stone-700 data-selected:bg-linear-to-r data-selected:from-green-800 data-selected:to-teal-800"
                       >
                         <option.icon
                           size={16}
@@ -200,9 +200,8 @@ const ExpenseForm = ({
         {isEditing && (
           <button
             onClick={onCancelEdit}
-            className="cursor-pointer flex items-center gap-2 px-5 rounded-lg border border-stone-500 text-stone-300 text-sm font-medium hover:bg-stone-700 hover:text-white transition-colors duration-200"
+            className="cursor-pointer px-5 rounded-lg border border-stone-500 text-stone-300 text-md font-medium hover:bg-stone-700 hover:text-white transition-colors duration-200"
           >
-            <X size={18} />
             Cancel
           </button>
         )}

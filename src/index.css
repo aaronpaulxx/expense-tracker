@@ -335,7 +335,7 @@ body {
 }
 
 .delete-button-small .svgIcon path {
-  fill: #dc2626;
+  fill: #ff6467;
 }
 
 .delete-button-small::before {
@@ -350,7 +350,7 @@ body {
 .delete-button-small:hover {
   width: 110px;
   border-radius: 40px;
-  background-color: #dc2626;
+  background-color: #fb2c36;
 }
 
 .delete-button-small:hover .svgIcon {
@@ -366,7 +366,7 @@ body {
   font-size: 13px;
   opacity: 1;
   transform: translateY(24px);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .delete-button-small.disabled {

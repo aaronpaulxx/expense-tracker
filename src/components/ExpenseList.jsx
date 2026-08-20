@@ -200,7 +200,7 @@ const ExpenseList = ({
                               <MenuItems
                                 anchor="bottom end"
                                 transition
-                                className="z-50 w-36 origin-top-right rounded-md bg-stone-800 shadow-lg ring-1 ring-stone-500 focus:outline-none py-1 [--anchor-gap:4px] transition duration-100 ease-out data-closed:opacity-0 data-closed:scale-95"
+                                className="z-50 w-36 origin-top-right rounded-md bg-stone-800 shadow-lg ring-1 ring-stone-600 focus:outline-none py-1 [--anchor-gap:4px] transition duration-100 ease-out data-closed:opacity-0 data-closed:scale-95"
                               >
                                 <MenuItem>
                                   <button
