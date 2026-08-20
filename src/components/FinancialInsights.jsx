@@ -103,16 +103,16 @@ const FinancialInsights = ({
               onFocus={() => prefetchers[key]?.()}
               className={`relative flex-1 px-4 py-3 text-xs font-medium flex items-center justify-center gap-2 transition-transform duration-300 outline-none rounded-t-md ${
                 activeIndex === index
-                  ? "text-green-300 scale-105"
-                  : "text-stone-300 hover:text-stone-100 hover:scale-105 group"
+                  ? "text-green-300"
+                  : "text-stone-300 hover:text-stone-100 group"
               }`}
             >
               <Icon
                 size={18}
                 className={`transition-transform duration-300 ${
                   activeIndex === index
-                    ? "text-green-300 scale-105"
-                    : "text-stone-300 group-hover:text-stone-100 group-hover:scale-105"
+                    ? "text-green-300"
+                    : "text-stone-300 group-hover:text-stone-100 "
                 }`}
               />
               {label}
