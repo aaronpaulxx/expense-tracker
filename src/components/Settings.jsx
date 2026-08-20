@@ -144,8 +144,7 @@ const Settings = ({
             <Dialog.Panel className="relative bg-stone-900 p-5 rounded-xl shadow-lg w-160 max-w-[90%] max-h-[90vh] overflow-y-auto border-stone-500 border custom-scrollbar">
               <div className="flex justify-between items-center border-b border-stone-500">
                 <Dialog.Title className="text-xl font-semibold text-white">
-                  <div className="flex items-center gap-2 mb-2">
-                    <SettingsIcon size={30} className="text-stone-300" />{" "}
+                  <div className="flex items-center gap-2 mb-2 border-l-4 pl-2 border-stone-300">
                     Settings
                   </div>
                 </Dialog.Title>
@@ -200,7 +199,7 @@ const Settings = ({
                       </span>
                       <div className="flex items-center flex-wrap gap-4 mt-2">
                         {exportFileInfo && (
-                          <div className="flex flex-col md:flex-row md:items-center md:gap-6 text-xs text-stone-500">
+                          <div className="flex flex-col text-xs text-stone-500">
                             <p>
                               <span className="font-normal text-stone-300 italic">
                                 {exportFileInfo.name}
