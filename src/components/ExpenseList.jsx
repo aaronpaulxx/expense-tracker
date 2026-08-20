@@ -11,7 +11,8 @@ import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { CATEGORIES } from "../constants/categories";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import { notifySuccess, Count, pluralize } from "../lib/toast";
+import { notifySuccess, pluralize } from "../lib/toast";
+import Count from "./Count";
 
 const formatNumber = (num) =>
   num.toLocaleString("en-US", {

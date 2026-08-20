@@ -15,7 +15,8 @@ import { Dialog, Transition, CloseButton } from "@headlessui/react";
 import { loadXLSX } from "../lib/loadXLSX.js";
 import { useDataExport } from "../hooks/useDataExport";
 import { useDataImport } from "../hooks/useDataImport";
-import { notifySuccess, notifyError, Count, pluralize } from "../lib/toast";
+import { notifySuccess, notifyError, pluralize } from "../lib/toast";
+import Count from "./Count";
 
 const Settings = ({
   isOpen,

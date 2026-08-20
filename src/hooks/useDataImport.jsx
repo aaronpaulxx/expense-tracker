@@ -6,9 +6,9 @@ import {
   notifyError,
   notifyWarning,
   notifyLoading,
-  Count,
   pluralize,
 } from "../lib/toast";
+import Count from "../components/Count";
 
 const VALID_CATEGORIES = [
   "Food",

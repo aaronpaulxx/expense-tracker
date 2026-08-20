@@ -1,5 +1,4 @@
 import toast from "react-hot-toast";
-import PropTypes from "prop-types";
 import { Check, CircleX, AlertCircle } from "lucide-react";
 
 const ACCENT = {
@@ -89,20 +88,5 @@ export const notifyPromise = (promise, messages, options = {}) =>
       ...options.error,
     },
   });
-
-const COUNT_TONE_CLASS = {
-  success: "text-green-400",
-  error: "text-red-400",
-  warning: "text-amber-400",
-};
-
-export const Count = ({ children, tone = "success" }) => (
-  <span className={`font-semibold ${COUNT_TONE_CLASS[tone]}`}>{children}</span>
-);
-
-Count.propTypes = {
-  children: PropTypes.node.isRequired,
-  tone: PropTypes.oneOf(["success", "error", "warning"]),
-};
 
 export const pluralize = (count, word) => `${word}${count !== 1 ? "s" : ""}`;

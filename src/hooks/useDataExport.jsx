@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { loadXLSX } from "../lib/loadXLSX";
-import { notifyError, notifyPromise, Count, pluralize } from "../lib/toast";
+import { notifyError, notifyPromise, pluralize } from "../lib/toast";
+import Count from "../components/Count";
 
 const formatBytes = (bytes, decimals = 2) => {
   if (!+bytes) return "0 Bytes";
