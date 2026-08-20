@@ -11,7 +11,7 @@ import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { CATEGORIES } from "../constants/categories";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import { notifySuccess } from "../lib/toast";
+import { notifySuccess, Count, pluralize } from "../lib/toast";
 
 const formatNumber = (num) =>
   num.toLocaleString("en-US", {
@@ -52,15 +52,13 @@ const ExpenseList = ({
     const toastDate = new Date(date); // Ensure date is a Date object
     notifySuccess(
       <span className="leading-snug">
-        <span className="font-semibold">{deletedCount}</span> expense
-        {deletedCount !== 1 ? "s" : ""} for{" "}
-        <span className="font-semibold text-stone-200">
-          {new Intl.DateTimeFormat("en-US", {
-            day: "numeric",
-            month: "long",
-          }).format(toastDate)}
-        </span>{" "}
-        deleted successfully
+        Deleted <Count>{deletedCount}</Count>{" "}
+        {pluralize(deletedCount, "expense")} for{" "}
+        {new Intl.DateTimeFormat("en-US", {
+          day: "numeric",
+          month: "long",
+        }).format(toastDate)}
+        .
       </span>,
       { id: "delete-all" },
     );

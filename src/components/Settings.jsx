@@ -1,7 +1,6 @@
 import { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import {
-  Settings as SettingsIcon,
   X,
   Trash,
   Database,
@@ -16,7 +15,7 @@ import { Dialog, Transition, CloseButton } from "@headlessui/react";
 import { loadXLSX } from "../lib/loadXLSX.js";
 import { useDataExport } from "../hooks/useDataExport";
 import { useDataImport } from "../hooks/useDataImport";
-import { notifySuccess, notifyError } from "../lib/toast";
+import { notifySuccess, notifyError, Count, pluralize } from "../lib/toast";
 
 const Settings = ({
   isOpen,
@@ -104,11 +103,16 @@ const Settings = ({
     if (!expenses || Object.keys(expenses).length === 0) {
       notifyError("No records found.", { id: "clear-records" });
     } else {
+      const deletedCount = totalEntries;
       clearRecords();
       setShowConfirmDelete(false);
-      notifySuccess("All records deleted successfully.", {
-        id: "clear-records",
-      });
+      notifySuccess(
+        <span>
+          Deleted <Count>{deletedCount}</Count>{" "}
+          {pluralize(deletedCount, "record")}.
+        </span>,
+        { id: "clear-records" },
+      );
       updateStorageInfo();
     }
   };

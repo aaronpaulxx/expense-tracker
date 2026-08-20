@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { loadXLSX } from "../lib/loadXLSX";
-import { notifyError, notifyPromise } from "../lib/toast";
+import { notifyError, notifyPromise, Count, pluralize } from "../lib/toast";
 
 const formatBytes = (bytes, decimals = 2) => {
   if (!+bytes) return "0 Bytes";
@@ -102,6 +102,7 @@ export const useDataExport = ({
     }
 
     const fileName = "Expense Tracker Data.xlsx";
+    const recordCount = totalEntries;
 
     const exportPromise = (async () => {
       const xlsx = XLSX || (await loadXLSX());
@@ -115,8 +116,13 @@ export const useDataExport = ({
       exportPromise,
       {
         loading: "Exporting...",
-        success: `Successfully exported your data to "${fileName}".`,
-        error: (error) => `Error exporting file: ${error.message}`,
+        success: (
+          <span>
+            Exported <Count>{recordCount}</Count>{" "}
+            {pluralize(recordCount, "record")} to &quot;{fileName}&quot;.
+          </span>
+        ),
+        error: (error) => `Failed to export: ${error.message}`,
       },
       { id: "export" },
     );

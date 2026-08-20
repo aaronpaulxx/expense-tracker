@@ -6,6 +6,8 @@ import {
   notifyError,
   notifyWarning,
   notifyLoading,
+  Count,
+  pluralize,
 } from "../lib/toast";
 
 const VALID_CATEGORIES = [
@@ -268,8 +270,8 @@ export const useDataImport = ({
           notifyError(
             <div className="leading-tight">
               <div className="font-medium">
-                Found {validationErrors.length} error
-                {validationErrors.length > 1 ? "s" : ""}:
+                Found <Count tone="error">{validationErrors.length}</Count>{" "}
+                {pluralize(validationErrors.length, "error")}:
               </div>
               <div className="text-sm text-stone-300 mt-1 whitespace-pre-line font-mono">
                 {errorSummary}
@@ -322,9 +324,9 @@ export const useDataImport = ({
         setExpenses(importedExpenses);
         notifySuccess(
           <span className="leading-tight">
-            Successfully imported{" "}
-            <span className="text-green-400">{processedData.length}</span> items
-            from &quot;{file.name}&quot;.
+            Imported <Count>{processedData.length}</Count>{" "}
+            {pluralize(processedData.length, "item")} from &quot;{file.name}
+            &quot;.
           </span>,
           { id: "import" },
         );
@@ -332,13 +334,13 @@ export const useDataImport = ({
         setIsOpen(false);
       } catch (error) {
         console.error("Import error:", error);
-        notifyError(`Error importing file: ${error.message}`, {
+        notifyError(`Failed to import: ${error.message}`, {
           id: "import",
         });
       }
     };
     reader.onerror = () => {
-      notifyError("Error reading file. Please try again.", {
+      notifyError("Failed to read file. Please try again.", {
         id: "import",
       });
     };
@@ -402,14 +404,14 @@ export const useDataImport = ({
     const { processedData, duplicateEntries, file } = importData;
 
     if (action === "skip") {
-      notifyWarning("Import cancelled by user.");
+      notifyWarning("Import cancelled.", { id: "import" });
       resetImportState();
       return;
     }
 
     const finalExpenses = { ...expenses };
     let itemsToAdd = [];
-    let notificationMessage = "";
+    let notificationMessage = null;
 
     if (action === "replace") {
       duplicateEntries.forEach((duplicate) => {
@@ -424,10 +426,23 @@ export const useDataImport = ({
         );
       });
       itemsToAdd = processedData;
-      notificationMessage = `Successfully imported ${processedData.length} item${processedData.length !== 1 ? "s" : ""}, updating ${duplicateEntries.length} duplicate${duplicateEntries.length !== 1 ? "s" : ""}.`;
+      notificationMessage = (
+        <span>
+          Imported <Count>{processedData.length}</Count>{" "}
+          {pluralize(processedData.length, "item")}, replaced{" "}
+          <Count>{duplicateEntries.length}</Count>{" "}
+          {pluralize(duplicateEntries.length, "duplicate")}.
+        </span>
+      );
     } else if (action === "merge") {
       itemsToAdd = processedData;
-      notificationMessage = `Successfully merged ${processedData.length} items from "${file.name}".`;
+      notificationMessage = (
+        <span>
+          Imported <Count>{processedData.length}</Count>{" "}
+          {pluralize(processedData.length, "item")} from &quot;{file.name}
+          &quot;.
+        </span>
+      );
     } else if (action === "skip_duplicates") {
       const duplicateKeys = new Set(
         duplicateEntries.map(
@@ -440,7 +455,14 @@ export const useDataImport = ({
         return !duplicateKeys.has(itemKey);
       });
       itemsToAdd = newItems;
-      notificationMessage = `Imported ${newItems.length} new item${newItems.length !== 1 ? "s" : ""} and skipped ${duplicateEntries.length} duplicate${duplicateEntries.length !== 1 ? "s" : ""}.`;
+      notificationMessage = (
+        <span>
+          Imported <Count>{newItems.length}</Count> new{" "}
+          {pluralize(newItems.length, "item")}, skipped{" "}
+          <Count>{duplicateEntries.length}</Count>{" "}
+          {pluralize(duplicateEntries.length, "duplicate")}.
+        </span>
+      );
     }
 
     if (itemsToAdd.length > 0) {
@@ -457,7 +479,7 @@ export const useDataImport = ({
       setExpenses(finalExpenses);
     }
 
-    notifySuccess(notificationMessage);
+    notifySuccess(notificationMessage, { id: "import" });
 
     updateStorageInfo();
     resetImportState();

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Plus, Save, X, ChevronsUpDown, Check } from "lucide-react";
+import { Plus, Save, ChevronsUpDown, Check } from "lucide-react";
 import {
   Listbox,
   ListboxButton,
