@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Plus, Save, ChevronsUpDown, Check } from "lucide-react";
 import {
@@ -24,6 +24,8 @@ const ExpenseForm = ({
   isEditing,
   onCancelEdit,
 }) => {
+  const [touched, setTouched] = useState({ name: false, amount: false });
+
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
       // Combine all error messages, using line breaks instead of "|"
@@ -35,6 +37,8 @@ const ExpenseForm = ({
         },
       );
     }
+
+    setTouched({ name: false, amount: false });
   }, [errors]);
 
   const handleSubmit = () => {
@@ -64,10 +68,11 @@ const ExpenseForm = ({
           onChange={(e) =>
             setNewExpense((prev) => ({ ...prev, name: e.target.value }))
           }
+          onFocus={() => setTouched((prev) => ({ ...prev, name: true }))}
           maxLength={35}
           className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
-            errors.name
-              ? "border-red-400"
+            errors.name && !touched.name
+              ? "border-red-400 focus:border-stone-300"
               : "border-stone-500 border focus:border-stone-300"
           } rounded-lg text-white text-sm`}
           placeholder="Description"
@@ -81,9 +86,10 @@ const ExpenseForm = ({
             onChange={(e) =>
               setNewExpense((prev) => ({ ...prev, amount: e.target.value }))
             }
+            onFocus={() => setTouched((prev) => ({ ...prev, amount: true }))}
             className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
-              errors.amount
-                ? "border-red-400"
+              errors.amount && !touched.amount
+                ? "border-red-400 focus:border-stone-300"
                 : "border-stone-500 border focus:border-stone-300"
             } rounded-lg text-white text-sm`}
             placeholder="Amount"
