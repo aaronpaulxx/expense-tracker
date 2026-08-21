@@ -19,12 +19,9 @@ const baseOptions = {
     boxShadow:
       "0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3)",
     cursor: "pointer", // click-to-dismiss, wired up in App.jsx's
-    // custom Toaster renderer
   },
 };
 
-// Merges the shared base style with a type-specific left-border accent,
-// letting a caller's own `options.style` win if provided.
 const styleWithAccent = (accent, extra = {}, overrides = {}) => ({
   ...baseOptions.style,
   borderLeft: `3px solid ${accent}`,

@@ -9,7 +9,6 @@ import {
   Upload,
   MonitorUp,
   Trash2,
-  CircleX,
 } from "lucide-react";
 import { Dialog, Transition, CloseButton } from "@headlessui/react";
 import { loadXLSX } from "../lib/loadXLSX.js";
@@ -149,7 +148,7 @@ const Settings = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Panel className="relative bg-stone-900 p-5 rounded-xl shadow-lg w-160 max-w-[90%] max-h-[90vh] overflow-y-auto border-stone-500 border custom-scrollbar">
+            <Dialog.Panel className="relative bg-stone-900 p-5 rounded-xl shadow-lg w-160 max-w-[90%] max-h-[95vh] overflow-y-auto border-stone-900 border custom-scrollbar">
               <div className="flex justify-between items-center border-b border-stone-500">
                 <Dialog.Title className="text-xl font-semibold text-white">
                   <div className="flex items-center gap-2 mb-2 border-l-4 pl-2 border-stone-300">
@@ -161,42 +160,53 @@ const Settings = ({
                 </CloseButton>
               </div>
               <div className="mt-4 space-y-4">
+                {/* STORAGE SECTION */}
                 <div className="border-stone-700">
                   <div className="flex items-center gap-2">
                     <Database size={20} className="text-stone-300" />
-                    <h2 className="text-sm font-normal text-white">
+                    <h2 className="text-md font-medium text-white">
                       Storage Usage
                     </h2>
                   </div>
                   <div className="mt-2">
                     <div className="w-full bg-stone-700 rounded-full h-3.5 overflow-hidden">
                       <div
-                        className={`bg-emerald-300 h-3.5 ${storageInfo.percentage < 8 ? "rounded-full" : "rounded-l-full"}`}
+                        className={`h-3.5 ${storageInfo.percentage < 8 ? "rounded-full" : "rounded-l-full"} ${
+                          parseFloat(storageInfo.used) >= storageInfo.total
+                            ? "bg-red-400"
+                            : parseFloat(storageInfo.used) >= 4800
+                              ? "bg-amber-400"
+                              : "bg-emerald-300"
+                        }`}
                         style={{
                           width: `${Math.min(storageInfo.percentage, 100)}%`,
                         }}
                       ></div>
                     </div>
                     <div className="flex justify-between mt-1">
-                      <span className="text-xs text-stone-400">
-                        {storageInfo.used} KB used
+                      <span
+                        className={`text-xs ${
+                          parseFloat(storageInfo.used) >= storageInfo.total
+                            ? "text-red-400"
+                            : parseFloat(storageInfo.used) >= 4800
+                              ? "text-amber-400"
+                              : "text-stone-400"
+                        }`}
+                      >
+                        {(storageInfo.used / 1024).toFixed(2)} MB used
                       </span>
                       <span className="text-xs text-stone-400">
-                        {storageInfo.total} KB total
+                        {(storageInfo.total / 1024).toFixed(2)} MB total
                       </span>
                     </div>
-                    {parseFloat(storageInfo.used) >= 4800 && (
-                      <p className="text-sm text-red-400 bg-red-400/10 px-3 py-2 rounded-lg">
-                        Warning: Local storage usage is nearing its limit!
-                      </p>
-                    )}
                   </div>
                 </div>
 
+                {/* EXPORT SECTION */}
                 <div className="border-t border-stone-700 pt-3">
                   <div className="flex items-center gap-2">
                     <MonitorDown size={20} className="text-stone-300" />
-                    <h2 className="text-sm font-normal text-white">
+                    <h2 className="text-md font-medium text-white">
                       Export Data
                     </h2>
                   </div>
@@ -207,14 +217,14 @@ const Settings = ({
                       </span>
                       <div className="flex items-center flex-wrap gap-4 mt-2">
                         {exportFileInfo && (
-                          <div className="flex flex-col text-xs text-stone-500">
+                          <div className="flex flex-col text-xs ">
                             <p>
-                              <span className="font-normal text-stone-300 italic">
+                              <span className="font-normal text-emerald-300 italic">
                                 {exportFileInfo.name}
                               </span>
                             </p>
                             <p>
-                              <span className="font-normal text-stone-300 italic">
+                              <span className="font-normal text-stone-400 italic">
                                 {exportFileInfo.size}
                               </span>
                             </p>
@@ -233,80 +243,95 @@ const Settings = ({
                   </div>
                 </div>
 
+                {/* IMPORT SECTION */}
                 <div className="border-t border-stone-700 pt-3">
                   <div className="flex items-center gap-2">
                     <MonitorUp size={20} className="text-stone-300" />
-                    <h2 className="text-sm font-normal text-white">
+                    <h2 className="text-md font-medium text-white">
                       Import Data
                     </h2>
                   </div>
-                  <div className="flex flex-col mt-2">
-                    <label
-                      htmlFor="import-file"
-                      onDrop={handleDrop}
-                      onDragOver={handleDragOver}
-                      onDragEnter={handleDragEnter}
-                      onDragLeave={handleDragLeave}
-                      className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg cursor-pointer transition-colors duration-200 ${
-                        isDragInvalid
-                          ? "border-red-500 bg-red-500/10"
-                          : isDragging
-                            ? "border-emerald-400 bg-emerald-500/10"
-                            : "border-stone-600 hover:border-stone-500 hover:bg-stone-800/50"
-                      }`}
-                    >
-                      <div className="flex flex-col items-center justify-center text-center pointer-events-none">
-                        <Upload
-                          size={32}
-                          className={`mb-4 transition-colors duration-200 ${
-                            isDragInvalid
-                              ? "text-red-400"
-                              : isDragging
-                                ? "text-emerald-400"
-                                : "text-stone-400"
-                          }`}
+                  {!(showConfirmImport && importData) && (
+                    <div className="flex flex-col mt-2">
+                      <label
+                        htmlFor="import-file"
+                        onDrop={showConfirmDelete ? undefined : handleDrop}
+                        onDragOver={
+                          showConfirmDelete ? undefined : handleDragOver
+                        }
+                        onDragEnter={
+                          showConfirmDelete ? undefined : handleDragEnter
+                        }
+                        onDragLeave={
+                          showConfirmDelete ? undefined : handleDragLeave
+                        }
+                        className={`flex flex-col items-center justify-center p-4 border-2 border-dashed rounded-2xl transition-colors duration-200 ${
+                          showConfirmDelete
+                            ? "opacity-50 cursor-not-allowed pointer-events-none"
+                            : "cursor-pointer"
+                        } ${
+                          isDragInvalid
+                            ? "border-red-500 bg-red-500/10"
+                            : isDragging
+                              ? "border-emerald-400 bg-emerald-500/10"
+                              : "border-stone-600 hover:border-stone-500 hover:bg-stone-800/50"
+                        }`}
+                      >
+                        <div className="flex flex-col items-center justify-center text-center pointer-events-none">
+                          <Upload
+                            size={32}
+                            className={`mb-2 transition-colors duration-200 ${
+                              isDragInvalid
+                                ? "text-red-400"
+                                : isDragging
+                                  ? "text-emerald-400"
+                                  : "text-stone-400"
+                            }`}
+                          />
+                          <p
+                            className={`mb-1 text-sm ${
+                              isDragInvalid
+                                ? "text-red-300"
+                                : isDragging
+                                  ? "text-white"
+                                  : "text-stone-400"
+                            }`}
+                          >
+                            {isDragInvalid ? (
+                              <span className="font-medium text-red-400">
+                                Invalid File Type
+                              </span>
+                            ) : (
+                              <>
+                                <span className="font-medium text-emerald-300">
+                                  Click to upload
+                                </span>{" "}
+                                or drag and drop
+                              </>
+                            )}
+                          </p>
+                          <p className="text-xs text-stone-500">
+                            XLSX, XLS, or CSV (MAX. 10MB)
+                          </p>
+                        </div>
+                        <input
+                          type="file"
+                          id="import-file"
+                          accept=".xlsx, .xls, .csv"
+                          onChange={handleFileSelect}
+                          className="hidden"
                         />
-                        <p
-                          className={`mb-2 text-sm ${
-                            isDragInvalid
-                              ? "text-red-300"
-                              : isDragging
-                                ? "text-white"
-                                : "text-stone-400"
-                          }`}
-                        >
-                          {isDragInvalid ? (
-                            <span className="font-medium text-red-400">
-                              Invalid File Type
-                            </span>
-                          ) : (
-                            <>
-                              <span className="font-medium text-emerald-300">
-                                Click to upload
-                              </span>{" "}
-                              or drag and drop
-                            </>
-                          )}
-                        </p>
-                        <p className="text-xs text-stone-500">
-                          XLSX, XLS, or CSV (MAX. 10MB)
-                        </p>
-                      </div>
-                      <input
-                        type="file"
-                        id="import-file"
-                        accept=".xlsx, .xls, .csv"
-                        onChange={handleFileSelect}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
+                      </label>
+                    </div>
+                  )}
                   {showConfirmImport && importData && (
                     <div className="mt-5 bg-white/5 p-5 rounded-2xl border border-white/10">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-2 h-2 rounded-full bg-amber-400"></div>
-                        <p className="text-sm font-medium text-white/90">
-                          {importData.duplicateEntries.length} duplicate{" "}
+                      <div className=" mb-4">
+                        <p className="text-xs text-white/90">
+                          <span className="text-sm text-amber-300">
+                            {importData.duplicateEntries.length.toLocaleString()}
+                          </span>{" "}
+                          duplicate{" "}
                           {importData.duplicateEntries.length > 1
                             ? "entries"
                             : "entry"}{" "}
@@ -367,71 +392,84 @@ const Settings = ({
                   )}
                 </div>
 
+                {/* DELETE SECTION */}
                 <div className="border-t border-stone-700 pt-3">
                   <div className="flex items-center gap-2">
                     <Trash2 size={20} className="text-stone-300" />
-                    <h2 className="text-sm font-normal text-white">
+                    <h2 className="text-md font-medium text-white">
                       Delete Records
                     </h2>
                   </div>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-2">
-                    <span className="text-sm text-stone-400">
-                      Remove all expense records permanently
-                    </span>
-                    <div className="w-full flex flex-col items-end md:w-auto mt-0 md:mt-0">
-                      <button
-                        onClick={() => setShowConfirmDelete(true)}
-                        disabled={totalEntries === 0}
-                        className="cursor-pointer mt-2 md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 text-white text-sm font-medium shadow-sm hover:bg-red-400 active:bg-red-800 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
-                      >
-                        <Trash size={18} />
-                        Delete All
-                      </button>
-                      {totalEntries === 0 && (
-                        <span className="flex items-center gap-1 text-xs text-stone-500 mt-1.5">
-                          <CircleX size={14} />
-                          No records found.
-                        </span>
+                    <div className="w-full">
+                      {!showConfirmDelete && (
+                        <>
+                          <span className="text-sm text-stone-400">
+                            Remove all expense records permanently.
+                          </span>
+                          <div className="flex items-center flex-wrap gap-4 mt-2">
+                            <div className="flex flex-col text-xs text-stone-500">
+                              {totalEntries === 0 && (
+                                <span className="font-normal text-stone-400 italic">
+                                  No records found.
+                                </span>
+                              )}
+                              {totalEntries > 0 && (
+                                <p className="text-xs text-stone-400 italic">
+                                  Delete all{" "}
+                                  <span className="font-medium text-sm text-red-300">
+                                    {totalEntries.toLocaleString()}
+                                  </span>{" "}
+                                  {totalEntries === 1 ? "record" : "records"}
+                                </p>
+                              )}
+                            </div>
+
+                            <button
+                              onClick={() => setShowConfirmDelete(true)}
+                              disabled={
+                                totalEntries === 0 ||
+                                (showConfirmImport && importData)
+                              }
+                              className="ml-auto cursor-pointer mt-2 md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 text-white text-sm font-medium shadow-sm hover:bg-red-400 active:bg-red-600 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
+                            >
+                              <Trash size={18} />
+                              Erase All Data
+                            </button>
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
-                  {showConfirmDelete && (
-                    <div className="mt-4 bg-white/5 p-4 rounded-lg border border-white/10">
+                  {showConfirmDelete && !(showConfirmImport && importData) && (
+                    <div className="mt-1 bg-white/5 p-4 rounded-2xl border border-red-400">
                       <p className="text-sm text-stone-300">
-                        Are you sure you want to delete all{" "}
-                        <span className="font-medium text-white">
-                          {totalEntries}
-                        </span>{" "}
-                        records?
-                      </p>
-                      <p className="text-sm text-stone-300 mt-1">
                         To proceed, type &quot;
-                        <span className="font-semibold text-white">
-                          confirm
-                        </span>
+                        <span className="font-medium text-white">confirm</span>
                         &quot; in the box below.
                       </p>
-                      <p className="text-sm text-red-400 mt-1">
+                      <p className="text-sm text-red-300">
                         This action cannot be undone.
                       </p>
-                      <div className="mt-3">
+                      <div className="mt-2">
                         <input
                           type="text"
                           value={deleteConfirmationInput}
                           onChange={(e) =>
                             setDeleteConfirmationInput(e.target.value)
                           }
-                          className="w-full bg-stone-800 border border-stone-600 rounded-lg px-2 py- text-white text-center placeholder-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-500 transition"
+                          maxLength={15}
+                          className="w-full bg-transparent border-0 border-b border-stone-600 px-2 py-1 text-white text-center placeholder-stone-500 focus:outline-none focus:border-stone-400 transition"
                           autoFocus
                         />
                       </div>
-                      <div className="flex justify-center space-x-4 mt-3">
+                      <div className="flex justify-center space-x-4 mt-4">
                         <button
                           onClick={() => {
                             setShowConfirmDelete(false);
                             setDeleteConfirmationInput("");
                           }}
-                          className="px-4 py-1 rounded-full bg-stone-700 text-white hover:bg-stone-600 transition cursor-pointer w-full"
+                          className="text-sm px-4 py-2 rounded-full bg-stone-700 text-white hover:bg-stone-600 transition cursor-pointer w-full"
                         >
                           Cancel
                         </button>
@@ -444,7 +482,7 @@ const Settings = ({
                           disabled={
                             deleteConfirmationInput.toLowerCase() !== "confirm"
                           }
-                          className="px-4 py-1 rounded-full bg-red-700 text-white hover:bg-red-500 active:bg-red-800 transition cursor-pointer w-full disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
+                          className="text-sm font-semibold px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-400 active:bg-red-600 transition cursor-pointer w-full disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
                         >
                           Confirm Delete
                         </button>
