@@ -6,13 +6,15 @@ const COUNT_TONE_CLASS = {
   warning: "text-amber-400",
 };
 
-const Count = ({ children, tone = "success" }) => (
-  <span className={`font-semibold ${COUNT_TONE_CLASS[tone]}`}>{children}</span>
+const ToastCount = ({ children, tone = "success" }) => (
+  <span className={`font-semibold ${COUNT_TONE_CLASS[tone]}`}>
+    {typeof children === "number" ? children.toLocaleString() : children}
+  </span>
 );
 
-Count.propTypes = {
+ToastCount.propTypes = {
   children: PropTypes.node.isRequired,
   tone: PropTypes.oneOf(["success", "error", "warning"]),
 };
 
-export default Count;
+export default ToastCount;
