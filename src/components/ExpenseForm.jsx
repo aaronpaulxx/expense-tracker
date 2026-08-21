@@ -64,7 +64,7 @@ const ExpenseForm = ({
           onChange={(e) =>
             setNewExpense((prev) => ({ ...prev, name: e.target.value }))
           }
-          maxLength={20}
+          maxLength={35}
           className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
             errors.name
               ? "border-red-400"
