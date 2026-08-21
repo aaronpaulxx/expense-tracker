@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import PropTypes from "prop-types";
 import { AlertCircle } from "lucide-react";
 import { Dialog, Transition } from "@headlessui/react";
+import { pluralize } from "../lib/toast";
 
 const DeleteConfirmationModal = ({
   isOpen,
@@ -43,21 +44,20 @@ const DeleteConfirmationModal = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-stone-900 p-6 text-left align-middle shadow-xl transition-all border border-stone-500">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-stone-900 p-6 text-left align-middle shadow-xl transition-all border border-stone-900">
                 <Dialog.Title
                   as="h3"
-                  className="text-xl font-semibold leading-6 text-white border-b border-stone-500 pb-3 mb-4 flex items-center gap-2"
+                  className="text-lg font-semibold leading-6 text-white border-b border-stone-500 pb-3 mb-2 flex items-center gap-2"
                 >
-                  <AlertCircle size={35} className="text-red-500" /> Confirm
-                  Deletion
+                  <AlertCircle size={28} className="text-red-400" /> Delete List
                 </Dialog.Title>
-                <div className="mt-2">
+                <div className="mb-5">
                   <p className="text-sm text-stone-300">
                     Are you sure you want to delete all{" "}
-                    <span className="font-semibold text-red-500 text-lg">
-                      {expenseCount}
+                    <span className="font-semibold text-red-400 text-lg">
+                      {expenseCount.toLocaleString()}
                     </span>{" "}
-                    expenses for{" "}
+                    {pluralize(expenseCount, "expense")} for{" "}
                     <span className="font-semibold text-stone-200">
                       {dayName}
                     </span>
@@ -68,14 +68,14 @@ const DeleteConfirmationModal = ({
                 <div className="mt-4 flex justify-end gap-3">
                   <button
                     type="button"
-                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-stone-700 px-4 py-2 text-sm font-normal text-stone-200 hover:bg-stone-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 focus-visible:ring-offset-2 transition-colors duration-200"
+                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-stone-700 px-4 py-2 text-sm font-medium text-white hover:bg-stone-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 focus-visible:ring-offset-2 transition-colors duration-200"
                     onClick={onClose}
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
-                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-red-700 px-4 py-2 text-sm font-normal text-white hover:bg-red-500 active:bg-red-800 transition-colors duration-200"
+                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-400 active:bg-red-600 transition-colors duration-200"
                     onClick={onConfirm}
                   >
                     Confirm
