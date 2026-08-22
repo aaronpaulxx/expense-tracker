@@ -47,7 +47,7 @@ const ExpenseRowSkeleton = () => (
         <div className="h-3 w-16 bg-stone-700/40 rounded" />
       </div>
     </div>
-    <div className="h-7 w-20 bg-stone-700/40 rounded-full shrink-0" />
+    <div className="h-9 w-28 bg-stone-700/40 rounded-full shrink-0 mr-12" />
   </div>
 );
 
