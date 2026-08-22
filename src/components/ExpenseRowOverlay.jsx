@@ -19,7 +19,7 @@ const ExpenseRowOverlay = ({ expense }) => {
   const CategoryIcon = CATEGORIES[expense.category]?.icon;
 
   return (
-    <div className="relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-stone-800 to-stone-800/95 shadow-2xl ring-2 ring-stone-300 cursor-grabbing overflow-hidden">
+    <div className="relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-stone-800 to-stone-800/95 shadow-2xl ring-2 ring-emerald-300 cursor-grabbing overflow-hidden">
       <div className="flex items-center gap-5 min-w-0 flex-1">
         <div className="rounded-xl p-2 bg-stone-950/90 shrink-0">
           {CategoryIcon && (
