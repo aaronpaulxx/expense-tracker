@@ -112,7 +112,7 @@ const ExpenseForm = ({
               );
               return (
                 <div className="relative">
-                  <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 border border-stone-500 rounded-lg text-sm text-white cursor-pointer transition-colors duration-200 hover:bg-stone-700 focus:outline-none">
+                 <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 border border-stone-500 rounded-lg text-sm text-white cursor-pointer transition-colors duration-200 hover:bg-stone-700 focus:outline-none data-focus:border-emerald-400 data-open:border-emerald-400">
                     <span className="flex items-center gap-2 truncate">
                       {selected?.icon && (
                         <selected.icon
@@ -127,7 +127,7 @@ const ExpenseForm = ({
                     <ChevronsUpDown
                       size={16}
                       className={`shrink-0 transition-colors duration-200 ${
-                        open ? "text-green-500" : "text-stone-400"
+                        open ? "text-emerald-500" : "text-stone-400"
                       }`}
                     />
                   </ListboxButton>

@@ -151,11 +151,11 @@ const Settings = ({
             <Dialog.Panel className="relative bg-stone-900 p-5 rounded-xl shadow-lg w-160 max-w-[90%] max-h-[95vh] overflow-y-auto border-stone-900 border custom-scrollbar">
               <div className="flex justify-between items-center border-b border-stone-500">
                 <Dialog.Title className="text-xl font-semibold text-white">
-                  <div className="flex items-center gap-2 mb-2 border-l-4 pl-2 border-stone-300">
+                  <div className="mb-2 flex items-center gap-2 mb-2 border-l-4 pl-2 border-stone-300">
                     Settings
                   </div>
                 </Dialog.Title>
-                <CloseButton className="text-stone-400 hover:text-white transition-all duration-200 cursor-pointer">
+                <CloseButton className="mb-4 text-stone-400 hover:text-white transition-all duration-200 cursor-pointer">
                   <X size={24} />
                 </CloseButton>
               </div>
@@ -169,9 +169,9 @@ const Settings = ({
                     </h2>
                   </div>
                   <div className="mt-2">
-                    <div className="w-full bg-stone-700 rounded-full h-3.5 overflow-hidden">
+                    <div className="w-full bg-stone-700 rounded-full h-3 overflow-hidden">
                       <div
-                        className={`h-3.5 ${storageInfo.percentage < 8 ? "rounded-full" : "rounded-l-full"} ${
+                        className={`h-3 ${storageInfo.percentage < 8 ? "rounded-full" : "rounded-l-full"} ${
                           parseFloat(storageInfo.used) >= storageInfo.total
                             ? "bg-red-400"
                             : parseFloat(storageInfo.used) >= 4800
@@ -431,7 +431,7 @@ const Settings = ({
                                 totalEntries === 0 ||
                                 (showConfirmImport && importData)
                               }
-                              className="ml-auto cursor-pointer mt-2 md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 text-white text-sm font-medium shadow-sm hover:bg-red-400 active:bg-red-600 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
+                              className="ml-auto cursor-pointer md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 text-white text-sm font-medium shadow-sm hover:bg-red-400 active:bg-red-600 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
                             >
                               <Trash size={18} />
                               Erase All Data
@@ -451,7 +451,7 @@ const Settings = ({
                       <p className="text-sm text-red-300">
                         This action cannot be undone.
                       </p>
-                      <div className="mt-2">
+                      <div className="mt-1">
                         <input
                           type="text"
                           value={deleteConfirmationInput}
@@ -463,13 +463,13 @@ const Settings = ({
                           autoFocus
                         />
                       </div>
-                      <div className="flex justify-center space-x-4 mt-4">
+                      <div className="flex justify-center gap-4 mt-2">
                         <button
                           onClick={() => {
                             setShowConfirmDelete(false);
                             setDeleteConfirmationInput("");
                           }}
-                          className="text-sm px-4 py-2 rounded-full bg-stone-700 text-white hover:bg-stone-600 transition cursor-pointer w-full"
+                          className="text-sm font-medium px-4 py-2 rounded-full bg-stone-700 text-white hover:bg-stone-600 transition cursor-pointer w-full"
                         >
                           Cancel
                         </button>
@@ -482,7 +482,7 @@ const Settings = ({
                           disabled={
                             deleteConfirmationInput.toLowerCase() !== "confirm"
                           }
-                          className="text-sm font-semibold px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-400 active:bg-red-600 transition cursor-pointer w-full disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
+                          className="text-sm font-medium px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-400 active:bg-red-600 transition cursor-pointer w-full disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
                         >
                           Confirm Delete
                         </button>
