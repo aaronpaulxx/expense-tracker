@@ -5,6 +5,7 @@ import { List } from "react-window";
 import {
   DndContext,
   DragOverlay,
+  MeasuringStrategy,
   closestCenter,
   PointerSensor,
   useSensor,
@@ -24,6 +25,11 @@ import ToastCount from "./ToastCount";
 // Height (px) reserved per row slot, including the gap below it.
 const ROW_HEIGHT = 68;
 const ROW_GAP = 12;
+const MEASURING_CONFIG = {
+  droppable: {
+    strategy: MeasuringStrategy.WhileDragging,
+  },
+};
 
 const VirtualizedRow = memo(function VirtualizedRow({
   index,
@@ -192,6 +198,7 @@ const ExpenseList = ({
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
+              measuring={MEASURING_CONFIG}
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
               onDragCancel={handleDragCancel}
