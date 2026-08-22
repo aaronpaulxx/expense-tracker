@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { Plus, Save, ChevronsUpDown, Check } from "lucide-react";
 import {
@@ -25,6 +25,8 @@ const ExpenseForm = ({
   onCancelEdit,
 }) => {
   const [touched, setTouched] = useState({ name: false, amount: false });
+  const containerRef = useRef(null);
+  const nameInputRef = useRef(null);
 
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
@@ -44,26 +46,46 @@ const ExpenseForm = ({
   const handleSubmit = () => {
     onSubmit();
   };
-
   useEffect(() => {
     const handleKeyDown = (event) => {
+      if (!containerRef.current?.contains(document.activeElement)) return;
+
+      if (event.repeat) return;
+
+      const target = event.target;
+
+      if (
+        target.tagName === "BUTTON" ||
+        target.closest('[role="listbox"], [role="option"]')
+      ) {
+        return;
+      }
+
       if (event.key === "Enter") {
+        event.preventDefault();
         onSubmit();
       }
-      // Escape cancels an in-progress edit, same as clicking Cancel.
       if (event.key === "Escape" && isEditing) {
+        document.activeElement?.blur();
         onCancelEdit();
       }
     };
-    document.addEventListener("keydown", handleKeyDown);
 
+    document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onSubmit, isEditing, onCancelEdit]);
 
+  useEffect(() => {
+    if (isEditing) {
+      nameInputRef.current?.focus();
+    }
+  }, [isEditing]);
+
   return (
-    <div className="space-y-3 p-2">
+    <div ref={containerRef} className="space-y-3 p-2">
       <div>
         <input
+          ref={nameInputRef}
           value={newExpense.name}
           onChange={(e) =>
             setNewExpense((prev) => ({ ...prev, name: e.target.value }))
