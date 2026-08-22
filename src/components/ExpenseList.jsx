@@ -1,4 +1,4 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect, memo } from "react";
 import PropTypes from "prop-types";
 import { ClipboardX } from "lucide-react";
 import { List } from "react-window";
@@ -19,12 +19,14 @@ import {
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ExpenseRow from "./ExpenseRow";
 import ExpenseRowOverlay from "./ExpenseRowOverlay";
+import ExpenseRowSkeleton from "./ExpenseRowSkeleton";
 import { notifySuccess, pluralize } from "../lib/toast";
 import ToastCount from "./ToastCount";
 
 // Height (px) reserved per row slot, including the gap below it.
 const ROW_HEIGHT = 68;
 const ROW_GAP = 12;
+const SCROLL_STOP_DELAY = 120;
 const MEASURING_CONFIG = {
   droppable: {
     strategy: MeasuringStrategy.WhileDragging,
@@ -40,19 +42,24 @@ const VirtualizedRow = memo(function VirtualizedRow({
   onQuickFill,
   onEditClick,
   handleDeleteExpense,
+  isScrolling,
 }) {
   const expense = expensesWithIds[index];
   return (
     <div style={{ ...style, boxSizing: "border-box", paddingBottom: ROW_GAP }}>
-      <ExpenseRow
-        expense={expense}
-        index={index}
-        deletingIndex={deletingIndex}
-        newlyAddedId={newlyAddedId}
-        onQuickFill={onQuickFill}
-        onEditClick={onEditClick}
-        handleDeleteExpense={handleDeleteExpense}
-      />
+      {isScrolling ? (
+        <ExpenseRowSkeleton />
+      ) : (
+        <ExpenseRow
+          expense={expense}
+          index={index}
+          deletingIndex={deletingIndex}
+          newlyAddedId={newlyAddedId}
+          onQuickFill={onQuickFill}
+          onEditClick={onEditClick}
+          handleDeleteExpense={handleDeleteExpense}
+        />
+      )}
     </div>
   );
 });
@@ -66,6 +73,7 @@ VirtualizedRow.propTypes = {
   onQuickFill: PropTypes.func,
   onEditClick: PropTypes.func.isRequired,
   handleDeleteExpense: PropTypes.func.isRequired,
+  isScrolling: PropTypes.bool,
 };
 
 const ExpenseList = ({
@@ -81,6 +89,26 @@ const ExpenseList = ({
 }) => {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [activeId, setActiveId] = useState(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollStopTimeoutRef = useRef(null);
+
+  const handleListScroll = useCallback(() => {
+    setIsScrolling(true);
+    if (scrollStopTimeoutRef.current) {
+      clearTimeout(scrollStopTimeoutRef.current);
+    }
+    scrollStopTimeoutRef.current = setTimeout(() => {
+      setIsScrolling(false);
+    }, SCROLL_STOP_DELAY);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (scrollStopTimeoutRef.current) {
+        clearTimeout(scrollStopTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -212,6 +240,7 @@ const ExpenseList = ({
                   rowCount={expensesWithIds.length}
                   rowHeight={ROW_HEIGHT}
                   overscanCount={4}
+                  onScroll={handleListScroll}
                   rowProps={{
                     expensesWithIds,
                     deletingIndex,
@@ -219,6 +248,7 @@ const ExpenseList = ({
                     onQuickFill,
                     onEditClick,
                     handleDeleteExpense,
+                    isScrolling,
                   }}
                   style={{ height: "100%" }}
                   className="custom-scrollbar overflow-x-hidden"
