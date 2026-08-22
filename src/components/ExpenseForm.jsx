@@ -72,8 +72,8 @@ const ExpenseForm = ({
           maxLength={35}
           className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
             errors.name && !touched.name
-              ? "border-red-400 focus:border-stone-300"
-              : "border-stone-500 border focus:border-stone-300"
+              ? "border-red-400 focus:border-emerald-400"
+              : "border-stone-500 border focus:border-emerald-400"
           } rounded-lg text-white text-sm`}
           placeholder="Description"
         />
@@ -89,8 +89,8 @@ const ExpenseForm = ({
             onFocus={() => setTouched((prev) => ({ ...prev, amount: true }))}
             className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
               errors.amount && !touched.amount
-                ? "border-red-400 focus:border-stone-300"
-                : "border-stone-500 border focus:border-stone-300"
+                ? "border-red-400 focus:border-emerald-400"
+                : "border-stone-500 border focus:border-emerald-400"
             } rounded-lg text-white text-sm`}
             placeholder="Amount"
             type="number"
