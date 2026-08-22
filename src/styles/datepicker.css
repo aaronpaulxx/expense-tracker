@@ -6,26 +6,27 @@
    Color Palette
    ------------------------------------------------------------------------ */
    :root {
+    font-family: "DM Sans", sans-serif;
     --dp-bg: #0c0a09;
     --dp-text: #f0f0f0;
     --dp-selected-text: #1c1917;
     --dp-muted-text: #a0a0a0;
-    --dp-border: #3b3b3b;
-    --dp-hover-bg: #222222;
-    --dp-today-bg: #57534e;
-    --dp-selected-bg: #e7e5e4;
+    --dp-border: #6ee7b7;
+    --dp-hover-bg: #064e3b;
+    --dp-today-bg: #064e3b;
+    --dp-selected-bg: #6ee7b7;
   }
   
   /* ------------------------------------------------------------------------
      Main DatePicker Container
      ------------------------------------------------------------------------ */
   .react-datepicker {
+    font-family: "DM Sans", sans-serif;
     background-color: var(--dp-bg);
     color: var(--dp-text);
     border: 1px solid var(--dp-border);
     border-radius: 20px;
     padding: 8px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
   }
   
@@ -110,7 +111,7 @@
   }
   
   .react-datepicker__day-name {
-    color: var(--dp-muted-text);
+    color: var(--dp-selected-bg);
     font-size: 0.8rem;
     font-weight: 500;
     width: 2.25rem;
@@ -152,7 +153,8 @@
   }
   
   .react-datepicker__day--today {
-    background-color: var(--dp-today-bg) !important;
+    background-color: var(--dp-today-bg);
+    color: var(--dp-selected-bg);
     font-weight: 600;
     border-radius: 10px;
   }

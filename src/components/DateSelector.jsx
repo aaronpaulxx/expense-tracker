@@ -31,9 +31,9 @@ const DateSelector = ({
       <button
         onClick={decreaseMonth}
         disabled={prevMonthButtonDisabled}
-        className="p-1 mr-2 hover:bg-stone-700 rounded-full transition-colors cursor-pointer"
+        className="p-1 mr-2 rounded-full transition-colors cursor-pointer"
       >
-        <ChevronLeft size={20} className="text-stone-400 hover:text-white" />
+        <ChevronLeft size={24} className="text-stone-400 hover:text-emerald-300" />
       </button>
 
       {/* Month & Year Dropdowns */}
@@ -72,9 +72,9 @@ const DateSelector = ({
       <button
         onClick={increaseMonth}
         disabled={nextMonthButtonDisabled}
-        className="p-1 ml-2 hover:bg-stone-700 rounded-full transition-colors cursor-pointer"
+        className="p-1 ml-2 rounded-full transition-colors cursor-pointer"
       >
-        <ChevronRight size={20} className="text-stone-400 hover:text-white" />
+        <ChevronRight size={24} className="text-stone-400 hover:text-emerald-300" />
       </button>
     </div>
   );
@@ -95,7 +95,7 @@ const DateSelector = ({
       {/* Previous Day Button */}
       <button
         onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}
-        className="h-12.5 group px-3 py-2 text-white duration-200 hover:bg-stone-800 text-sm flex items-center justify-center cursor-pointer "
+        className="h-12.5 group px-3 py-2 text-white duration-200 hover:bg-stone-800 hover:text-emerald-300 text-sm flex items-center justify-center cursor-pointer "
       >
         {/* Tooltip */}
         <div className="absolute left-1 top-15 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
@@ -119,7 +119,7 @@ const DateSelector = ({
 
         {/* Weekday Container */}
         <div>
-          <span className="text-lg text-green-300 uppercase">
+          <span className="text-lg text-emerald-300 uppercase">
             - {date.toLocaleDateString("en-US", { weekday: "long" })} -
           </span>
         </div>
@@ -165,7 +165,7 @@ const DateSelector = ({
       {/* Next Day Button */}
       <button
         onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}
-        className="h-12.5 group px-3 py-2 text-white duration-200 hover:bg-stone-800 text-sm flex items-center justify-center cursor-pointer "
+        className="h-12.5 group px-3 py-2 text-white duration-200 hover:bg-stone-800 hover:text-emerald-300 text-sm flex items-center justify-center cursor-pointer "
       >
         {/* Tooltip */}
         <div className="absolute right-1 top-15 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">

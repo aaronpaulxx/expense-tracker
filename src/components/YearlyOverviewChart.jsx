@@ -109,9 +109,9 @@ const CustomYearlyTooltip = ({ active, payload, label, data }) => {
               {previousMonthData &&
                 previousMonthData[entry.name] !== undefined &&
                 (entry.value > previousMonthData[entry.name] ? (
-                  <ArrowBigUp className="h-5 w-5 text-green-500 fill-green-500 ml-1" />
+                  <ArrowBigUp className="h-5 w-5 text-red-500 fill-red-500 ml-1" />
                 ) : entry.value < previousMonthData[entry.name] ? (
-                  <ArrowBigDown className="h-5 w-5 text-red-500 fill-red-500 ml-1" />
+                  <ArrowBigDown className="h-5 w-5 text-green-500 fill-green-500 ml-1" />
                 ) : null)}
             </div>
           </div>
@@ -312,7 +312,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
           checked={chartType === "area"}
           onChange={(checked) => setChartType(checked ? "area" : "line")}
           className={`relative inline-flex items-center h-5 w-9 rounded-full p-0.5 transition-colors cursor-pointer ${
-            chartType === "area" ? "bg-indigo-500" : "bg-green-500"
+            chartType === "area" ? "bg-emerald-500" : "bg-stone-500"
           }`}
         >
           <span className="sr-only">Switch between line and area chart</span>

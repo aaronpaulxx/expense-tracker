@@ -134,13 +134,13 @@ const ExpenseForm = ({
                   <ListboxOptions
                     anchor="bottom start"
                     transition
-                    className="w-(--button-width) mt-1 bg-stone-800 border border-stone-600 rounded-lg shadow-lg z-50 focus:outline-none p-1 origin-top transition duration-150 ease-out data-closed:opacity-0 data-closed:scale-95"
+                    className="w-(--button-width) mt-1 bg-stone-800 border border-stone-600 rounded-lg shadow-lg z-50 focus:outline-none px-1 origin-top transition duration-150 ease-out data-closed:opacity-0 data-closed:scale-95"
                   >
                     {categoryOptions.map((option) => (
                       <ListboxOption
                         key={option.value}
                         value={option.value}
-                        className="group flex items-center mb-1 gap-2 px-2 py-1.5 text-sm text-white cursor-pointer rounded-md data-focus:bg-stone-700 data-selected:bg-linear-to-r data-selected:from-green-800 data-selected:to-teal-800"
+                        className="group flex items-center mb-1 mt-1 gap-2 px-2 py-1.5 text-sm text-white cursor-pointer rounded-md data-focus:bg-stone-700 data-selected:bg-linear-to-r data-selected:from-green-800 data-selected:to-teal-800"
                       >
                         <option.icon
                           size={16}
