@@ -33,7 +33,11 @@ const DateSelector = ({
         disabled={prevMonthButtonDisabled}
         className="p-1 mr-2 rounded-full transition-colors cursor-pointer"
       >
-        <ChevronLeft size={24} strokeWidth={3} className="text-stone-400 hover:text-emerald-300" />
+        <ChevronLeft
+          size={24}
+          strokeWidth={3}
+          className="text-stone-400 hover:text-emerald-300"
+        />
       </button>
 
       {/* Month & Year Dropdowns */}
@@ -42,7 +46,7 @@ const DateSelector = ({
         <select
           value={date.getMonth()}
           onChange={({ target: { value } }) => changeMonth(parseInt(value))}
-          className="bg-stone-800 text-white px-2 py-1 rounded-md text-sm focus:outline-none cursor-pointer"
+          className="dp-month-select"
         >
           {months.map((month, index) => (
             <option key={index} value={index}>
@@ -55,7 +59,7 @@ const DateSelector = ({
         <select
           value={date.getFullYear()}
           onChange={({ target: { value } }) => changeYear(parseInt(value))}
-          className="bg-stone-800 text-white px-2 py-1 rounded-md text-sm focus:outline-none cursor-pointer"
+          className="dp-year-select"
         >
           {Array.from(
             { length: 100 },
@@ -74,7 +78,11 @@ const DateSelector = ({
         disabled={nextMonthButtonDisabled}
         className="p-1 ml-2 rounded-full transition-colors cursor-pointer"
       >
-        <ChevronRight size={24} strokeWidth={3} className="text-stone-400 hover:text-emerald-300" />
+        <ChevronRight
+          size={24}
+          strokeWidth={3}
+          className="text-stone-400 hover:text-emerald-300"
+        />
       </button>
     </div>
   );
