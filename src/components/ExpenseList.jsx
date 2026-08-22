@@ -187,7 +187,7 @@ const ExpenseList = ({
           </div>
         )}
 
-        <div className="p-2 h-90 sm:h-90 rounded-xl border border-stone-500 bg-stone-950 transition-colors duration-200">
+        <div className="p-2 h-87 rounded-xl border border-stone-500 bg-stone-950 transition-colors duration-200">
           {expensesWithIds.length ? (
             <DndContext
               sensors={sensors}
@@ -204,6 +204,7 @@ const ExpenseList = ({
                   rowComponent={VirtualizedRow}
                   rowCount={expensesWithIds.length}
                   rowHeight={ROW_HEIGHT}
+                  overscanCount={4}
                   rowProps={{
                     expensesWithIds,
                     deletingIndex,
