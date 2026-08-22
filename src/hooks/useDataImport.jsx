@@ -60,11 +60,12 @@ export const useDataImport = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isDragInvalid, setIsDragInvalid] = useState(false);
 
-  const resetImportState = () => {
+  const resetImportState = useCallback(() => {
     setShowConfirmImport(false);
     setImportData(null);
-  };
-
+    setIsDragging(false);
+    setIsDragInvalid(false);
+  }, []);
   const parseDateCell = useCallback(
     (cellValue) => {
       if (cellValue === null || cellValue === undefined) {
@@ -270,7 +271,8 @@ export const useDataImport = ({
           notifyError(
             <div className="leading-tight">
               <div className="font-medium">
-                Found <ToastCount tone="error">{validationErrors.length}</ToastCount>{" "}
+                Found{" "}
+                <ToastCount tone="error">{validationErrors.length}</ToastCount>{" "}
                 {pluralize(validationErrors.length, "error")}:
               </div>
               <div className="text-sm text-stone-300 mt-1 whitespace-pre-line">
@@ -497,5 +499,6 @@ export const useDataImport = ({
     handleDragEnter,
     handleDragLeave,
     handleImportAction,
+    resetImportState,
   };
 };

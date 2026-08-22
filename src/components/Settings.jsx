@@ -65,23 +65,6 @@ const Settings = ({
     });
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      updateStorageInfo();
-    } else {
-      setShowConfirmDelete(false);
-      setDeleteConfirmationInput("");
-    }
-  }, [isOpen]);
-
-  const { exportFileInfo, handleExport } = useDataExport({
-    isOpen,
-    expenses,
-    totalEntries,
-    XLSX,
-    setXLSX,
-  });
-
   const {
     showConfirmImport,
     importData,
@@ -93,6 +76,7 @@ const Settings = ({
     handleDragEnter,
     handleDragLeave,
     handleImportAction,
+    resetImportState,
   } = useDataImport({
     expenses,
     setExpenses,
@@ -100,6 +84,24 @@ const Settings = ({
     setXLSX,
     updateStorageInfo,
     setIsOpen,
+  });
+
+  useEffect(() => {
+    if (isOpen) {
+      updateStorageInfo();
+    } else {
+      setShowConfirmDelete(false);
+      setDeleteConfirmationInput("");
+      resetImportState();
+    }
+  }, [isOpen, resetImportState]);
+
+  const { exportFileInfo, handleExport } = useDataExport({
+    isOpen,
+    expenses,
+    totalEntries,
+    XLSX,
+    setXLSX,
   });
 
   const handleClearRecords = () => {
