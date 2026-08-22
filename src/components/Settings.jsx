@@ -291,7 +291,7 @@ const Settings = ({
                           <p
                             className={`mb-1 text-sm ${
                               isDragInvalid
-                                ? "text-red-300"
+                                ? "text-red-400"
                                 : isDragging
                                   ? "text-white"
                                   : "text-stone-400"
@@ -397,7 +397,7 @@ const Settings = ({
                   <div className="flex items-center gap-2">
                     <Trash2 size={20} className="text-stone-300" />
                     <h2 className="text-md font-medium text-white">
-                      Delete Records
+                      Delete Data
                     </h2>
                   </div>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-2">
@@ -417,7 +417,7 @@ const Settings = ({
                               {totalEntries > 0 && (
                                 <p className="text-xs text-stone-400 italic">
                                   Delete all{" "}
-                                  <span className="font-medium text-sm text-red-300">
+                                  <span className="font-medium text-sm text-red-400">
                                     {totalEntries.toLocaleString()}
                                   </span>{" "}
                                   {totalEntries === 1 ? "record" : "records"}
@@ -448,7 +448,7 @@ const Settings = ({
                         <span className="font-medium text-white">confirm</span>
                         &quot; in the box below.
                       </p>
-                      <p className="text-sm text-red-300">
+                      <p className="text-sm text-red-400">
                         This action cannot be undone.
                       </p>
                       <div className="mt-1">
@@ -458,6 +458,7 @@ const Settings = ({
                           onChange={(e) =>
                             setDeleteConfirmationInput(e.target.value)
                           }
+                          onPaste={(e) => e.preventDefault()}
                           maxLength={15}
                           className="w-full bg-transparent border-0 border-b border-stone-600 px-2 py-1 text-white text-center placeholder-stone-500 focus:outline-none focus:border-stone-400 transition"
                           autoFocus

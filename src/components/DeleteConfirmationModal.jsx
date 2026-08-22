@@ -44,7 +44,7 @@ const DeleteConfirmationModal = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-stone-900 p-6 text-left align-middle shadow-xl transition-all border border-stone-900">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-stone-900 p-5 text-left align-middle shadow-xl transition-all border border-stone-900">
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-semibold leading-6 text-white border-b border-stone-500 pb-3 mb-2 flex items-center gap-2"
@@ -59,9 +59,11 @@ const DeleteConfirmationModal = ({
                     </span>{" "}
                     {pluralize(expenseCount, "expense")} for{" "}
                     <span className="font-semibold text-stone-200">
-                      {dayName}
+                      {dayName}?
                     </span>
-                    ? This action cannot be undone.
+                    <span className="mt-2 block text-red-400">
+                      This action cannot be undone.
+                    </span>
                   </p>
                 </div>
 
