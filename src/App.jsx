@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import toast, { Toaster, ToastBar } from "react-hot-toast";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "./components/Header";
@@ -50,13 +50,16 @@ const App = () => {
   // Editing happens in the same form used for adding, up at the top of
   // the page — scroll it into view so it's obvious something changed
   // when the user clicks "Edit" on an item further down the list.
-  const handleEditClick = (expense, index) => {
-    handleStartEdit(expense, index);
-    formSectionRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  };
+  const handleEditClick = useCallback(
+    (expense, index) => {
+      handleStartEdit(expense, index);
+      formSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    },
+    [handleStartEdit],
+  );
 
   const selectedMonth = date.toLocaleString("default", {
     month: "short",

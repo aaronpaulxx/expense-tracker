@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, useMemo, memo } from "react";
 import PropTypes from "prop-types";
 import { ClipboardX } from "lucide-react";
 import { List } from "react-window";
@@ -22,7 +22,6 @@ import { notifySuccess, pluralize } from "../lib/toast";
 import ToastCount from "./ToastCount";
 
 // Height (px) reserved per row slot, including the gap below it.
-// Tune this if rows look cramped or gapped vs the actual rendered card height.
 const ROW_HEIGHT = 68;
 const ROW_GAP = 12;
 
@@ -150,13 +149,20 @@ const ExpenseList = ({
   };
 
   // Get current expenses and ensure they all have valid IDs
-  const currentExpenses = expenses[currentDateKey] || [];
-  const expensesWithIds = currentExpenses.map((expense, index) => ({
-    ...expense,
-    // Ensure each expense has a unique ID - fallback to index if ID is missing
-    id: expense.id || `expense-${currentDateKey}-${index}`,
-  }));
-  const sortableIds = expensesWithIds.map((expense) => String(expense.id));
+  const currentExpenses = expenses[currentDateKey];
+  const expensesWithIds = useMemo(
+    () =>
+      (currentExpenses || []).map((expense, index) => ({
+        ...expense,
+        // Ensure each expense has a unique ID - fallback to index if ID is missing
+        id: expense.id || `expense-${currentDateKey}-${index}`,
+      })),
+    [currentExpenses, currentDateKey],
+  );
+  const sortableIds = useMemo(
+    () => expensesWithIds.map((expense) => String(expense.id)),
+    [expensesWithIds],
+  );
   const activeExpense = expensesWithIds.find(
     (expense) => String(expense.id) === activeId,
   );
@@ -181,7 +187,7 @@ const ExpenseList = ({
           </div>
         )}
 
-        <div className="p-2 h-87 sm:h-90 rounded-xl border border-stone-500 bg-stone-950 transition-colors duration-200">
+        <div className="p-2 h-90 sm:h-90 rounded-xl border border-stone-500 bg-stone-950 transition-colors duration-200">
           {expensesWithIds.length ? (
             <DndContext
               sensors={sensors}
