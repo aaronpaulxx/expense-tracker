@@ -225,7 +225,7 @@ const ExpenseList = ({
                 />
               </SortableContext>
 
-              <DragOverlay>
+              <DragOverlay dropAnimation={null}>
                 {activeExpense ? (
                   <ExpenseRowOverlay expense={activeExpense} />
                 ) : null}
