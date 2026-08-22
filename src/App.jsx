@@ -119,7 +119,7 @@ const App = () => {
             {/* Title and Author Information */}
             <div className="flex flex-col items-start text-left z-50">
               <h1 className="text-3xl font-bold titleh1">
-                <span className="bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">
                   Expense Tracker
                 </span>
               </h1>

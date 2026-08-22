@@ -151,7 +151,7 @@ const Settings = ({
             <Dialog.Panel className="relative bg-stone-900 p-5 rounded-xl shadow-lg w-160 max-w-[90%] max-h-[95vh] overflow-y-auto border-stone-900 border custom-scrollbar">
               <div className="flex justify-between items-center border-b border-stone-500">
                 <Dialog.Title className="text-xl font-semibold text-white">
-                  <div className="mb-2 flex items-center gap-2 mb-2 border-l-4 pl-2 border-stone-300">
+                  <div className="mb-4 flex items-center gap-2 border-l-4 pl-2 border-stone-300">
                     Settings
                   </div>
                 </Dialog.Title>
