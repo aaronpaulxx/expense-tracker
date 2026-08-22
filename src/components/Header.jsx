@@ -26,7 +26,7 @@ const Header = ({ clearRecords, expenses, setExpenses }) => {
 
         <div className="relative flex items-center">
           <div
-            className={`absolute right-full mr-2 overflow-hidden transition-all duration-300 ease-in-out ${
+            className={`absolute right-full mr-0 overflow-hidden transition-all duration-300 ease-in-out ${
               isHovered ? "w-12 opacity-100" : "w-0 opacity-0"
             }`}
           >

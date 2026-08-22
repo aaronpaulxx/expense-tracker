@@ -33,7 +33,7 @@ const DateSelector = ({
         disabled={prevMonthButtonDisabled}
         className="p-1 mr-2 rounded-full transition-colors cursor-pointer"
       >
-        <ChevronLeft size={24} className="text-stone-400 hover:text-emerald-300" />
+        <ChevronLeft size={24} strokeWidth={3} className="text-stone-400 hover:text-emerald-300" />
       </button>
 
       {/* Month & Year Dropdowns */}
@@ -74,7 +74,7 @@ const DateSelector = ({
         disabled={nextMonthButtonDisabled}
         className="p-1 ml-2 rounded-full transition-colors cursor-pointer"
       >
-        <ChevronRight size={24} className="text-stone-400 hover:text-emerald-300" />
+        <ChevronRight size={24} strokeWidth={3} className="text-stone-400 hover:text-emerald-300" />
       </button>
     </div>
   );
@@ -103,6 +103,7 @@ const DateSelector = ({
         </div>
         <ChevronLeft
           size={30}
+          strokeWidth={3}
           className="mr-1 transition-transform duration-300 ease-in-out group-hover:scale-130"
         />
       </button>
@@ -173,6 +174,7 @@ const DateSelector = ({
         </div>
         <ChevronRight
           size={30}
+          strokeWidth={3}
           className="ml-1 transition-transform duration-300 ease-in-out group-hover:scale-130"
         />
       </button>
