@@ -265,7 +265,7 @@ export const useDataImport = ({
             .join("\n");
           const moreText =
             validationErrors.length > 3
-              ? `\n...and ${validationErrors.length - 3} more errors`
+              ? `\n...and ${(validationErrors.length - 3).toLocaleString()} more errors`
               : "";
           notifyError(
             <div className="leading-tight">
@@ -273,7 +273,7 @@ export const useDataImport = ({
                 Found <ToastCount tone="error">{validationErrors.length}</ToastCount>{" "}
                 {pluralize(validationErrors.length, "error")}:
               </div>
-              <div className="text-sm text-stone-300 mt-1 whitespace-pre-line font-mono">
+              <div className="text-sm text-stone-300 mt-1 whitespace-pre-line">
                 {errorSummary}
                 {moreText}
               </div>
