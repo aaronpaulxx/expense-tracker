@@ -38,8 +38,6 @@ const ExpenseRow = ({
 
   const CategoryIcon = CATEGORIES[expense.category]?.icon;
 
-  // Both of these must be literal, complete strings somewhere Tailwind scans —
-  // that's why overlayGradient is a real field now instead of derived at runtime.
   const overlayGradient =
     CATEGORIES[expense.category]?.overlayGradient ||
     "from-stone-700 to-stone-700/45";
@@ -108,10 +106,10 @@ const ExpenseRow = ({
 
         <Menu as="div" className="relative">
           <MenuButton
-            className={`relative p-2 rounded-lg text-stone-400 ${menuHoverBg} hover:text-stone-100 hover:scale-105 data-active:text-stone-100 data-active:scale-105 transition-all duration-200`}
+            className={`cursor-pointer relative p-2 rounded-lg text-stone-400 ${menuHoverBg} hover:text-stone-100 hover:scale-105 data-active:text-stone-100 data-active:scale-105 transition-all duration-200`}
             aria-label="More options"
           >
-            <MoreVertical size={18} className="cursor-pointer" />
+            <MoreVertical size={18} />
           </MenuButton>
           <MenuItems
             anchor="bottom end"
