@@ -37,9 +37,12 @@ const ExpenseRow = ({
   } = useSortable({ id: uniqueId });
 
   const CategoryIcon = CATEGORIES[expense.category]?.icon;
-  const hoverGradient =
-    CATEGORIES[expense.category]?.hoverGradient ||
-    "hover:from-stone-700 hover:to-stone-700/45";
+
+  // Both of these must be literal, complete strings somewhere Tailwind scans —
+  // that's why overlayGradient is a real field now instead of derived at runtime.
+  const overlayGradient =
+    CATEGORIES[expense.category]?.overlayGradient ||
+    "from-stone-700 to-stone-700/45";
   const hoverBorder =
     CATEGORIES[expense.category]?.hoverBorder || "hover:border-stone-600";
   const menuHoverBg =
@@ -55,7 +58,7 @@ const ExpenseRow = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-stone-800 to-stone-800/45 ${hoverGradient} shadow-lg border border-stone-700/50 ${hoverBorder} group cursor-grab overflow-hidden ${
+      className={`relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-stone-800 to-stone-800/45 shadow-lg border border-stone-700/50 ${hoverBorder} transition-colors duration-300 group cursor-grab overflow-hidden ${
         deletingIndex === index
           ? "animate-[slideOut_0.4s_cubic-bezier(0.68,-0.55,0.27,1.55)_forwards]"
           : ""
@@ -66,7 +69,11 @@ const ExpenseRow = ({
       } ${isDragging ? "opacity-40" : ""}`}
     >
       <div
-        className="flex items-center gap-5 min-w-0 flex-1"
+        className={`absolute inset-0 rounded-xl bg-linear-to-r ${overlayGradient} -translate-x-full opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none`}
+      />
+
+      <div
+        className="relative z-10 flex items-center gap-5 min-w-0 flex-1"
         {...attributes}
         {...listeners}
       >
@@ -91,7 +98,7 @@ const ExpenseRow = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="relative z-10 flex items-center gap-3 shrink-0">
         <div className="text-right">
           <div className="inline-flex items-baseline gap-1 text-emerald-200 font-semibold text-md px-3 py-1.5 bg-emerald-900 rounded-full shadow-sm whitespace-nowrap border border-emerald-800/30">
             <span className="text-md opacity-80">₱</span>
