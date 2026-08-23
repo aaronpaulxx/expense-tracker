@@ -337,7 +337,7 @@ body {
 }
 
 .delete-button-small .svgIcon path {
-  fill: #dc2626;
+  fill: #f87171;
 }
 
 .delete-button-small::before {
