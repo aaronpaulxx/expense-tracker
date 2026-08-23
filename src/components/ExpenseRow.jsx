@@ -42,6 +42,9 @@ const ExpenseRow = ({
     "hover:from-stone-700 hover:to-stone-700/45";
   const hoverBorder =
     CATEGORIES[expense.category]?.hoverBorder || "hover:border-stone-600";
+  const menuHoverBg =
+    CATEGORIES[expense.category]?.hoverBg ||
+    "hover:bg-stone-600 data-active:bg-stone-600";
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -98,7 +101,7 @@ const ExpenseRow = ({
 
         <Menu as="div" className="relative">
           <MenuButton
-            className="relative p-2 rounded-lg text-stone-400 hover:bg-stone-600 hover:text-stone-100 hover:scale-105 data-active:bg-stone-600 data-active:text-stone-100 data-active:scale-105 transition-all duration-200"
+            className={`relative p-2 rounded-lg text-stone-400 ${menuHoverBg} hover:text-stone-100 hover:scale-105 data-active:text-stone-100 data-active:scale-105 transition-all duration-200`}
             aria-label="More options"
           >
             <MoreVertical size={18} className="cursor-pointer" />
