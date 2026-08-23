@@ -23,8 +23,8 @@ import { notifySuccess, pluralize } from "../lib/toast";
 import ToastCount from "./ToastCount";
 
 // Height (px) reserved per row slot, including the gap below it.
-const ROW_HEIGHT = 68;
-const ROW_GAP = 12;
+const ROW_HEIGHT = 66;
+const ROW_GAP = 8;
 const SCROLL_STOP_DELAY = 120;
 const MEASURING_CONFIG = {
   droppable: {
@@ -55,6 +55,7 @@ const VirtualizedRow = memo(function VirtualizedRow({
   onEditClick,
   handleDeleteExpense,
   isScrolling,
+  hasScrollbar,
 }) {
   const expense = expensesWithIds[index];
   const hasRenderedRef = useRef(false);
@@ -67,7 +68,14 @@ const VirtualizedRow = memo(function VirtualizedRow({
   }, [showSkeleton]);
 
   return (
-    <div style={{ ...style, boxSizing: "border-box", paddingBottom: ROW_GAP }}>
+    <div
+      style={{
+        ...style,
+        boxSizing: "border-box",
+        paddingRight: hasScrollbar ? 8 : 0,
+        paddingBottom: ROW_GAP,
+      }}
+    >
       {showSkeleton ? (
         <ExpenseRowSkeleton />
       ) : (
@@ -95,6 +103,7 @@ VirtualizedRow.propTypes = {
   onEditClick: PropTypes.func.isRequired,
   handleDeleteExpense: PropTypes.func.isRequired,
   isScrolling: PropTypes.bool,
+  hasScrollbar: PropTypes.bool,
 };
 
 const ExpenseList = ({
@@ -111,7 +120,9 @@ const ExpenseList = ({
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [activeId, setActiveId] = useState(null);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [hasScrollbar, setHasScrollbar] = useState(false);
   const scrollStopTimeoutRef = useRef(null);
+  const listWrapperRef = useRef(null);
 
   const handleListScroll = useCallback(() => {
     setIsScrolling(true);
@@ -222,6 +233,25 @@ const ExpenseList = ({
     (expense) => String(expense.id) === activeId,
   );
 
+  // Only reserve a right-side gutter for rows when content actually
+  // overflows the visible list height (i.e. a scrollbar is present).
+  useEffect(() => {
+    const el = listWrapperRef.current;
+    if (!el) return;
+
+    const checkOverflow = () => {
+      const contentHeight = expensesWithIds.length * ROW_HEIGHT;
+      setHasScrollbar(contentHeight > el.clientHeight);
+    };
+
+    checkOverflow();
+
+    const observer = new ResizeObserver(checkOverflow);
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, [expensesWithIds.length]);
+
   return (
     <>
       <div className="ml-2 mr-2">
@@ -242,7 +272,10 @@ const ExpenseList = ({
           </div>
         )}
 
-        <div className="p-2 h-87 rounded-xl border border-stone-500 bg-stone-950 transition-colors duration-200">
+        <div
+          ref={listWrapperRef}
+          className="p-2 h-87 rounded-xl border border-stone-500 bg-stone-950 transition-colors duration-200"
+        >
           {expensesWithIds.length ? (
             <DndContext
               sensors={sensors}
@@ -270,6 +303,7 @@ const ExpenseList = ({
                     onEditClick,
                     handleDeleteExpense,
                     isScrolling,
+                    hasScrollbar,
                   }}
                   style={{ height: "100%" }}
                   className="custom-scrollbar overflow-x-hidden"
