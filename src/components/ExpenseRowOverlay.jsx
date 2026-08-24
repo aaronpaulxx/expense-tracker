@@ -30,10 +30,10 @@ const ExpenseRowOverlay = ({ expense }) => {
           )}
         </div>
         <div className="flex flex-col min-w-0 flex-1">
-          <span className="font-medium text-white text-sm truncate">
+          <span className="font-medium text-foreground text-sm truncate">
             {truncateText(expense.name)}
           </span>
-          <span className="text-xs text-stone-400 capitalize">
+          <span className="text-xs text-muted-foreground capitalize">
             {expense.category}
           </span>
         </div>

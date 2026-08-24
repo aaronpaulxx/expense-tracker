@@ -94,9 +94,9 @@ const ExpenseForm = ({
           maxLength={35}
           className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
             errors.name && !touched.name
-              ? "border-red-400 focus:border-emerald-400"
-              : "border-stone-500 border focus:border-emerald-400"
-          } rounded-lg text-white text-sm`}
+              ? "border-destructive focus:border-emerald-400"
+              : "border-border border focus:border-emerald-400"
+          } rounded-lg text-foreground text-sm`}
           placeholder="Description"
         />
       </div>
@@ -111,9 +111,9 @@ const ExpenseForm = ({
             onFocus={() => setTouched((prev) => ({ ...prev, amount: true }))}
             className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
               errors.amount && !touched.amount
-                ? "border-red-400 focus:border-emerald-400"
-                : "border-stone-500 border focus:border-emerald-400"
-            } rounded-lg text-white text-sm`}
+                ? "border-destructive focus:border-emerald-400"
+                : "border-border border focus:border-emerald-400"
+            } rounded-lg text-foreground text-sm`}
             placeholder="Amount"
             type="number"
             min="0"
@@ -134,7 +134,7 @@ const ExpenseForm = ({
               );
               return (
                 <div className="relative">
-                  <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 border border-stone-500 rounded-lg text-sm text-white cursor-pointer transition-colors duration-200 hover:bg-stone-900 focus:outline-none data-focus:border-emerald-400 data-open:border-emerald-400">
+                  <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 border border-border rounded-lg text-sm text-foreground cursor-pointer transition-colors duration-200 hover:bg-secondary focus:outline-none data-focus:border-emerald-400 data-open:border-emerald-400">
                     <span className="flex items-center gap-2 truncate">
                       {selected?.icon && (
                         <selected.icon
@@ -143,26 +143,28 @@ const ExpenseForm = ({
                         />
                       )}
                       {selected?.label || (
-                        <span className="text-stone-400">Category</span>
+                        <span className="text-muted-foreground">
+                          Category
+                        </span>
                       )}
                     </span>
                     <ChevronsUpDown
                       size={16}
                       className={`shrink-0 transition-colors duration-200 ${
-                        open ? "text-emerald-500" : "text-stone-400"
+                        open ? "text-emerald-500" : "text-muted-foreground"
                       }`}
                     />
                   </ListboxButton>
                   <ListboxOptions
                     anchor="bottom start"
                     transition
-                    className="w-(--button-width) mt-1 bg-stone-800 border border-stone-600 rounded-lg shadow-lg z-50 focus:outline-none px-1 origin-top transition duration-150 ease-out data-closed:opacity-0 data-closed:scale-95"
+                    className="w-(--button-width) mt-1 bg-popover border border-border rounded-lg shadow-lg z-50 focus:outline-none px-1 origin-top transition duration-150 ease-out data-closed:opacity-0 data-closed:scale-95"
                   >
                     {categoryOptions.map((option) => (
                       <ListboxOption
                         key={option.value}
                         value={option.value}
-                        className="group flex items-center mb-1 mt-1 gap-2 px-2 py-1.5 text-sm text-white cursor-pointer rounded-md data-focus:bg-stone-700 data-selected:bg-linear-to-r data-selected:from-green-800 data-selected:to-teal-800"
+                        className="group flex items-center mb-1 mt-1 gap-2 px-2 py-1.5 text-sm text-foreground cursor-pointer rounded-md data-focus:bg-accent data-selected:bg-linear-to-r data-selected:from-green-800 data-selected:to-teal-800"
                       >
                         <option.icon
                           size={16}
@@ -228,7 +230,7 @@ const ExpenseForm = ({
         {isEditing && (
           <button
             onClick={onCancelEdit}
-            className="cursor-pointer px-5 rounded-lg border border-stone-500 text-stone-300 text-md font-medium hover:bg-stone-700 hover:text-white transition-colors duration-200"
+            className="cursor-pointer px-5 rounded-lg border border-border text-muted-foreground text-md font-medium hover:bg-secondary hover:text-foreground transition-colors duration-200"
           >
             Cancel
           </button>

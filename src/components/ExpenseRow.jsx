@@ -56,7 +56,7 @@ const ExpenseRow = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-stone-800 to-stone-800/45 shadow-lg border border-stone-700/50 ${hoverBorder} transition-colors duration-300 group cursor-grab overflow-hidden ${
+      className={`relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-stone-800 to-stone-800/45 shadow-lg border border-border ${hoverBorder} transition-colors duration-300 group cursor-grab overflow-hidden ${
         deletingIndex === index
           ? "animate-[slideOut_0.4s_cubic-bezier(0.68,-0.55,0.27,1.55)_forwards]"
           : ""
@@ -85,12 +85,12 @@ const ExpenseRow = ({
         </div>
         <div className="flex flex-col min-w-0 flex-1">
           <span
-            className="font-medium text-white text-sm truncate group-hover:text-stone-100 transition-colors duration-200"
+            className="font-medium text-foreground text-sm truncate group-hover:text-foreground transition-colors duration-200"
             title={expense.name}
           >
             {truncateText(expense.name)}
           </span>
-          <span className="text-xs text-stone-400 capitalize">
+          <span className="text-xs text-muted-foreground capitalize">
             {expense.category}
           </span>
         </div>
@@ -106,7 +106,7 @@ const ExpenseRow = ({
 
         <Menu as="div" className="relative">
           <MenuButton
-            className={`cursor-pointer relative p-2 rounded-lg text-stone-400 ${menuHoverBg} hover:text-stone-100 hover:scale-105 data-active:text-stone-100 data-active:scale-105 transition-all duration-200`}
+            className={`cursor-pointer relative p-2 rounded-lg text-muted-foreground ${menuHoverBg} hover:text-foreground hover:scale-105 data-active:text-foreground data-active:scale-105 transition-all duration-200`}
             aria-label="More options"
           >
             <MoreVertical size={18} />
@@ -114,12 +114,12 @@ const ExpenseRow = ({
           <MenuItems
             anchor="bottom end"
             transition
-            className="z-50 w-36 origin-top-right rounded-md bg-stone-800 shadow-lg ring-1 ring-stone-600 focus:outline-none py-1 [--anchor-gap:4px] transition duration-100 ease-out data-closed:opacity-0 data-closed:scale-95"
+            className="z-50 w-36 origin-top-right rounded-md bg-popover shadow-lg ring-1 ring-border focus:outline-none py-1 [--anchor-gap:4px] transition duration-100 ease-out data-closed:opacity-0 data-closed:scale-95"
           >
             <MenuItem>
               <button
                 onClick={() => onQuickFill && onQuickFill(expense)}
-                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-stone-300 data-focus:bg-stone-700 data-focus:text-white"
+                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-muted-foreground data-focus:bg-accent data-focus:text-foreground"
               >
                 <Copy size={18} className="mr-2 text-blue-400" /> Quick Fill
               </button>
@@ -127,7 +127,7 @@ const ExpenseRow = ({
             <MenuItem>
               <button
                 onClick={() => onEditClick(expense, index)}
-                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-stone-300 data-focus:bg-stone-700 data-focus:text-white"
+                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-muted-foreground data-focus:bg-accent data-focus:text-foreground"
               >
                 <PencilLine size={18} className="mr-2 text-yellow-400" /> Edit
               </button>
@@ -135,9 +135,9 @@ const ExpenseRow = ({
             <MenuItem>
               <button
                 onClick={() => handleDeleteExpense(index)}
-                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-stone-300 data-focus:bg-stone-700 data-focus:text-white"
+                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-muted-foreground data-focus:bg-accent data-focus:text-foreground"
               >
-                <Trash size={18} className="mr-2 text-red-400" /> Delete
+                <Trash size={18} className="mr-2 text-destructive" /> Delete
               </button>
             </MenuItem>
           </MenuItems>

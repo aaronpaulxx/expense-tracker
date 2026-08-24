@@ -95,7 +95,7 @@ const FinancialInsights = ({
     <div className="w-full flex flex-col gap-2">
       <TabGroup selectedIndex={activeIndex} onChange={setActiveIndex}>
         {/* Navigation Tabs */}
-        <TabList className="flex w-full border-b border-stone-500 text-stone-400 relative">
+        <TabList className="flex w-full border-b border-border text-muted-foreground relative">
           {tabs.map(({ label, key, icon: Icon }, index) => (
             <Tab
               key={key}
@@ -104,7 +104,7 @@ const FinancialInsights = ({
               className={`relative flex-1 px-4 py-3 text-xs font-medium flex items-center justify-center gap-2 transition-transform duration-300 outline-none rounded-t-md ${
                 activeIndex === index
                   ? "text-green-300"
-                  : "text-stone-300 hover:text-stone-100 group"
+                  : "text-muted-foreground hover:text-foreground group"
               }`}
             >
               <Icon
@@ -112,7 +112,7 @@ const FinancialInsights = ({
                 className={`transition-transform duration-300 ${
                   activeIndex === index
                     ? "text-green-300"
-                    : "text-stone-300 group-hover:text-stone-100 "
+                    : "text-muted-foreground group-hover:text-foreground "
                 }`}
               />
               {label}
@@ -132,7 +132,7 @@ const FinancialInsights = ({
         <TabPanels className="w-full p-2">
           <Suspense
             fallback={
-              <div className="w-full h-67 rounded-xl bg-stone-800/40 animate-pulse" />
+              <div className="w-full h-67 rounded-xl bg-muted/40 animate-pulse" />
             }
           >
             {tabs.map(({ key, component }) => (

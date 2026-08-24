@@ -80,17 +80,17 @@ const CustomYearlyTooltip = ({ active, payload, label, data }) => {
 
     return (
       <div
-        className="p-2 rounded-lg shadow-lg border border-stone-600 text-white"
+        className="p-2 rounded-lg shadow-lg border border-border text-foreground"
         style={{
           background:
             "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
         }}
       >
-        <p className="label text-lg text-stone-300 font-bold">{`${label}`}</p>
+        <p className="label text-lg text-muted-foreground font-bold">{`${label}`}</p>
         {sortedPayload.map((entry, index) => (
           <div
             key={`tooltip-${index}`}
-            className="flex justify-between items-center text-stone-300 py-0.5"
+            className="flex justify-between items-center text-muted-foreground py-0.5"
           >
             <div className="flex items-center">
               {entry.color && (
@@ -106,15 +106,15 @@ const CustomYearlyTooltip = ({ active, payload, label, data }) => {
               {previousMonthData &&
                 previousMonthData[entry.name] !== undefined &&
                 (entry.value > previousMonthData[entry.name] ? (
-                  <ArrowBigUp className="h-5 w-5 text-red-500 fill-red-500 ml-1" />
+                  <ArrowBigUp className="h-5 w-5 text-destructive fill-destructive ml-1" />
                 ) : entry.value < previousMonthData[entry.name] ? (
-                  <ArrowBigDown className="h-5 w-5 text-green-500 fill-green-500 ml-1" />
+                  <ArrowBigDown className="h-5 w-5 text-success fill-success ml-1" />
                 ) : null)}
             </div>
           </div>
         ))}
-        <hr className=" border-stone-600" />
-        <div className="flex justify-between items-center text-stone-200 py-1 font-semibold">
+        <hr className=" border-border" />
+        <div className="flex justify-between items-center text-foreground py-1 font-semibold">
           <span className="text-sm">Total:</span>
           <span className="text-sm mr-1">₱{total.toLocaleString()}</span>
         </div>
@@ -152,7 +152,7 @@ const CategoryTotalTooltip = ({ total, color }) => {
         textAlign: "center",
       }}
     >
-      <div className="text-xs text-stone-200">
+      <div className="text-xs text-foreground">
         Total: ₱{total.toLocaleString()}
       </div>
     </div>
@@ -299,9 +299,9 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   // --- MODIFICATION: The renderLegendWithGlow function is no longer needed ---
 
   return (
-    <div className="chart-container relative py-2 px-2 border border-stone-500 bg-stone-950 rounded-xl">
-      <div className="flex justify-between items-center mb-5 pb-2 border-b border-stone-500 w-full">
-        <h3 className="text-sm font-medium text-stone-200">
+    <div className="chart-container relative py-2 px-2 border border-border rounded-xl">
+      <div className="flex justify-between items-center mb-5 pb-2 border-b border-border w-full">
+        <h3 className="text-sm font-medium text-foreground">
           {selectedYear
             ? `Yearly Overview - ${selectedYear}`
             : "Yearly Overview"}
@@ -310,7 +310,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
           checked={chartType === "area"}
           onChange={(checked) => setChartType(checked ? "area" : "line")}
           className={`relative inline-flex items-center h-5 w-9 rounded-full p-0.5 transition-colors cursor-pointer ${
-            chartType === "area" ? "bg-emerald-500" : "bg-stone-500"
+            chartType === "area" ? "bg-emerald-500" : "bg-muted"
           }`}
         >
           <span className="sr-only">Switch between line and area chart</span>

@@ -94,14 +94,14 @@ export const CustomTooltip = ({ active, payload }) => {
 
   return (
     <div
-      className="p-3 rounded-lg shadow-lg border border-stone-600 text-white"
+      className="p-3 rounded-lg shadow-lg border border-border text-foreground"
       style={{
         background:
           "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
       }}
     >
-      <p className="font-bold text-md text-stone-200">{weekData.week}</p>
-      <p className="text-stone-300 text-xs mb-3">
+      <p className="font-bold text-md text-foreground">{weekData.week}</p>
+      <p className="text-muted-foreground text-xs mb-3">
         ({weekData.startDateFormatted} - {weekData.endDateFormatted})
       </p>
       <div className="flex items-center gap-2 text-sm font-medium">
@@ -132,10 +132,10 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
   );
 
   return (
-    <div className="border-stone-500 border rounded-xl p-2 shadow-md shadow-stone-950">
-      <h3 className="text-sm font-medium text-stone-300 mb-5 pb-2 border-b border-stone-500 flex justify-between items-center">
+    <div className="border-border border rounded-xl p-2 shadow-md shadow-stone-950">
+      <h3 className="text-sm font-medium text-muted-foreground mb-5 pb-2 border-b border-border flex justify-between items-center">
         <span>Weekly Spending</span>
-        <span className="text-stone-300">
+        <span className="text-muted-foreground">
           {selectedMonth
             ? new Date(selectedMonth).toLocaleString("en-US", {
                 month: "long",

@@ -78,11 +78,11 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
   const dynamicFontSize = integerDigits > 6 ? 15 : integerDigits > 4 ? 17 : 20;
 
   return (
-    <div className="rounded-xl p-2 flex flex-col border border-stone-500">
-      <h3 className="text-sm font-medium text-stone-300 mb-5 pb-2 border-b border-stone-500 flex justify-between items-center">
+    <div className="rounded-xl p-2 flex flex-col border border-border">
+      <h3 className="text-sm font-medium text-muted-foreground mb-5 pb-2 border-b border-border flex justify-between items-center">
         <span>Monthly Category Breakdown</span>
         {selectedMonth && (
-          <span className="text-stone-300">
+          <span className="text-muted-foreground">
             {new Date(selectedMonth).toLocaleString("en-US", {
               month: "long",
               year: "numeric",
@@ -112,7 +112,7 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
                 return (
                   <div
                     key={entry.name}
-                    className="flex items-center text-gray-300 text-sm mb-3 pl-5 transition-opacity duration-200"
+                    className="flex items-center text-muted-foreground text-sm mb-3 pl-5 transition-opacity duration-200"
                     style={{ opacity: isDimmed ? 0.5 : 1 }}
                     onMouseEnter={() => setHoveredCategory(entry.name)}
                   >
@@ -122,7 +122,7 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
                     ></div>
                     <div className="flex w-full justify-between">
                       <span className="w-20 text-left">{entry.name}</span>
-                      <span className="text-gray-400 w-12 text-right">
+                      <span className="text-muted-foreground w-12 text-right">
                         ({percentage}%)
                       </span>
                     </div>
@@ -193,7 +193,7 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
             </div>
           </div>
         ) : (
-          <div className="text-stone-500 min-h-50 py-8 flex flex-col items-center">
+          <div className="text-muted-foreground min-h-50 py-8 flex flex-col items-center">
             <ClipboardX size={40} className="opacity-70 mb-5" />
             <span className="text-sm">No data available for this month.</span>
           </div>

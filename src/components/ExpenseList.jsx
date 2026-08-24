@@ -33,15 +33,15 @@ const MEASURING_CONFIG = {
 };
 
 const ExpenseRowSkeleton = () => (
-  <div className="flex items-center justify-between p-2 rounded-xl bg-stone-800/40 animate-pulse h-full">
+  <div className="flex items-center justify-between p-2 rounded-xl bg-muted/40 animate-pulse h-full">
     <div className="flex items-center gap-5 min-w-0 flex-1">
-      <div className="rounded-xl w-10 h-10 bg-stone-700/50 shrink-0" />
+      <div className="rounded-xl w-10 h-10 bg-muted/50 shrink-0" />
       <div className="flex flex-col gap-1.5 flex-1">
-        <div className="h-3.5 w-24 bg-stone-700/50 rounded" />
-        <div className="h-3 w-16 bg-stone-700/40 rounded" />
+        <div className="h-3.5 w-24 bg-muted/50 rounded" />
+        <div className="h-3 w-16 bg-muted/40 rounded" />
       </div>
     </div>
-    <div className="h-9 w-24 bg-stone-700/40 rounded-full shrink-0 mr-12" />
+    <div className="h-9 w-24 bg-muted/40 rounded-full shrink-0 mr-12" />
   </div>
 );
 
@@ -257,7 +257,7 @@ const ExpenseList = ({
       <div className="ml-2 mr-2">
         {expensesWithIds.length >= 0 && (
           <div className="flex justify-between items-center mb-3">
-            <label className="text-lg border-l-4 pl-2 border-stone-300 font-semibold text-stone-100">
+            <label className="text-lg border-l-4 pl-2 border-border font-semibold text-foreground">
               Today&apos;s Expenses
             </label>
             <button
@@ -274,7 +274,7 @@ const ExpenseList = ({
 
         <div
           ref={listWrapperRef}
-          className="p-2 h-87 rounded-xl border border-stone-500 bg-stone-950 transition-colors duration-200"
+          className="p-2 h-87 rounded-xl border border-border bg-background transition-colors duration-200"
         >
           {expensesWithIds.length ? (
             <DndContext
@@ -317,8 +317,8 @@ const ExpenseList = ({
               </DragOverlay>
             </DndContext>
           ) : (
-            <div className="text-center text-stone-500 py-20 flex flex-col items-center">
-              <div className="p-4 rounded-full bg-stone-800/50 mb-4">
+            <div className="text-center text-muted-foreground py-20 flex flex-col items-center">
+              <div className="p-4 rounded-full bg-muted/50 mb-4">
                 <ClipboardX size={48} className="opacity-60" />
               </div>
               <h3 className="text-lg font-medium mb-2">No expenses yet</h3>

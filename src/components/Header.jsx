@@ -10,7 +10,7 @@ const Header = ({ clearRecords, expenses, setExpenses }) => {
   return (
     <>
       <div
-        className="py-2 border-b border-stone-800 flex justify-between items-center px-5 bg-[linear-gradient(45deg,#1f1f1f_25%,#10B98180_50%,#14B8A6_75%,#171717_100%)]
+        className="py-2 border-b border-border flex justify-between items-center px-5 bg-[linear-gradient(45deg,#1f1f1f_25%,#10B98180_50%,#14B8A6_75%,#171717_100%)]
 "
       >
         <div
@@ -30,12 +30,12 @@ const Header = ({ clearRecords, expenses, setExpenses }) => {
               isHovered ? "w-12 opacity-100" : "w-0 opacity-0"
             }`}
           >
-            <span className="text-white whitespace-nowrap text-xs">
+            <span className="text-foreground whitespace-nowrap text-xs">
               Settings
             </span>
           </div>
           <button
-            className="text-white hover:text-white transition-transform duration-300 hover:rotate-180 cursor-pointer"
+            className="text-foreground hover:text-foreground transition-transform duration-300 hover:rotate-180 cursor-pointer"
             onClick={() => setIsOpen(true)}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

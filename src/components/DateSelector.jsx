@@ -26,7 +26,7 @@ const DateSelector = ({
     changeMonth,
     months,
   }) => (
-    <div className="flex items-center justify-between px-2 py-2 text-white rounded-t-lg ">
+    <div className="flex items-center justify-between px-2 py-2 text-foreground rounded-t-lg ">
       {/* Previous Month Button */}
       <button
         onClick={decreaseMonth}
@@ -36,7 +36,7 @@ const DateSelector = ({
         <ChevronLeft
           size={24}
           strokeWidth={3}
-          className="text-stone-400 hover:text-emerald-300"
+          className="text-muted-foreground hover:text-emerald-300"
         />
       </button>
 
@@ -81,7 +81,7 @@ const DateSelector = ({
         <ChevronRight
           size={24}
           strokeWidth={3}
-          className="text-stone-400 hover:text-emerald-300"
+          className="text-muted-foreground hover:text-emerald-300"
         />
       </button>
     </div>
@@ -103,10 +103,10 @@ const DateSelector = ({
       {/* Previous Day Button */}
       <button
         onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}
-        className="h-12.5 group px-3 py-2 text-white duration-200 hover:bg-stone-800 hover:text-emerald-300 text-sm flex items-center justify-center cursor-pointer "
+        className="h-12.5 group px-3 py-2 text-foreground duration-200 hover:bg-secondary hover:text-emerald-300 text-sm flex items-center justify-center cursor-pointer "
       >
         {/* Tooltip */}
-        <div className="absolute left-1 top-15 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <div className="absolute left-1 top-15 bg-popover text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
           Previous Day
         </div>
         <ChevronLeft
@@ -122,7 +122,7 @@ const DateSelector = ({
         className="relative flex-1 px-5 py-2 rounded-lg text-center transition-all duration-300 cursor-pointer flex items-center justify-center gap-x-3 group"
       >
         {/* Tooltip */}
-        <div className="absolute top-14 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <div className="absolute top-14 bg-popover text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
           Click to change date
         </div>
 
@@ -135,7 +135,7 @@ const DateSelector = ({
 
         {/* Date Container */}
         <div>
-          <span className="text-lg text-white uppercase">
+          <span className="text-lg text-foreground uppercase">
             {date.toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
@@ -174,10 +174,10 @@ const DateSelector = ({
       {/* Next Day Button */}
       <button
         onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}
-        className="h-12.5 group px-3 py-2 text-white duration-200 hover:bg-stone-800 hover:text-emerald-300 text-sm flex items-center justify-center cursor-pointer "
+        className="h-12.5 group px-3 py-2 text-foreground duration-200 hover:bg-secondary hover:text-emerald-300 text-sm flex items-center justify-center cursor-pointer "
       >
         {/* Tooltip */}
-        <div className="absolute right-1 top-15 bg-stone-800 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <div className="absolute right-1 top-15 bg-popover text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
           Next Day
         </div>
         <ChevronRight

@@ -44,24 +44,25 @@ const DeleteConfirmationModal = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-stone-900 p-5 text-left align-middle shadow-xl transition-all border border-stone-900">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-card p-5 text-left align-middle shadow-xl transition-all border border-transparent">
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-semibold leading-6 text-white border-b border-stone-500 pb-3 mb-2 flex items-center gap-2"
+                  className="text-lg font-semibold leading-6 text-foreground border-b border-border pb-3 mb-2 flex items-center gap-2"
                 >
-                  <AlertCircle size={28} className="text-red-400" /> Delete List
+                  <AlertCircle size={28} className="text-destructive" /> Delete
+                  List
                 </Dialog.Title>
                 <div className="mb-5">
-                  <p className="text-sm text-stone-300">
+                  <p className="text-sm text-muted-foreground">
                     Are you sure you want to delete all{" "}
-                    <span className="font-semibold text-red-400 text-lg">
+                    <span className="font-semibold text-destructive text-lg">
                       {expenseCount.toLocaleString()}
                     </span>{" "}
                     {pluralize(expenseCount, "expense")} for{" "}
-                    <span className="font-semibold text-stone-200">
+                    <span className="font-semibold text-foreground">
                       {dayName}?
                     </span>
-                    <span className="mt-2 block text-red-400">
+                    <span className="mt-2 block text-destructive">
                       This action cannot be undone.
                     </span>
                   </p>
@@ -70,14 +71,14 @@ const DeleteConfirmationModal = ({
                 <div className="mt-4 flex justify-end gap-3">
                   <button
                     type="button"
-                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-stone-700 px-4 py-2 text-sm font-medium text-white hover:bg-stone-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 focus-visible:ring-offset-2 transition-colors duration-200"
+                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-border focus-visible:ring-offset-2 transition-colors duration-200"
                     onClick={onClose}
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
-                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-400 active:bg-red-600 transition-colors duration-200"
+                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-destructive px-4 py-2 text-sm font-medium text-white hover:bg-destructive/90 active:bg-destructive/80 transition-colors duration-200"
                     onClick={onConfirm}
                   >
                     Confirm

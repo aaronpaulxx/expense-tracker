@@ -39,7 +39,9 @@ const Footer = () => {
       )}
       <span
         className={`text-xs mb-4 cursor-pointer relative ${
-          secretActive ? "text-stone-400 animate-glitch-text" : "text-stone-400"
+          secretActive
+            ? "text-muted-foreground animate-glitch-text"
+            : "text-muted-foreground"
         }`}
         onClick={handleClick}
       >

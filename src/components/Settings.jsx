@@ -150,35 +150,35 @@ const Settings = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Panel className="relative bg-stone-900 p-5 rounded-xl shadow-lg w-160 max-w-[90%] max-h-[95vh] overflow-y-auto border-stone-900 border custom-scrollbar">
-              <div className="flex justify-between items-center border-b border-stone-500">
-                <Dialog.Title className="text-xl font-semibold text-white">
-                  <div className="mb-4 flex items-center gap-2 border-l-4 pl-2 border-stone-300">
+            <Dialog.Panel className="relative bg-card p-5 rounded-xl shadow-lg w-160 max-w-[90%] max-h-[95vh] overflow-y-auto border-transparent border custom-scrollbar">
+              <div className="flex justify-between items-center border-b border-border">
+                <Dialog.Title className="text-xl font-semibold text-foreground">
+                  <div className="mb-4 flex items-center gap-2 border-l-4 pl-2 border-border">
                     Settings
                   </div>
                 </Dialog.Title>
-                <CloseButton className="mb-4 text-stone-400 hover:text-white transition-all duration-200 cursor-pointer">
+                <CloseButton className="mb-4 text-muted-foreground hover:text-foreground transition-all duration-200 cursor-pointer">
                   <X size={24} />
                 </CloseButton>
               </div>
               <div className="mt-4 space-y-4">
                 {/* STORAGE SECTION */}
-                <div className="border-stone-700">
+                <div className="border-border">
                   <div className="flex items-center gap-2">
-                    <Database size={20} className="text-stone-300" />
-                    <h2 className="text-md font-medium text-white">
+                    <Database size={20} className="text-muted-foreground" />
+                    <h2 className="text-md font-medium text-foreground">
                       Storage Usage
                     </h2>
                   </div>
                   <div className="mt-2">
-                    <div className="w-full bg-stone-700 rounded-full h-3 overflow-hidden">
+                    <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
                       <div
                         className={`h-3 ${storageInfo.percentage < 8 ? "rounded-full" : "rounded-l-full"} ${
                           parseFloat(storageInfo.used) >= storageInfo.total
-                            ? "bg-red-400"
+                            ? "bg-destructive"
                             : parseFloat(storageInfo.used) >= 4800
-                              ? "bg-amber-400"
-                              : "bg-emerald-300"
+                              ? "bg-warning"
+                              : "bg-success"
                         }`}
                         style={{
                           width: `${Math.min(storageInfo.percentage, 100)}%`,
@@ -189,15 +189,15 @@ const Settings = ({
                       <span
                         className={`text-xs ${
                           parseFloat(storageInfo.used) >= storageInfo.total
-                            ? "text-red-400"
+                            ? "text-destructive"
                             : parseFloat(storageInfo.used) >= 4800
-                              ? "text-amber-400"
-                              : "text-stone-400"
+                              ? "text-warning"
+                              : "text-muted-foreground"
                         }`}
                       >
                         {(storageInfo.used / 1024).toFixed(2)} MB used
                       </span>
-                      <span className="text-xs text-stone-400">
+                      <span className="text-xs text-muted-foreground">
                         {(storageInfo.total / 1024).toFixed(2)} MB total
                       </span>
                     </div>
@@ -205,28 +205,28 @@ const Settings = ({
                 </div>
 
                 {/* EXPORT SECTION */}
-                <div className="border-t border-stone-700 pt-3">
+                <div className="border-t border-border pt-3">
                   <div className="flex items-center gap-2">
-                    <MonitorDown size={20} className="text-stone-300" />
-                    <h2 className="text-md font-medium text-white">
+                    <MonitorDown size={20} className="text-muted-foreground" />
+                    <h2 className="text-md font-medium text-foreground">
                       Export Data
                     </h2>
                   </div>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-2">
                     <div className="w-full">
-                      <span className="text-sm text-stone-400">
+                      <span className="text-sm text-muted-foreground">
                         Download your expense records as an Excel spreadsheet.
                       </span>
                       <div className="flex items-center flex-wrap gap-4 mt-2">
                         {exportFileInfo && (
                           <div className="flex flex-col text-xs ">
                             <p>
-                              <span className="font-normal text-emerald-300 italic">
+                              <span className="font-normal text-success italic">
                                 {exportFileInfo.name}
                               </span>
                             </p>
                             <p>
-                              <span className="font-normal text-stone-400 italic">
+                              <span className="font-normal text-muted-foreground italic">
                                 {exportFileInfo.size}
                               </span>
                             </p>
@@ -235,7 +235,7 @@ const Settings = ({
                         <button
                           onClick={handleExport}
                           disabled={totalEntries === 0}
-                          className="ml-auto cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stone-600 text-white text-sm font-medium shadow-sm hover:bg-stone-500 active:bg-stone-700 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
+                          className="ml-auto cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium shadow-sm hover:bg-secondary/80 active:bg-secondary/70 transition-colors duration-200 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-auto"
                         >
                           <Download size={18} />
                           Export
@@ -246,10 +246,10 @@ const Settings = ({
                 </div>
 
                 {/* IMPORT SECTION */}
-                <div className="border-t border-stone-700 pt-3">
+                <div className="border-t border-border pt-3">
                   <div className="flex items-center gap-2">
-                    <MonitorUp size={20} className="text-stone-300" />
-                    <h2 className="text-md font-medium text-white">
+                    <MonitorUp size={20} className="text-muted-foreground" />
+                    <h2 className="text-md font-medium text-foreground">
                       Import Data
                     </h2>
                   </div>
@@ -273,10 +273,10 @@ const Settings = ({
                             : "cursor-pointer"
                         } ${
                           isDragInvalid
-                            ? "border-red-500 bg-red-500/10"
+                            ? "border-destructive bg-destructive/10"
                             : isDragging
-                              ? "border-emerald-400 bg-emerald-500/10"
-                              : "border-stone-600 hover:border-stone-500 hover:bg-stone-800/50"
+                              ? "border-success bg-success/10"
+                              : "border-border hover:border-muted-foreground hover:bg-muted/50"
                         }`}
                       >
                         <div className="flex flex-col items-center justify-center text-center pointer-events-none">
@@ -284,35 +284,35 @@ const Settings = ({
                             size={32}
                             className={`mb-2 transition-colors duration-200 ${
                               isDragInvalid
-                                ? "text-red-400"
+                                ? "text-destructive"
                                 : isDragging
-                                  ? "text-emerald-400"
-                                  : "text-stone-400"
+                                  ? "text-success"
+                                  : "text-muted-foreground"
                             }`}
                           />
                           <p
                             className={`mb-1 text-sm ${
                               isDragInvalid
-                                ? "text-red-400"
+                                ? "text-destructive"
                                 : isDragging
-                                  ? "text-white"
-                                  : "text-stone-400"
+                                  ? "text-foreground"
+                                  : "text-muted-foreground"
                             }`}
                           >
                             {isDragInvalid ? (
-                              <span className="font-medium text-red-400">
+                              <span className="font-medium text-destructive">
                                 Invalid File Type
                               </span>
                             ) : (
                               <>
-                                <span className="font-medium text-emerald-300">
+                                <span className="font-medium text-success">
                                   Click to upload
                                 </span>{" "}
                                 or drag and drop
                               </>
                             )}
                           </p>
-                          <p className="text-xs text-stone-500">
+                          <p className="text-xs text-muted-foreground">
                             XLSX, XLS, or CSV (MAX. 10MB)
                           </p>
                         </div>
@@ -330,7 +330,7 @@ const Settings = ({
                     <div className="mt-5 bg-white/5 p-5 rounded-2xl border border-white/10">
                       <div className=" mb-4">
                         <p className="text-xs text-white/90">
-                          <span className="text-sm text-amber-300">
+                          <span className="text-sm text-warning">
                             {importData.duplicateEntries.length.toLocaleString()}
                           </span>{" "}
                           duplicate{" "}
@@ -395,10 +395,10 @@ const Settings = ({
                 </div>
 
                 {/* DELETE SECTION */}
-                <div className="border-t border-stone-700 pt-3">
+                <div className="border-t border-border pt-3">
                   <div className="flex items-center gap-2">
-                    <Trash2 size={20} className="text-stone-300" />
-                    <h2 className="text-md font-medium text-white">
+                    <Trash2 size={20} className="text-muted-foreground" />
+                    <h2 className="text-md font-medium text-foreground">
                       Delete Data
                     </h2>
                   </div>
@@ -406,20 +406,20 @@ const Settings = ({
                     <div className="w-full">
                       {!showConfirmDelete && (
                         <>
-                          <span className="text-sm text-stone-400">
+                          <span className="text-sm text-muted-foreground">
                             Remove all expense records permanently.
                           </span>
                           <div className="flex items-center flex-wrap gap-4 mt-2">
-                            <div className="flex flex-col text-xs text-stone-500">
+                            <div className="flex flex-col text-xs text-muted-foreground">
                               {totalEntries === 0 && (
-                                <span className="font-normal text-stone-400 italic">
+                                <span className="font-normal text-muted-foreground italic">
                                   No records found.
                                 </span>
                               )}
                               {totalEntries > 0 && (
-                                <p className="text-xs text-stone-400 italic">
+                                <p className="text-xs text-muted-foreground italic">
                                   Delete all{" "}
-                                  <span className="font-medium text-sm text-red-400">
+                                  <span className="font-medium text-sm text-destructive">
                                     {totalEntries.toLocaleString()}
                                   </span>{" "}
                                   {totalEntries === 1 ? "record" : "records"}
@@ -433,7 +433,7 @@ const Settings = ({
                                 totalEntries === 0 ||
                                 (showConfirmImport && importData)
                               }
-                              className="ml-auto cursor-pointer md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 text-white text-sm font-medium shadow-sm hover:bg-red-400 active:bg-red-600 transition-colors duration-200 disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
+                              className="ml-auto cursor-pointer md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive text-white text-sm font-medium shadow-sm hover:bg-destructive/90 active:bg-destructive/80 transition-colors duration-200 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-auto"
                             >
                               <Trash size={18} />
                               Erase All Data
@@ -444,13 +444,15 @@ const Settings = ({
                     </div>
                   </div>
                   {showConfirmDelete && !(showConfirmImport && importData) && (
-                    <div className="mt-1 bg-white/5 p-4 rounded-2xl border border-red-400">
-                      <p className="text-sm text-stone-300">
+                    <div className="mt-1 bg-white/5 p-4 rounded-2xl border border-destructive">
+                      <p className="text-sm text-muted-foreground">
                         To proceed, type &quot;
-                        <span className="font-medium text-white">confirm</span>
+                        <span className="font-medium text-foreground">
+                          confirm
+                        </span>
                         &quot; in the box below.
                       </p>
-                      <p className="text-sm text-red-400">
+                      <p className="text-sm text-destructive">
                         This action cannot be undone.
                       </p>
                       <div className="mt-1">
@@ -462,7 +464,7 @@ const Settings = ({
                           }
                           onPaste={(e) => e.preventDefault()}
                           maxLength={15}
-                          className="w-full bg-transparent border-0 border-b border-stone-600 px-2 py-1 text-white text-center placeholder-stone-500 focus:outline-none focus:border-stone-400 transition"
+                          className="w-full bg-transparent border-0 border-b border-border px-2 py-1 text-foreground text-center placeholder-muted-foreground focus:outline-none focus:border-muted-foreground transition"
                           autoFocus
                         />
                       </div>
@@ -472,7 +474,7 @@ const Settings = ({
                             setShowConfirmDelete(false);
                             setDeleteConfirmationInput("");
                           }}
-                          className="text-sm font-medium px-4 py-2 rounded-full bg-stone-700 text-white hover:bg-stone-600 transition cursor-pointer w-full"
+                          className="text-sm font-medium px-4 py-2 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition cursor-pointer w-full"
                         >
                           Cancel
                         </button>
@@ -485,7 +487,7 @@ const Settings = ({
                           disabled={
                             deleteConfirmationInput.toLowerCase() !== "confirm"
                           }
-                          className="text-sm font-medium px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-400 active:bg-red-600 transition cursor-pointer w-full disabled:bg-stone-700 disabled:text-stone-400 disabled:cursor-auto"
+                          className="text-sm font-medium px-4 py-2 rounded-full bg-destructive text-white hover:bg-destructive/90 active:bg-destructive/80 transition cursor-pointer w-full disabled:bg-muted disabled:text-muted-foreground disabled:cursor-auto"
                         >
                           Confirm Delete
                         </button>
