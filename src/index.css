@@ -40,6 +40,13 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+  --chart-grid: #4a4a4a;
+  --chart-tick: #a3a3a3;
+  --chart-card-gradient-start: #171717;
+  --chart-card-gradient-end: #3f3f3f;
+  --chart-accent: #10b981;
+  --chart-accent-alt: #14b8a6;
+  --chart-outline: #0c0a09;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -209,6 +216,13 @@ body {
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-tick: var(--chart-tick);
+  --color-chart-card-gradient-start: var(--chart-card-gradient-start);
+  --color-chart-card-gradient-end: var(--chart-card-gradient-end);
+  --color-chart-accent: var(--chart-accent);
+  --color-chart-accent-alt: var(--chart-accent-alt);
+  --color-chart-outline: var(--chart-outline);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);

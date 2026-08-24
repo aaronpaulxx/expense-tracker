@@ -4,15 +4,9 @@ import PropTypes from "prop-types";
 import { PieChart, Pie, Cell, ResponsiveContainer, Sector } from "recharts";
 
 import { ClipboardX } from "lucide-react";
+import { CATEGORY_COLORS } from "../constants/categories.jsx";
 
-const COLORS = {
-  Food: "#34d399",
-  Transport: "#fbbf24",
-  Shopping: "#3b82f6",
-  Credit: "#ef4444",
-  Bills: "#a78bfa",
-  Other: "#9ca3af",
-};
+const COLORS = CATEGORY_COLORS;
 
 const BASE_OUTER_RADIUS = 85;
 
@@ -166,7 +160,7 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
                           key={`cell-${entry.name}`}
                           fill={entry.color}
                           fillOpacity={isDimmed ? 0.4 : 1}
-                          stroke="#0c0a09"
+                          stroke="var(--chart-outline)"
                           strokeWidth={0.2}
                         />
                       );
@@ -190,7 +184,7 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
                         maximumFractionDigits: 2,
                       })}
                     </tspan>
-                    <tspan x="50%" y="60%" fontSize="15" fill="#9ca3af">
+                    <tspan x="50%" y="60%" fontSize="15" fill={CATEGORY_COLORS.Other}>
                       {displayLabel}
                     </tspan>
                   </text>

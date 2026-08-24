@@ -96,7 +96,8 @@ export const CustomTooltip = ({ active, payload }) => {
     <div
       className="p-3 rounded-lg shadow-lg border border-stone-600 text-white"
       style={{
-        background: "linear-gradient(to bottom, #171717, #3f3f3f)", // Black-to-gray gradient
+        background:
+          "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
       }}
     >
       <p className="font-bold text-md text-stone-200">{weekData.week}</p>
@@ -149,17 +150,17 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
           data={weeklyTrendData}
           margin={{ top: 20, right: 20, left: -10, bottom: 10 }}
         >
-          <CartesianGrid strokeDasharray="2 2" stroke="#e7e5e4" opacity={0.4} />
+          <CartesianGrid strokeDasharray="2 2" stroke="var(--chart-grid)" />
 
           <XAxis
             dataKey="week"
-            tick={{ fontSize: 12, fill: "#d6d3d1" }}
-            tickLine={{ stroke: "#4A5568" }}
+            tick={{ fontSize: 12, fill: "var(--chart-tick)" }}
+            tickLine={{ stroke: "var(--chart-grid)" }}
           />
 
           <YAxis
-            tick={{ fontSize: 12, fill: "#d6d3d1" }}
-            tickLine={{ stroke: "#4A5568" }}
+            tick={{ fontSize: 12, fill: "var(--chart-tick)" }}
+            tickLine={{ stroke: "var(--chart-grid)" }}
             tickFormatter={(value) => `₱${value.toLocaleString()}`}
           />
 
@@ -170,8 +171,16 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
 
           <defs>
             <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#10b981" stopOpacity={0.9} />
-              <stop offset="100%" stopColor="#14b8a6" stopOpacity={0.5} />
+              <stop
+                offset="0%"
+                stopColor="var(--chart-accent)"
+                stopOpacity={0.9}
+              />
+              <stop
+                offset="100%"
+                stopColor="var(--chart-accent-alt)"
+                stopOpacity={0.5}
+              />
             </linearGradient>
           </defs>
 

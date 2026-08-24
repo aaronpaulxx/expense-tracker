@@ -11,6 +11,7 @@ export const CATEGORIES = {
   Food: {
     icon: Utensils,
     color: "text-green-400",
+    hex: "#4ade80", // green-400
     hoverGradient: "hover:from-green-800 hover:to-green-800/25",
     overlayGradient: "from-green-800 to-green-800/25",
     hoverBorder: "hover:border-green-800/50",
@@ -19,6 +20,7 @@ export const CATEGORIES = {
   Transport: {
     icon: Car,
     color: "text-yellow-400",
+    hex: "#fbbf24", // yellow-400
     hoverGradient: "hover:from-yellow-900 hover:to-yellow-800/25",
     overlayGradient: "from-yellow-900 to-yellow-800/25",
     hoverBorder: "hover:border-yellow-800/50",
@@ -27,6 +29,7 @@ export const CATEGORIES = {
   Shopping: {
     icon: ShoppingCart,
     color: "text-blue-400",
+    hex: "#60a5fa", // blue-400
     hoverGradient: "hover:from-blue-900 hover:to-blue-800/25",
     overlayGradient: "from-blue-900 to-blue-800/25",
     hoverBorder: "hover:border-blue-800/50",
@@ -35,6 +38,7 @@ export const CATEGORIES = {
   Credit: {
     icon: CreditCard,
     color: "text-red-400",
+    hex: "#f87171", // red-400
     hoverGradient: "hover:from-red-900 hover:to-red-800/25",
     overlayGradient: "from-red-900 to-red-800/25",
     hoverBorder: "hover:border-red-800/50",
@@ -43,6 +47,7 @@ export const CATEGORIES = {
   Bills: {
     icon: Home,
     color: "text-purple-400",
+    hex: "#c084fc", // purple-400
     hoverGradient: "hover:from-purple-900 hover:to-purple-800/25",
     overlayGradient: "from-purple-900 to-purple-800/25",
     hoverBorder: "hover:border-purple-800/50",
@@ -51,9 +56,14 @@ export const CATEGORIES = {
   Other: {
     icon: Package,
     color: "text-gray-400",
+    hex: "#9ca3af", // gray-400
     hoverGradient: "hover:from-gray-700 hover:to-gray-700/25",
     overlayGradient: "from-gray-700 to-gray-700/25",
     hoverBorder: "hover:border-gray-700/50",
     hoverBg: "hover:bg-gray-700 data-active:bg-gray-700",
   },
 };
+
+export const CATEGORY_COLORS = Object.fromEntries(
+  Object.entries(CATEGORIES).map(([name, { hex }]) => [name, hex]),
+);

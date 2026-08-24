@@ -15,17 +15,11 @@ import {
   Brush,
 } from "recharts";
 import { ArrowBigUp, ArrowBigDown } from "lucide-react";
+import { CATEGORY_COLORS } from "../constants/categories.jsx";
 
 // --- Constants and Helper Functions ---
 
-const COLORS = {
-  Food: "#34d399",
-  Transport: "#fbbf24",
-  Shopping: "#3b82f6",
-  Credit: "#ef4444",
-  Bills: "#a78bfa",
-  Other: "#9ca3af",
-};
+const COLORS = CATEGORY_COLORS;
 
 const formatYearlyData = (expenses, selectedYear) => {
   const months = [
@@ -87,7 +81,10 @@ const CustomYearlyTooltip = ({ active, payload, label, data }) => {
     return (
       <div
         className="p-2 rounded-lg shadow-lg border border-stone-600 text-white"
-        style={{ background: "linear-gradient(to bottom, #171717, #3f3f3f)" }}
+        style={{
+          background:
+            "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
+        }}
       >
         <p className="label text-lg text-stone-300 font-bold">{`${label}`}</p>
         {sortedPayload.map((entry, index) => (
@@ -149,7 +146,8 @@ const CategoryTotalTooltip = ({ total, color }) => {
         top: "15%",
         left: "75%",
         zIndex: 100,
-        background: "linear-gradient(to bottom, #171717, #3f3f3f)",
+        background:
+          "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
         border: `1.5px solid ${color || "#57534e"}`,
         textAlign: "center",
       }}
@@ -179,7 +177,7 @@ const MinimalTraveller = (props) => {
       y={handleY}
       width={handleWidth}
       height={handleHeight}
-      fill="#10b981"
+      fill="var(--chart-accent)"
       rx="4"
     />
   );
@@ -222,7 +220,7 @@ const CustomLegend = ({
             <span
               className="text-xs transition-colors"
               style={{
-                color: "#e7e5e4", // Fallback to stone-400 (#a8a29e)
+                color: "var(--chart-tick)", // Neutral fallback, matches axis tick color
                 borderBottom: isHovered
                   ? `1px solid ${color}`
                   : "1px solid transparent",
@@ -339,10 +337,10 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
             data={data}
             margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#4a4a4a" />
-            <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#a3a3a3" }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+            <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--chart-tick)" }} />
             <YAxis
-              tick={{ fontSize: 11, fill: "#a3a3a3" }}
+              tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
               tickFormatter={(value) => `₱${value.toLocaleString()}`}
             />
             <Tooltip content={<CustomYearlyTooltip data={data} />} />
@@ -376,8 +374,8 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
             <Brush
               dataKey="month"
               height={8}
-              stroke="#5eead4"
-              fill="#0c0a09"
+              stroke="var(--chart-accent-alt)"
+              fill="var(--chart-outline)"
               traveller={<MinimalTraveller />}
               tickFormatter={() => ""}
               startIndex={brushRange.startIndex}
@@ -414,10 +412,10 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
               ))}
             </defs>
 
-            <CartesianGrid strokeDasharray="3 3" stroke="#4a4a4a" />
-            <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#a3a3a3" }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+            <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--chart-tick)" }} />
             <YAxis
-              tick={{ fontSize: 11, fill: "#a3a3a3" }}
+              tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
               tickFormatter={(value) => `₱${value.toLocaleString()}`}
             />
             <Tooltip content={<CustomYearlyTooltip data={data} />} />
@@ -457,8 +455,8 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
             <Brush
               dataKey="month"
               height={8}
-              stroke="#5eead4"
-              fill="#0c0a09"
+              stroke="var(--chart-accent-alt)"
+              fill="var(--chart-outline)"
               traveller={<MinimalTraveller />}
               tickFormatter={() => ""}
               startIndex={brushRange.startIndex}
