@@ -90,7 +90,7 @@ const App = () => {
   }, [expenses]); // Dependencies
 
   return (
-    <div className="max-w-full h-screen bg-stone-950 flex flex-col custom-scrollbar">
+    <div className="max-w-full h-screen bg-background flex flex-col custom-scrollbar">
       <Toaster position="bottom-right" gutter={8}>
         {(t) => (
           <ToastBar toast={t} position="bottom-right">
@@ -135,7 +135,7 @@ const App = () => {
       />
 
       {/* Date Selector - Fixed at the top after header */}
-      <div className="sticky top-0 z-1 bg-stone-950 border-b border-stone-600">
+      <div className="sticky top-0 z-1 bg-background border-b border-border">
         <DateSelector
           date={date}
           setDate={setDate}
@@ -149,7 +149,7 @@ const App = () => {
         {/* Expense Entry Section */}
         <div className="w-full p-2 flex flex-col gap-2" ref={formSectionRef}>
           <div className="w-full pl-2">
-            <label className="text-lg border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full mt-5">
+            <label className="text-lg border-l-4 pl-2 border-border font-bold text-foreground block w-full mt-5">
               {isEditing ? "Edit Expense" : "Expense Details"}
             </label>
           </div>
@@ -183,7 +183,7 @@ const App = () => {
         {/* Financial Insights Section */}
         <div className="w-full p-2 flex flex-col gap-2">
           <div className="w-full pl-2 mt-3">
-            <label className="text-lg border-l-4 pl-2 border-stone-300 font-bold text-stone-100 block w-full">
+            <label className="text-lg border-l-4 pl-2 border-border font-bold text-foreground block w-full">
               Financial Insights
             </label>
           </div>
