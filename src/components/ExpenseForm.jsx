@@ -134,7 +134,7 @@ const ExpenseForm = ({
               );
               return (
                 <div className="relative">
-                  <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 border border-border rounded-lg text-sm text-foreground cursor-pointer transition-colors duration-200 hover:bg-secondary focus:outline-none data-focus:border-emerald-400 data-open:border-emerald-400">
+                  <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 border border-border rounded-lg text-sm text-foreground cursor-pointer transition-colors duration-200 hover:bg-popover data-focus:bg-popover focus:outline-none data-focus:border-emerald-400 data-open:border-emerald-400">
                     <span className="flex items-center gap-2 truncate">
                       {selected?.icon && (
                         <selected.icon
@@ -204,7 +204,7 @@ const ExpenseForm = ({
                           hover:decoration-2 
                           hover:text-stone-50 active:text-orange-300
 
-                          relative bg-stone-950 h-auto w-full border-0 text-left p-3 
+                          relative bg-background h-auto w-full border-0 text-left p-3 
                           text-stone-100 text-base font-bold rounded-lg overflow-hidden 
 
                           before:absolute before:w-12 before:h-12 before:content-[''] before:right-1 before:top-1 before:z-10 
@@ -230,7 +230,7 @@ const ExpenseForm = ({
         {isEditing && (
           <button
             onClick={onCancelEdit}
-            className="cursor-pointer px-5 rounded-lg border border-border text-muted-foreground text-md font-medium hover:bg-secondary hover:text-foreground transition-colors duration-200"
+            className="cursor-pointer px-5 rounded-lg border border-border text-muted-foreground text-md font-medium hover:bg-secondary/80 hover:text-foreground transition-colors duration-200"
           >
             Cancel
           </button>

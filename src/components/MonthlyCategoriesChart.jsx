@@ -194,7 +194,7 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
           </div>
         ) : (
           <div className="text-muted-foreground min-h-50 py-8 flex flex-col items-center">
-            <ClipboardX size={40} className="opacity-70 mb-5" />
+            <ClipboardX size={55} className="opacity-70 mb-5" />
             <span className="text-sm">No data available for this month.</span>
           </div>
         )}

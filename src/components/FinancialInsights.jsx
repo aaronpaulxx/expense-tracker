@@ -132,7 +132,7 @@ const FinancialInsights = ({
         <TabPanels className="w-full p-2">
           <Suspense
             fallback={
-              <div className="w-full h-67 rounded-xl bg-muted/40 animate-pulse" />
+              <div className="w-full h-67 rounded-xl bg-muted animate-pulse" />
             }
           >
             {tabs.map(({ key, component }) => (

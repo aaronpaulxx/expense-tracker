@@ -71,14 +71,14 @@ const DeleteConfirmationModal = ({
                 <div className="mt-4 flex justify-end gap-3">
                   <button
                     type="button"
-                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-border focus-visible:ring-offset-2 transition-colors duration-200"
+                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-border focus-visible:ring-offset-2 transition-colors duration-200"
                     onClick={onClose}
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
-                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-destructive px-4 py-2 text-sm font-medium text-white hover:bg-destructive/90 active:bg-destructive/80 transition-colors duration-200"
+                    className="cursor-pointer inline-flex justify-center rounded-full border border-transparent bg-destructive px-4 py-2 text-sm font-medium text-white hover:bg-destructive/80 active:bg-destructive/60 transition-colors duration-200"
                     onClick={onConfirm}
                   >
                     Confirm

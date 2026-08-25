@@ -10,7 +10,7 @@ const Header = ({ clearRecords, expenses, setExpenses }) => {
   return (
     <>
       <div
-        className="py-2 border-b border-border flex justify-between items-center px-5 bg-[linear-gradient(45deg,#1f1f1f_25%,#10B98180_50%,#14B8A6_75%,#171717_100%)]
+        className="py-2 flex justify-between items-center px-5 bg-[linear-gradient(45deg,#1f1f1f_25%,#10B98180_50%,#14B8A6_75%,#171717_100%)]
 "
       >
         <div

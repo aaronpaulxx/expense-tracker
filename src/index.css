@@ -14,20 +14,20 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --radius: 0.625rem;
-  --background: oklch(0.145 0 0);
+  --background: oklch(14.8% 0.004 228.8);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --popover: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --card: oklch(14.8% 0.004 228.8);
+  --popover: oklch(21.8% 0.008 223.9);
+  --secondary: oklch(37.8% 0.015 216);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
+  --muted: oklch(27.5% 0.011 216.9);
+  --muted-foreground: oklch(72.3% 0.014 214.4);
   --accent: oklch(0.269 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
+  --destructive: oklch(66.9% 0.21327 24.179);
+  --border: oklch(45% 0.017 213.2);
   --ring: oklch(0.556 0 0);
-  --chart-grid: #4a4a4a;
-  --chart-tick: #a3a3a3;
+  --chart-grid: oklch(37.8% 0.015 216);
+  --chart-tick: oklch(72.3% 0.014 214.4);
   --chart-card-gradient-start: #171717;
   --chart-card-gradient-end: #3f3f3f;
   --chart-accent: #10b981;
@@ -176,7 +176,7 @@
   position: relative;
   padding: 1px;
   border-radius: 10.5px;
-  background: #78716c;
+  background: oklch(45% 0.017 213.2);
   transition: all 0.5s ease;
   z-index: 0;
 }
@@ -239,7 +239,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: #44403c;
+  background-color: #22292b;
   border: none;
   display: flex;
   align-items: center;

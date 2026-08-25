@@ -235,7 +235,7 @@ const Settings = ({
                         <button
                           onClick={handleExport}
                           disabled={totalEntries === 0}
-                          className="ml-auto cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium shadow-sm hover:bg-secondary/80 active:bg-secondary/70 transition-colors duration-200 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-auto"
+                          className="ml-auto cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium shadow-sm hover:bg-secondary/80 active:bg-secondary/60 transition-colors duration-200 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-auto"
                         >
                           <Download size={18} />
                           Export
@@ -276,7 +276,7 @@ const Settings = ({
                             ? "border-destructive bg-destructive/10"
                             : isDragging
                               ? "border-success bg-success/10"
-                              : "border-border hover:border-muted-foreground hover:bg-muted/50"
+                              : "border-border hover:border-muted-foreground hover:bg-muted/10"
                         }`}
                       >
                         <div className="flex flex-col items-center justify-center text-center pointer-events-none">
@@ -327,7 +327,7 @@ const Settings = ({
                     </div>
                   )}
                   {showConfirmImport && importData && (
-                    <div className="mt-5 bg-white/5 p-5 rounded-2xl border border-white/10">
+                    <div className="mt-2 bg-popover p-5 rounded-2xl border border-border">
                       <div className=" mb-4">
                         <p className="text-xs text-white/90">
                           <span className="text-sm text-warning">
@@ -433,7 +433,7 @@ const Settings = ({
                                 totalEntries === 0 ||
                                 (showConfirmImport && importData)
                               }
-                              className="ml-auto cursor-pointer md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive text-white text-sm font-medium shadow-sm hover:bg-destructive/90 active:bg-destructive/80 transition-colors duration-200 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-auto"
+                              className="ml-auto cursor-pointer md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive text-white text-sm font-medium shadow-sm hover:bg-destructive/80 active:bg-destructive/60 transition-colors duration-200 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-auto"
                             >
                               <Trash size={18} />
                               Erase All Data
@@ -444,7 +444,7 @@ const Settings = ({
                     </div>
                   </div>
                   {showConfirmDelete && !(showConfirmImport && importData) && (
-                    <div className="mt-1 bg-white/5 p-4 rounded-2xl border border-destructive">
+                    <div className="mt-1 p-4 rounded-2xl border bg-popover border-destructive">
                       <p className="text-sm text-muted-foreground">
                         To proceed, type &quot;
                         <span className="font-medium text-foreground">
@@ -474,7 +474,7 @@ const Settings = ({
                             setShowConfirmDelete(false);
                             setDeleteConfirmationInput("");
                           }}
-                          className="text-sm font-medium px-4 py-2 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition cursor-pointer w-full"
+                          className="text-sm font-medium px-4 py-2 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/60 transition cursor-pointer w-full"
                         >
                           Cancel
                         </button>
@@ -487,7 +487,7 @@ const Settings = ({
                           disabled={
                             deleteConfirmationInput.toLowerCase() !== "confirm"
                           }
-                          className="text-sm font-medium px-4 py-2 rounded-full bg-destructive text-white hover:bg-destructive/90 active:bg-destructive/80 transition cursor-pointer w-full disabled:bg-muted disabled:text-muted-foreground disabled:cursor-auto"
+                          className="text-sm font-medium px-4 py-2 rounded-full bg-destructive text-white hover:bg-destructive/80 active:bg-destructive/60 transition cursor-pointer w-full disabled:bg-muted disabled:text-muted-foreground disabled:cursor-auto"
                         >
                           Confirm Delete
                         </button>

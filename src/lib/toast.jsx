@@ -11,9 +11,9 @@ const ACCENT = {
 const baseOptions = {
   duration: 5000,
   style: {
-    background: "#1c1917", // stone-900
+    background: "#161b1d",
     color: "#fff",
-    border: "1px solid #57534e", // stone-600
+    border: "1px solid #394447",
     borderRadius: "0.5rem",
     fontSize: "0.875rem",
     boxShadow:

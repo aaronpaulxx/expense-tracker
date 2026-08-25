@@ -86,11 +86,11 @@ const CustomYearlyTooltip = ({ active, payload, label, data }) => {
             "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
         }}
       >
-        <p className="label text-lg text-muted-foreground font-bold">{`${label}`}</p>
+        <p className="label text-lg text-foreground font-bold">{`${label}`}</p>
         {sortedPayload.map((entry, index) => (
           <div
             key={`tooltip-${index}`}
-            className="flex justify-between items-center text-muted-foreground py-0.5"
+            className="flex justify-between items-center text-foreground py-0.5"
           >
             <div className="flex items-center">
               {entry.color && (
@@ -301,7 +301,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   return (
     <div className="chart-container relative py-2 px-2 border border-border rounded-xl">
       <div className="flex justify-between items-center mb-5 pb-2 border-b border-border w-full">
-        <h3 className="text-sm font-medium text-foreground">
+        <h3 className="text-sm font-medium text-muted-foreground">
           {selectedYear
             ? `Yearly Overview - ${selectedYear}`
             : "Yearly Overview"}
@@ -437,7 +437,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
                 dataKey={category}
                 stackId="1"
                 stroke={COLORS[category]}
-                strokeWidth={1.5}
+                strokeWidth={0}
                 fill={`url(#color${category})`}
                 strokeOpacity={
                   hoveredCategory === null || hoveredCategory === category
