@@ -457,7 +457,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
     <Brush
       key={brushKey}
       dataKey="month"
-      height={20}
+      height={15}
       stroke="var(--chart-accent-alt)"
       fill="var(--chart-outline)"
       traveller={<MinimalTraveller />}
@@ -504,8 +504,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
         <div className="text-muted-foreground min-h-50 py-8 flex flex-col items-center justify-center">
           <ClipboardX size={55} className="opacity-70 mb-5" />
           <span className="text-sm">
-            No expenses recorded{selectedYear ? ` for ${selectedYear}` : ""}{" "}
-            yet.
+            No data available{selectedYear ? ` for ${selectedYear}` : ""}
           </span>
         </div>
       ) : (

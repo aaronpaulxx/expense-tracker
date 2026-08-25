@@ -1,8 +1,6 @@
 import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
-// --- MODIFIED: Import Sector for the active shape ---
 import { PieChart, Pie, Cell, ResponsiveContainer, Sector } from "recharts";
-
 import { ClipboardX } from "lucide-react";
 import { CATEGORY_COLORS } from "../constants/categories.jsx";
 
@@ -20,7 +18,6 @@ const formatCategoryData = (categoryTotals) => {
   }));
 };
 
-// --- NEW: Custom component to render the enlarged, active slice ---
 const renderActiveShape = (props) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } =
     props;
@@ -53,7 +50,6 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
     [formattedData],
   );
 
-  // --- NEW: Calculate the index of the active slice ---
   const activeIndex = useMemo(
     () => formattedData.findIndex((entry) => entry.name === hoveredCategory),
     [formattedData, hoveredCategory],
@@ -93,7 +89,6 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
 
       <div className="flex-1 flex items-center justify-center">
         {totalAmount > 0 ? (
-          // --- MODIFIED: Add onMouseLeave to the shared container ---
           <div
             className="flex w-full items-center justify-center gap-5"
             onMouseLeave={() => setHoveredCategory(null)}
@@ -142,10 +137,9 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
                     cx="50%"
                     cy="50%"
                     innerRadius={55}
-                    outerRadius={BASE_OUTER_RADIUS} // --- MODIFIED: Use static base radius
+                    outerRadius={BASE_OUTER_RADIUS}
                     paddingAngle={0}
                     isAnimationActive={true}
-                    // --- NEW: Props for handling active slice ---
                     activeIndex={activeIndex}
                     activeShape={renderActiveShape}
                     onMouseEnter={(_, index) => {
@@ -184,7 +178,12 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
                         maximumFractionDigits: 2,
                       })}
                     </tspan>
-                    <tspan x="50%" y="60%" fontSize="15" fill={CATEGORY_COLORS.Other}>
+                    <tspan
+                      x="50%"
+                      y="60%"
+                      fontSize="15"
+                      fill={CATEGORY_COLORS.Other}
+                    >
                       {displayLabel}
                     </tspan>
                   </text>
@@ -193,9 +192,16 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
             </div>
           </div>
         ) : (
-          <div className="text-muted-foreground min-h-50 py-8 flex flex-col items-center">
+          <div className="text-muted-foreground min-h-50 py-8 flex flex-col items-center justify-center">
             <ClipboardX size={55} className="opacity-70 mb-5" />
-            <span className="text-sm">No data available for this month.</span>
+            <span className="text-sm">
+              No data available
+              {selectedMonth
+                ? ` for ${new Date(selectedMonth).toLocaleString("en-US", {
+                    month: "long",
+                  })}`
+                : ""}{" "}
+            </span>
           </div>
         )}
       </div>

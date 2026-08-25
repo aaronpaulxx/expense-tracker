@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import { ClipboardX } from "lucide-react";
 
 const getWeekDetails = (year, month) => {
   const weeks = [];
@@ -131,6 +132,11 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
     [expenses, selectedMonth],
   );
 
+  const hasAnyExpenses = React.useMemo(
+    () => weeklyTrendData.some((week) => week.Total > 0),
+    [weeklyTrendData],
+  );
+
   return (
     <div className="border-border border rounded-xl p-2 shadow-md shadow-stone-950">
       <h3 className="text-sm font-medium text-muted-foreground mb-5 pb-2 border-b border-border flex justify-between items-center">
@@ -145,53 +151,67 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
         </span>
       </h3>
 
-      <ResponsiveContainer width="100%" height={200}>
-        <BarChart
-          data={weeklyTrendData}
-          margin={{ top: 20, right: 20, left: -10, bottom: 10 }}
-        >
-          <CartesianGrid strokeDasharray="2 2" stroke="var(--chart-grid)" />
+      {!hasAnyExpenses ? (
+        <div className="text-muted-foreground min-h-50 py-8 flex flex-col items-center justify-center">
+          <ClipboardX size={55} className="opacity-70 mb-5" />
+          <span className="text-sm">
+            No data available
+            {selectedMonth
+              ? ` for ${new Date(selectedMonth).toLocaleString("en-US", {
+                  month: "long",
+                })}`
+              : ""}{" "}
+          </span>
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart
+            data={weeklyTrendData}
+            margin={{ top: 20, right: 20, left: -10, bottom: 10 }}
+          >
+            <CartesianGrid strokeDasharray="2 2" stroke="var(--chart-grid)" />
 
-          <XAxis
-            dataKey="week"
-            tick={{ fontSize: 12, fill: "var(--chart-tick)" }}
-            tickLine={{ stroke: "var(--chart-grid)" }}
-          />
+            <XAxis
+              dataKey="week"
+              tick={{ fontSize: 12, fill: "var(--chart-tick)" }}
+              tickLine={{ stroke: "var(--chart-grid)" }}
+            />
 
-          <YAxis
-            tick={{ fontSize: 12, fill: "var(--chart-tick)" }}
-            tickLine={{ stroke: "var(--chart-grid)" }}
-            tickFormatter={(value) => `₱${value.toLocaleString()}`}
-          />
+            <YAxis
+              tick={{ fontSize: 12, fill: "var(--chart-tick)" }}
+              tickLine={{ stroke: "var(--chart-grid)" }}
+              tickFormatter={(value) => `₱${value.toLocaleString()}`}
+            />
 
-          <Tooltip
-            content={<CustomTooltip />}
-            cursor={{ fill: "rgba(16, 185, 129, 0.1)" }}
-          />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: "rgba(16, 185, 129, 0.1)" }}
+            />
 
-          <defs>
-            <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="0%"
-                stopColor="var(--chart-accent)"
-                stopOpacity={0.9}
-              />
-              <stop
-                offset="100%"
-                stopColor="var(--chart-accent-alt)"
-                stopOpacity={0.5}
-              />
-            </linearGradient>
-          </defs>
+            <defs>
+              <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="0%"
+                  stopColor="var(--chart-accent)"
+                  stopOpacity={0.9}
+                />
+                <stop
+                  offset="100%"
+                  stopColor="var(--chart-accent-alt)"
+                  stopOpacity={0.5}
+                />
+              </linearGradient>
+            </defs>
 
-          <Bar
-            dataKey="Total"
-            fill="url(#colorTotal)"
-            radius={[8, 8, 0, 0]}
-            barSize={30}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+            <Bar
+              dataKey="Total"
+              fill="url(#colorTotal)"
+              radius={[8, 8, 0, 0]}
+              barSize={30}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };
