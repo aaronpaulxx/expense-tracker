@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback, useId } from "react";
 import PropTypes from "prop-types";
 import { Switch } from "@headlessui/react";
 import {
@@ -14,38 +14,39 @@ import {
   Tooltip,
   Brush,
 } from "recharts";
-import { ArrowBigUp, ArrowBigDown } from "lucide-react";
+import { ArrowBigUp, ArrowBigDown, ClipboardX } from "lucide-react";
 import { CATEGORY_COLORS } from "../constants/categories.jsx";
 
 // --- Constants and Helper Functions ---
 
 const COLORS = CATEGORY_COLORS;
+const CATEGORY_NAMES = Object.keys(COLORS);
+const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+const emptyMonthEntry = (month) => {
+  const entry = { month };
+  CATEGORY_NAMES.forEach((category) => {
+    entry[category] = 0;
+  });
+  return entry;
+};
 
 const formatYearlyData = (expenses, selectedYear) => {
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const monthlyData = months.reduce((acc, month) => {
-    acc[month] = {
-      month,
-      Food: 0,
-      Transport: 0,
-      Shopping: 0,
-      Credit: 0,
-      Bills: 0,
-      Other: 0,
-    };
+  const monthlyData = MONTHS.reduce((acc, month) => {
+    acc[month] = emptyMonthEntry(month);
     return acc;
   }, {});
 
@@ -64,7 +65,37 @@ const formatYearlyData = (expenses, selectedYear) => {
     });
   });
 
-  return Object.values(monthlyData);
+  const fullYearData = Object.values(monthlyData);
+
+  const monthHasData = (monthEntry) =>
+    CATEGORY_NAMES.some((category) => monthEntry[category] > 0);
+
+  const firstIndex = fullYearData.findIndex(monthHasData);
+
+  if (firstIndex === -1) {
+    // No expenses at all this year — fall back to showing the full year
+    return fullYearData;
+  }
+
+  const lastIndex =
+    fullYearData.length -
+    1 -
+    [...fullYearData].reverse().findIndex(monthHasData);
+
+  let adjustedFirstIndex = firstIndex;
+  let adjustedLastIndex = lastIndex;
+
+  if (firstIndex === lastIndex) {
+    // Only one month has data — pad with an adjacent month so the Line/Area
+    // has two points to draw and the Brush has a non-zero-width range.
+    if (firstIndex > 0) {
+      adjustedFirstIndex = firstIndex - 1;
+    } else if (lastIndex < fullYearData.length - 1) {
+      adjustedLastIndex = lastIndex + 1;
+    }
+  }
+
+  return fullYearData.slice(adjustedFirstIndex, adjustedLastIndex + 1);
 };
 
 // --- Custom Components ---
@@ -74,7 +105,11 @@ const CustomYearlyTooltip = ({ active, payload, label, data }) => {
     const currentMonthIndex = data.findIndex((item) => item.month === label);
     const previousMonthData =
       currentMonthIndex > 0 ? data[currentMonthIndex - 1] : null;
-    const sortedPayload = [...payload].sort((a, b) => b.value - a.value);
+
+    // Categories with nothing spent that month just clutter the tooltip —
+    // only show ones that actually contributed.
+    const nonZeroPayload = payload.filter((entry) => entry.value > 0);
+    const sortedPayload = [...nonZeroPayload].sort((a, b) => b.value - a.value);
 
     const total = payload.reduce((acc, entry) => acc + entry.value, 0);
 
@@ -87,32 +122,36 @@ const CustomYearlyTooltip = ({ active, payload, label, data }) => {
         }}
       >
         <p className="label text-lg text-foreground font-bold">{`${label}`}</p>
-        {sortedPayload.map((entry, index) => (
-          <div
-            key={`tooltip-${index}`}
-            className="flex justify-between items-center text-foreground py-0.5"
-          >
-            <div className="flex items-center">
-              {entry.color && (
-                <div
-                  className="w-3 h-3 rounded-xs mr-2"
-                  style={{ backgroundColor: entry.color }}
-                ></div>
-              )}
-              <span className="capitalize text-xs">{entry.name}:</span>
+        {sortedPayload.length === 0 ? (
+          <p className="text-xs text-muted-foreground py-1">No expenses</p>
+        ) : (
+          sortedPayload.map((entry, index) => (
+            <div
+              key={`tooltip-${index}`}
+              className="flex justify-between items-center text-foreground py-0.5"
+            >
+              <div className="flex items-center">
+                {entry.color && (
+                  <div
+                    className="w-3 h-3 rounded-xs mr-2"
+                    style={{ backgroundColor: entry.color }}
+                  ></div>
+                )}
+                <span className="capitalize text-xs">{entry.name}:</span>
+              </div>
+              <div className="flex items-center text-xs ml-5">
+                ₱{entry.value.toLocaleString()}
+                {previousMonthData &&
+                  previousMonthData[entry.name] !== undefined &&
+                  (entry.value > previousMonthData[entry.name] ? (
+                    <ArrowBigUp className="h-5 w-5 text-destructive fill-destructive ml-1" />
+                  ) : entry.value < previousMonthData[entry.name] ? (
+                    <ArrowBigDown className="h-5 w-5 text-success fill-success ml-1" />
+                  ) : null)}
+              </div>
             </div>
-            <div className="flex items-center text-xs ml-5">
-              ₱{entry.value.toLocaleString()}
-              {previousMonthData &&
-                previousMonthData[entry.name] !== undefined &&
-                (entry.value > previousMonthData[entry.name] ? (
-                  <ArrowBigUp className="h-5 w-5 text-destructive fill-destructive ml-1" />
-                ) : entry.value < previousMonthData[entry.name] ? (
-                  <ArrowBigDown className="h-5 w-5 text-success fill-success ml-1" />
-                ) : null)}
-            </div>
-          </div>
-        ))}
+          ))
+        )}
         <hr className=" border-border" />
         <div className="flex justify-between items-center text-foreground py-1 font-semibold">
           <span className="text-sm">Total:</span>
@@ -140,15 +179,15 @@ CustomYearlyTooltip.propTypes = {
 const CategoryTotalTooltip = ({ total, color }) => {
   return (
     <div
-      className="p-2 rounded-lg text-white pointer-events-none"
+      className="p-2 rounded-lg pointer-events-none"
       style={{
         position: "absolute",
-        top: "15%",
-        left: "75%",
+        top: "0.5rem",
+        right: "0.5rem",
         zIndex: 100,
         background:
           "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
-        border: `1.5px solid ${color || "#57534e"}`,
+        border: `1.5px solid ${color || "var(--border)"}`,
         textAlign: "center",
       }}
     >
@@ -166,20 +205,52 @@ CategoryTotalTooltip.propTypes = {
 
 const MinimalTraveller = (props) => {
   const { x, y, width, height } = props;
-  const handleWidth = 8;
-  const handleHeight = height + 15;
+
+  // Recharts can call this with unmeasured (NaN/undefined) dimensions on the
+  // very first render, before ResponsiveContainer has measured its size.
+  if (![x, y, width, height].every((value) => Number.isFinite(value))) {
+    return null;
+  }
+
+  const handleWidth = 10;
+  const handleHeight = height + 10;
   const handleX = x + width / 2 - handleWidth / 2;
-  const handleY = y - 7;
+  const handleY = y - 5;
+  const centerX = handleX + handleWidth / 2;
+  const centerY = handleY + handleHeight / 2;
 
   return (
-    <rect
-      x={handleX}
-      y={handleY}
-      width={handleWidth}
-      height={handleHeight}
-      fill="var(--chart-accent)"
-      rx="4"
-    />
+    <g>
+      <rect
+        x={handleX}
+        y={handleY}
+        width={handleWidth}
+        height={handleHeight}
+        fill="var(--chart-accent)"
+        stroke="var(--chart-outline)"
+        strokeWidth={1}
+        rx={handleWidth / 2}
+      />
+      {/* Grip mark for drag affordance */}
+      <line
+        x1={centerX - 1.5}
+        y1={centerY - 4}
+        x2={centerX - 1.5}
+        y2={centerY + 4}
+        stroke="var(--chart-outline)"
+        strokeWidth={1}
+        strokeLinecap="round"
+      />
+      <line
+        x1={centerX + 1.5}
+        y1={centerY - 4}
+        x2={centerX + 1.5}
+        y2={centerY + 4}
+        stroke="var(--chart-outline)"
+        strokeWidth={1}
+        strokeLinecap="round"
+      />
+    </g>
   );
 };
 
@@ -190,7 +261,6 @@ MinimalTraveller.propTypes = {
   height: PropTypes.number.isRequired,
 };
 
-// --- MODIFICATION START: New custom legend component ---
 const CustomLegend = ({
   payload,
   onMouseEnter,
@@ -206,21 +276,25 @@ const CustomLegend = ({
         return (
           <div
             key={`item-${index}`}
-            className="flex items-center mr-4 pt-2 "
+            className="flex items-center mr-4 pt-2 cursor-pointer"
+            role="button"
+            tabIndex={0}
             onMouseEnter={() => onMouseEnter(entry)}
             onMouseLeave={() => onMouseLeave(entry)}
+            onFocus={() => onMouseEnter(entry)}
+            onBlur={() => onMouseLeave(entry)}
           >
             <div
               className="w-3 h-3 mr-1"
               style={{
                 backgroundColor: color,
-                borderRadius: "3px", // Your custom radius!
+                borderRadius: "3px",
               }}
             />
             <span
               className="text-xs transition-colors"
               style={{
-                color: "var(--chart-tick)", // Neutral fallback, matches axis tick color
+                color: "var(--chart-tick)",
                 borderBottom: isHovered
                   ? `1px solid ${color}`
                   : "1px solid transparent",
@@ -247,22 +321,29 @@ CustomLegend.propTypes = {
   onMouseLeave: PropTypes.func.isRequired,
   hoveredCategory: PropTypes.string,
 };
-// --- MODIFICATION END ---
 
 // --- Main Chart Component ---
 
 const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   const [chartType, setChartType] = useState("area");
   const [hoveredCategory, setHoveredCategory] = useState(null);
+  // Namespaces the gradient <linearGradient> ids so two chart instances on
+  // the same page (e.g. a "compare years" view) never fight over one id.
+  const gradientId = useId();
 
   const data = useMemo(
     () => formatYearlyData(expenses, selectedYear),
     [expenses, selectedYear],
   );
 
+  const hasAnyExpenses = useMemo(
+    () => data.some((month) => CATEGORY_NAMES.some((c) => month[c] > 0)),
+    [data],
+  );
+
   const categoryTotals = useMemo(() => {
     const totals = {};
-    Object.keys(COLORS).forEach((category) => {
+    CATEGORY_NAMES.forEach((category) => {
       totals[category] = data.reduce(
         (acc, month) => acc + (month[category] || 0),
         0,
@@ -276,27 +357,116 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
     endIndex: data.length - 1,
   });
 
-  const handleLegendMouseEnter = (o) => {
+  const [brushKey, setBrushKey] = useState(0);
+
+  useEffect(() => {
+    setBrushRange({
+      startIndex: 0,
+      endIndex: data.length - 1,
+    });
+  }, [data]);
+
+  const handleLegendMouseEnter = useCallback((o) => {
     setHoveredCategory(o.dataKey);
-  };
+  }, []);
 
-  const handleLegendMouseLeave = () => {
+  const handleLegendMouseLeave = useCallback(() => {
     setHoveredCategory(null);
-  };
+  }, []);
 
-  const handleBrushChange = (newRange) => {
-    if (
-      newRange.startIndex !== brushRange.startIndex ||
-      newRange.endIndex !== brushRange.endIndex
-    ) {
-      setBrushRange({
-        startIndex: newRange.startIndex,
-        endIndex: newRange.endIndex,
-      });
-    }
-  };
+  const MIN_BRUSH_MONTHS = 2;
 
-  // --- MODIFICATION: The renderLegendWithGlow function is no longer needed ---
+  const handleBrushChange = useCallback(
+    (newRange) => {
+      const maxDataIndex = Math.max(data.length - 1, 0);
+      const minGap = MIN_BRUSH_MONTHS - 1;
+
+      let startIndex = Math.min(Math.max(newRange.startIndex, 0), maxDataIndex);
+      let endIndex = Math.min(Math.max(newRange.endIndex, 0), maxDataIndex);
+      if (startIndex > endIndex) {
+        [startIndex, endIndex] = [endIndex, startIndex];
+      }
+
+      const rawStartIndex = startIndex;
+      const rawEndIndex = endIndex;
+
+      if (endIndex - startIndex < minGap) {
+        const startMoved = startIndex !== brushRange.startIndex;
+        const endMoved = endIndex !== brushRange.endIndex;
+
+        if (startMoved && !endMoved) {
+          startIndex = Math.max(0, endIndex - minGap);
+          if (endIndex - startIndex < minGap) {
+            endIndex = Math.min(maxDataIndex, startIndex + minGap);
+          }
+        } else {
+          endIndex = Math.min(maxDataIndex, startIndex + minGap);
+          if (endIndex - startIndex < minGap) {
+            startIndex = Math.max(0, endIndex - minGap);
+          }
+        }
+      }
+
+      if (
+        startIndex !== brushRange.startIndex ||
+        endIndex !== brushRange.endIndex
+      ) {
+        setBrushRange({ startIndex, endIndex });
+      }
+
+      if (startIndex !== rawStartIndex || endIndex !== rawEndIndex) {
+        setBrushKey((k) => k + 1);
+      }
+    },
+    [data.length, brushRange.startIndex, brushRange.endIndex],
+  );
+
+  const maxIndex = Math.max(data.length - 1, 0);
+  const clampedStartIndex = Math.min(brushRange.startIndex, maxIndex);
+  const clampedEndIndex = Math.min(brushRange.endIndex, maxIndex);
+
+  // --- Shared chart chrome, identical across both chart types ---
+  const sharedGrid = (
+    <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+  );
+  const sharedXAxis = (
+    <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--chart-tick)" }} />
+  );
+  const sharedYAxis = (
+    <YAxis
+      tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
+      tickFormatter={(value) => `₱${value.toLocaleString()}`}
+    />
+  );
+  const sharedTooltip = (
+    <Tooltip content={<CustomYearlyTooltip data={data} />} />
+  );
+  const sharedLegend = (
+    <Legend
+      verticalAlign="bottom"
+      content={
+        <CustomLegend
+          onMouseEnter={handleLegendMouseEnter}
+          onMouseLeave={handleLegendMouseLeave}
+          hoveredCategory={hoveredCategory}
+        />
+      }
+    />
+  );
+  const sharedBrush = (
+    <Brush
+      key={brushKey}
+      dataKey="month"
+      height={20}
+      stroke="var(--chart-accent-alt)"
+      fill="var(--chart-outline)"
+      traveller={<MinimalTraveller />}
+      tickFormatter={() => ""}
+      startIndex={clampedStartIndex}
+      endIndex={clampedEndIndex}
+      onChange={handleBrushChange}
+    />
+  );
 
   return (
     <div className="chart-container relative py-2 px-2 border border-border rounded-xl">
@@ -325,147 +495,110 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
 
       {hoveredCategory && categoryTotals[hoveredCategory] > 0 && (
         <CategoryTotalTooltip
-          category={hoveredCategory}
           total={categoryTotals[hoveredCategory]}
           color={COLORS[hoveredCategory]}
         />
       )}
 
-      <ResponsiveContainer width="100%" height={200}>
-        {chartType === "line" ? (
-          <LineChart
-            data={data}
-            margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
-            <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--chart-tick)" }} />
-            <YAxis
-              tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
-              tickFormatter={(value) => `₱${value.toLocaleString()}`}
-            />
-            <Tooltip content={<CustomYearlyTooltip data={data} />} />
-            {/* --- MODIFICATION: Using the content prop for the custom legend --- */}
-            <Legend
-              verticalAlign="bottom"
-              content={
-                <CustomLegend
-                  onMouseEnter={handleLegendMouseEnter}
-                  onMouseLeave={handleLegendMouseLeave}
-                  hoveredCategory={hoveredCategory}
+      {!hasAnyExpenses ? (
+        <div className="text-muted-foreground min-h-50 py-8 flex flex-col items-center justify-center">
+          <ClipboardX size={55} className="opacity-70 mb-5" />
+          <span className="text-sm">
+            No expenses recorded{selectedYear ? ` for ${selectedYear}` : ""}{" "}
+            yet.
+          </span>
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height={200}>
+          {chartType === "line" ? (
+            <LineChart
+              data={data}
+              margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+            >
+              {sharedGrid}
+              {sharedXAxis}
+              {sharedYAxis}
+              {sharedTooltip}
+              {sharedLegend}
+              {CATEGORY_NAMES.map((category) => (
+                <Line
+                  key={`line-${category}`}
+                  type="monotone"
+                  dataKey={category}
+                  stroke={COLORS[category]}
+                  strokeWidth={hoveredCategory === category ? 2.5 : 1.5}
+                  strokeOpacity={
+                    hoveredCategory === null || hoveredCategory === category
+                      ? 1
+                      : 0.2
+                  }
+                  dot={false}
+                  animationDuration={300}
                 />
-              }
-            />
-            {Object.keys(COLORS).map((category) => (
-              <Line
-                key={`line-${category}`}
-                type="monotone"
-                dataKey={category}
-                stroke={COLORS[category]}
-                strokeWidth={hoveredCategory === category ? 2.5 : 1.5}
-                strokeOpacity={
-                  hoveredCategory === null || hoveredCategory === category
-                    ? 1
-                    : 0.2
-                }
-                dot={false}
-                animationDuration={300}
-              />
-            ))}
-            <Brush
-              dataKey="month"
-              height={8}
-              stroke="var(--chart-accent-alt)"
-              fill="var(--chart-outline)"
-              traveller={<MinimalTraveller />}
-              tickFormatter={() => ""}
-              startIndex={brushRange.startIndex}
-              endIndex={brushRange.endIndex}
-              onChange={handleBrushChange}
-            />
-          </LineChart>
-        ) : (
-          <AreaChart
-            data={data}
-            margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
-          >
-            <defs>
-              {Object.keys(COLORS).map((category) => (
-                <linearGradient
-                  key={`gradient-${category}`}
-                  id={`color${category}`}
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
-                  <stop
-                    offset="5%"
-                    stopColor={COLORS[category]}
-                    stopOpacity={0.7}
-                  />
-                  <stop
-                    offset="95%"
-                    stopColor={COLORS[category]}
-                    stopOpacity={0.1}
-                  />
-                </linearGradient>
               ))}
-            </defs>
+              {sharedBrush}
+            </LineChart>
+          ) : (
+            <AreaChart
+              data={data}
+              margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+            >
+              <defs>
+                {CATEGORY_NAMES.map((category) => (
+                  <linearGradient
+                    key={`gradient-${category}`}
+                    id={`${gradientId}-color${category}`}
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop
+                      offset="5%"
+                      stopColor={COLORS[category]}
+                      stopOpacity={0.7}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor={COLORS[category]}
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                ))}
+              </defs>
 
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
-            <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--chart-tick)" }} />
-            <YAxis
-              tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
-              tickFormatter={(value) => `₱${value.toLocaleString()}`}
-            />
-            <Tooltip content={<CustomYearlyTooltip data={data} />} />
-            {/* --- MODIFICATION: Using the content prop for the custom legend --- */}
-            <Legend
-              verticalAlign="bottom"
-              content={
-                <CustomLegend
-                  onMouseEnter={handleLegendMouseEnter}
-                  onMouseLeave={handleLegendMouseLeave}
-                  hoveredCategory={hoveredCategory}
+              {sharedGrid}
+              {sharedXAxis}
+              {sharedYAxis}
+              {sharedTooltip}
+              {sharedLegend}
+              {CATEGORY_NAMES.map((category) => (
+                <Area
+                  key={`area-${category}`}
+                  type="monotone"
+                  dataKey={category}
+                  stackId="1"
+                  stroke={COLORS[category]}
+                  strokeWidth={0}
+                  fill={`url(#${gradientId}-color${category})`}
+                  strokeOpacity={
+                    hoveredCategory === null || hoveredCategory === category
+                      ? 1
+                      : 0.2
+                  }
+                  fillOpacity={
+                    hoveredCategory === null || hoveredCategory === category
+                      ? 1
+                      : 0.2
+                  }
+                  animationDuration={300}
                 />
-              }
-            />
-            {Object.keys(COLORS).map((category) => (
-              <Area
-                key={`area-${category}`}
-                type="monotone"
-                dataKey={category}
-                stackId="1"
-                stroke={COLORS[category]}
-                strokeWidth={0}
-                fill={`url(#color${category})`}
-                strokeOpacity={
-                  hoveredCategory === null || hoveredCategory === category
-                    ? 1
-                    : 0.2
-                }
-                fillOpacity={
-                  hoveredCategory === null || hoveredCategory === category
-                    ? 1
-                    : 0.2
-                }
-                animationDuration={300}
-              />
-            ))}
-            <Brush
-              dataKey="month"
-              height={8}
-              stroke="var(--chart-accent-alt)"
-              fill="var(--chart-outline)"
-              traveller={<MinimalTraveller />}
-              tickFormatter={() => ""}
-              startIndex={brushRange.startIndex}
-              endIndex={brushRange.endIndex}
-              onChange={handleBrushChange}
-            />
-          </AreaChart>
-        )}
-      </ResponsiveContainer>
+              ))}
+              {sharedBrush}
+            </AreaChart>
+          )}
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };
