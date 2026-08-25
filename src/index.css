@@ -20,12 +20,12 @@
   --foreground: oklch(96.3% 0.002 197.1);
   --secondary: oklch(37.8% 0.015 216);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(27.5% 0.011 216.9);
+  --muted: oklch(37.8% 0.015 216);
   --muted-foreground: oklch(72.3% 0.014 214.4);
 
   --expense-row-gradient: oklch(21.8% 0.008 223.9);
   --card: oklch(14.8% 0.004 228.8);
-  --popover: oklch(21.8% 0.008 223.9);
+  --popover: oklch(27.5% 0.011 216.9);
 
   --accent: oklch(84.5% 0.143 164.978);
   --border: oklch(45% 0.017 213.2);
@@ -33,8 +33,8 @@
 
   --chart-grid: oklch(37.8% 0.015 216);
   --chart-tick: oklch(72.3% 0.014 214.4);
-  --chart-card-gradient-start: #22292b;
-  --chart-card-gradient-end: #161b1d;
+  --chart-card-gradient-start: #394447;
+  --chart-card-gradient-end: #22292b;
   --chart-accent: #10b981;
   --chart-accent-alt: #14b8a6;
   --chart-outline: #0c0a09;

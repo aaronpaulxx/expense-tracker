@@ -7,12 +7,12 @@
    ------------------------------------------------------------------------ */
 :root {
   font-family: "DM Sans", sans-serif;
-  --dp-bg: #161b1d;
+  --dp-bg: #22292b;
   --dp-text: #f1f3f3;
   --dp-selected-text: #1c1917;
   --dp-muted-text: #67787c;
   --dp-border: #4b585b00;
-  --dp-hover-bg: #043528;
+  --dp-hover-bg: #0e5340;
   --dp-today-bg: #6ee7b7;
   --dp-selected-bg: #064e3b;
 }
