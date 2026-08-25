@@ -362,7 +362,7 @@ const CustomLegend = ({
             <span
               className="text-xs transition-colors"
               style={{
-                color: "var(--chart-tick)",
+                color: isHovered ? `${color}` : "var(--chart-tick)",
                 borderBottom: isHovered
                   ? `1px solid ${color}`
                   : "1px solid transparent",
