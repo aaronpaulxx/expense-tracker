@@ -95,7 +95,7 @@ const FinancialInsights = ({
     <div className="w-full flex flex-col gap-2">
       <TabGroup selectedIndex={activeIndex} onChange={setActiveIndex}>
         {/* Navigation Tabs */}
-        <TabList className="flex w-full border-b border-border text-muted-foreground relative">
+        <TabList className="flex w-full border-b border-border text-muted-foreground relative mb-4">
           {tabs.map(({ label, key, icon: Icon }, index) => (
             <Tab
               key={key}

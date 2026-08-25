@@ -44,7 +44,31 @@ const emptyMonthEntry = (month) => {
   return entry;
 };
 
-const formatYearlyData = (expenses, selectedYear) => {
+// December of the year before selectedYear — used purely as a comparison
+// baseline for January's tooltip arrows, even when Dec of the prior year
+// isn't itself a point on the chart.
+const getPreviousDecemberEntry = (expenses, selectedYear) => {
+  const previousDecember = emptyMonthEntry("Dec");
+  if (typeof selectedYear !== "number") return previousDecember;
+
+  Object.entries(expenses).forEach(([date, expenseList]) => {
+    const expenseDate = new Date(date);
+    if (
+      expenseDate.getFullYear() === selectedYear - 1 &&
+      expenseDate.getMonth() === 11
+    ) {
+      expenseList.forEach((expense) => {
+        if (previousDecember[expense.category] !== undefined) {
+          previousDecember[expense.category] += expense.amount;
+        }
+      });
+    }
+  });
+
+  return previousDecember;
+};
+
+const formatYearlyData = (expenses, selectedYear, previousDecemberEntry) => {
   const monthlyData = MONTHS.reduce((acc, month) => {
     acc[month] = emptyMonthEntry(month);
     return acc;
@@ -70,10 +94,15 @@ const formatYearlyData = (expenses, selectedYear) => {
   const monthHasData = (monthEntry) =>
     CATEGORY_NAMES.some((category) => monthEntry[category] > 0);
 
+  const prependPreviousDecember = (result) =>
+    previousDecemberEntry
+      ? [{ ...previousDecemberEntry, isPreviousYear: true }, ...result]
+      : result;
+
   const firstIndex = fullYearData.findIndex(monthHasData);
 
   if (firstIndex === -1) {
-    // No expenses at all this year — fall back to showing the full year
+    // No expenses at all this year — fall back to showing the full year.
     return fullYearData;
   }
 
@@ -82,12 +111,16 @@ const formatYearlyData = (expenses, selectedYear) => {
     1 -
     [...fullYearData].reverse().findIndex(monthHasData);
 
+  // Only January has data so far this year — anchor it against last
+  // December instead of padding forward into an empty February.
+  const onlyJanuaryHasData = firstIndex === 0 && lastIndex === 0;
+
   let adjustedFirstIndex = firstIndex;
   let adjustedLastIndex = lastIndex;
 
-  if (firstIndex === lastIndex) {
-    // Only one month has data — pad with an adjacent month so the Line/Area
-    // has two points to draw and the Brush has a non-zero-width range.
+  // Only one month has data — pad with an adjacent month so the Line/Area
+  // has two points to draw and the Brush has a non-zero-width range.
+  if (firstIndex === lastIndex && !onlyJanuaryHasData) {
     if (firstIndex > 0) {
       adjustedFirstIndex = firstIndex - 1;
     } else if (lastIndex < fullYearData.length - 1) {
@@ -95,16 +128,35 @@ const formatYearlyData = (expenses, selectedYear) => {
     }
   }
 
-  return fullYearData.slice(adjustedFirstIndex, adjustedLastIndex + 1);
+  const sliced = fullYearData.slice(adjustedFirstIndex, adjustedLastIndex + 1);
+
+  if (onlyJanuaryHasData) {
+    return prependPreviousDecember(sliced);
+  }
+
+  return sliced;
 };
 
 // --- Custom Components ---
 
-const CustomYearlyTooltip = ({ active, payload, label, data }) => {
+const CustomYearlyTooltip = ({
+  active,
+  payload,
+  label,
+  data,
+  previousDecemberData,
+}) => {
   if (active && payload && payload.length) {
     const currentMonthIndex = data.findIndex((item) => item.month === label);
-    const previousMonthData =
+    let previousMonthData =
       currentMonthIndex > 0 ? data[currentMonthIndex - 1] : null;
+
+    // January has no preceding month within the current year's data — fall
+    // back to the prior year's December so it still gets comparison arrows,
+    // regardless of whether that December is shown on the chart.
+    if (!previousMonthData && label === "Jan" && previousDecemberData) {
+      previousMonthData = previousDecemberData;
+    }
 
     // Categories with nothing spent that month just clutter the tooltip —
     // only show ones that actually contributed.
@@ -112,6 +164,13 @@ const CustomYearlyTooltip = ({ active, payload, label, data }) => {
     const sortedPayload = [...nonZeroPayload].sort((a, b) => b.value - a.value);
 
     const total = payload.reduce((acc, entry) => acc + entry.value, 0);
+
+    const previousTotal = previousMonthData
+      ? CATEGORY_NAMES.reduce(
+          (acc, category) => acc + (previousMonthData[category] || 0),
+          0,
+        )
+      : null;
 
     return (
       <div
@@ -155,7 +214,15 @@ const CustomYearlyTooltip = ({ active, payload, label, data }) => {
         <hr className=" border-border" />
         <div className="flex justify-between items-center text-foreground py-1 font-semibold">
           <span className="text-sm">Total:</span>
-          <span className="text-sm mr-1">₱{total.toLocaleString()}</span>
+          <span className="flex items-center text-sm">
+            ₱{total.toLocaleString()}
+            {previousTotal !== null &&
+              (total > previousTotal ? (
+                <ArrowBigUp className="h-5 w-5 text-destructive fill-destructive ml-1" />
+              ) : total < previousTotal ? (
+                <ArrowBigDown className="h-5 w-5 text-success fill-success ml-1" />
+              ) : null)}
+          </span>
         </div>
       </div>
     );
@@ -174,6 +241,7 @@ CustomYearlyTooltip.propTypes = {
   ),
   label: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  previousDecemberData: PropTypes.object,
 };
 
 const CategoryTotalTooltip = ({ total, color }) => {
@@ -331,20 +399,30 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   // the same page (e.g. a "compare years" view) never fight over one id.
   const gradientId = useId();
 
-  const data = useMemo(
-    () => formatYearlyData(expenses, selectedYear),
+  const previousDecemberData = useMemo(
+    () => getPreviousDecemberEntry(expenses, selectedYear),
     [expenses, selectedYear],
   );
 
+  const data = useMemo(
+    () => formatYearlyData(expenses, selectedYear, previousDecemberData),
+    [expenses, selectedYear, previousDecemberData],
+  );
+
   const hasAnyExpenses = useMemo(
-    () => data.some((month) => CATEGORY_NAMES.some((c) => month[c] > 0)),
+    () =>
+      data.some(
+        (month) =>
+          !month.isPreviousYear && CATEGORY_NAMES.some((c) => month[c] > 0),
+      ),
     [data],
   );
 
   const categoryTotals = useMemo(() => {
     const totals = {};
+    const currentYearData = data.filter((month) => !month.isPreviousYear);
     CATEGORY_NAMES.forEach((category) => {
-      totals[category] = data.reduce(
+      totals[category] = currentYearData.reduce(
         (acc, month) => acc + (month[category] || 0),
         0,
       );
@@ -439,7 +517,14 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
     />
   );
   const sharedTooltip = (
-    <Tooltip content={<CustomYearlyTooltip data={data} />} />
+    <Tooltip
+      content={
+        <CustomYearlyTooltip
+          data={data}
+          previousDecemberData={previousDecemberData}
+        />
+      }
+    />
   );
   const sharedLegend = (
     <Legend
