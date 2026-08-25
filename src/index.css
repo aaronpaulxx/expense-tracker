@@ -24,7 +24,7 @@
   --muted-foreground: oklch(72.3% 0.014 214.4);
 
   --expense-row-gradient: oklch(21.8% 0.008 223.9);
-  --card: oklch(14.8% 0.004 228.8);
+  --card: oklch(21.8% 0.008 223.9);
   --popover: oklch(27.5% 0.011 216.9);
 
   --accent: oklch(84.5% 0.143 164.978);
