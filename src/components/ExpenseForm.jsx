@@ -94,8 +94,8 @@ const ExpenseForm = ({
           maxLength={35}
           className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
             errors.name && !touched.name
-              ? "border-destructive focus:border-emerald-400"
-              : "border-border border focus:border-emerald-400"
+              ? "border-destructive focus:border-accent"
+              : "border-border border focus:border-accent"
           } rounded-lg text-foreground text-sm`}
           placeholder="Description"
         />
@@ -111,8 +111,8 @@ const ExpenseForm = ({
             onFocus={() => setTouched((prev) => ({ ...prev, amount: true }))}
             className={`w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
               errors.amount && !touched.amount
-                ? "border-destructive focus:border-emerald-400"
-                : "border-border border focus:border-emerald-400"
+                ? "border-destructive focus:border-accent"
+                : "border-border border focus:border-accent"
             } rounded-lg text-foreground text-sm`}
             placeholder="Amount"
             type="number"
@@ -134,7 +134,7 @@ const ExpenseForm = ({
               );
               return (
                 <div className="relative">
-                  <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 border border-border rounded-lg text-sm text-foreground cursor-pointer transition-colors duration-200 hover:bg-popover data-focus:bg-popover focus:outline-none data-focus:border-emerald-400 data-open:border-emerald-400">
+                  <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 border border-border rounded-lg text-sm text-foreground cursor-pointer transition-colors duration-200 hover:bg-popover data-focus:bg-popover focus:outline-none data-focus:border-accent data-open:border-accent">
                     <span className="flex items-center gap-2 truncate">
                       {selected?.icon && (
                         <selected.icon
