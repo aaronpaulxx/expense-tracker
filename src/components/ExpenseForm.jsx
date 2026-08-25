@@ -230,7 +230,7 @@ const ExpenseForm = ({
         {isEditing && (
           <button
             onClick={onCancelEdit}
-            className="cursor-pointer px-5 rounded-lg border border-border text-muted-foreground text-md font-medium hover:bg-secondary/80 hover:text-foreground transition-colors duration-200"
+            className="cursor-pointer px-5 rounded-lg border border-border text-foreground text-md font-medium hover:bg-secondary/60 active:bg-secondary/40 transition-colors duration-200"
           >
             Cancel
           </button>
