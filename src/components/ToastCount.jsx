@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 
 const COUNT_TONE_CLASS = {
-  success: "text-green-400",
-  error: "text-red-400",
-  warning: "text-amber-400",
+  success: "text-success",
+  error: "text-destructive",
+  warning: "text-warning",
 };
 
 const ToastCount = ({ children, tone = "success" }) => (

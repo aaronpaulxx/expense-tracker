@@ -183,10 +183,10 @@ export const useDataImport = ({
           notifyError(
             <div className="leading-tight">
               <div className="font-medium">Missing required columns:</div>
-              <div className="text-sm text-stone-300 mt-1">
+              <div className="text-sm text-muted-foreground mt-1">
                 {missingHeaders.join(", ")}
               </div>
-              <div className="text-xs text-stone-400 mt-2">
+              <div className="text-xs text-muted-foreground mt-2">
                 Found columns: {actualHeaders.join(", ")}
               </div>
             </div>,
@@ -275,11 +275,11 @@ export const useDataImport = ({
                 <ToastCount tone="error">{validationErrors.length}</ToastCount>{" "}
                 {pluralize(validationErrors.length, "error")}:
               </div>
-              <div className="text-sm text-stone-300 mt-1 whitespace-pre-line">
+              <div className="text-sm text-muted-foreground mt-1 whitespace-pre-line">
                 {errorSummary}
                 {moreText}
               </div>
-              <div className="text-xs text-stone-400 mt-2">
+              <div className="text-xs text-muted-foreground mt-2">
                 Valid categories: {VALID_CATEGORIES.join(", ")}
               </div>
             </div>,

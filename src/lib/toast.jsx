@@ -2,10 +2,10 @@ import toast from "react-hot-toast";
 import { Check, CircleX, AlertCircle } from "lucide-react";
 
 const ACCENT = {
-  success: "#22c55e", // green-500
-  error: "#f87171", // red-400
-  warning: "#fbbf24", // amber-400
-  loading: "#60a5fa", // blue-400
+  success: "var(--success)",
+  error: "var(--destructive)",
+  warning: "var(--warning)",
+  loading: "#60a5fa", // blue-400 — no matching token, purely decorative
 };
 
 const baseOptions = {
@@ -34,7 +34,7 @@ export const notifySuccess = (message, options = {}) =>
     ...baseOptions,
     ...options,
     style: styleWithAccent(ACCENT.success, {}, options.style),
-    icon: <Check size={28} className="text-green-500 shrink-0" />,
+    icon: <Check size={28} className="text-success shrink-0" />,
   });
 
 export const notifyError = (message, options = {}) =>
@@ -43,7 +43,7 @@ export const notifyError = (message, options = {}) =>
     duration: 8000,
     ...options,
     style: styleWithAccent(ACCENT.error, {}, options.style),
-    icon: <CircleX size={28} className="text-red-400 shrink-0" />,
+    icon: <CircleX size={28} className="text-destructive shrink-0" />,
   });
 
 export const notifyWarning = (message, options = {}) =>
@@ -51,7 +51,7 @@ export const notifyWarning = (message, options = {}) =>
     ...baseOptions,
     ...options,
     style: styleWithAccent(ACCENT.warning, {}, options.style),
-    icon: <AlertCircle size={28} className="text-amber-400 shrink-0" />,
+    icon: <AlertCircle size={28} className="text-warning shrink-0" />,
   });
 
 export const notifyLoading = (message, options = {}) =>
@@ -77,12 +77,12 @@ export const notifyPromise = (promise, messages, options = {}) =>
     },
     success: {
       style: styleWithAccent(ACCENT.success),
-      icon: <Check size={28} className="text-green-500 shrink-0" />,
+      icon: <Check size={28} className="text-success shrink-0" />,
       ...options.success,
     },
     error: {
       style: styleWithAccent(ACCENT.error),
-      icon: <CircleX size={28} className="text-red-400 shrink-0" />,
+      icon: <CircleX size={28} className="text-destructive shrink-0" />,
       duration: 8000,
       ...options.error,
     },
