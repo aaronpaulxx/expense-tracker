@@ -95,7 +95,7 @@ export const CustomTooltip = ({ active, payload }) => {
 
   return (
     <div
-      className="p-3 rounded-lg shadow-lg border border-border text-foreground"
+      className="p-3 rounded-lg shadow-lg text-foreground"
       style={{
         background:
           "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
@@ -167,25 +167,25 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
         <ResponsiveContainer width="100%" height={200}>
           <BarChart
             data={weeklyTrendData}
-            margin={{ top: 20, right: 20, left: -10, bottom: 10 }}
+            margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
           >
-            <CartesianGrid strokeDasharray="2 2" stroke="var(--chart-grid)" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
 
             <XAxis
               dataKey="week"
-              tick={{ fontSize: 12, fill: "var(--chart-tick)" }}
+              tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
               tickLine={{ stroke: "var(--chart-grid)" }}
             />
 
             <YAxis
-              tick={{ fontSize: 12, fill: "var(--chart-tick)" }}
+              tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
               tickLine={{ stroke: "var(--chart-grid)" }}
               tickFormatter={(value) => `₱${value.toLocaleString()}`}
             />
 
             <Tooltip
               content={<CustomTooltip />}
-              cursor={{ fill: "rgba(16, 185, 129, 0.1)" }}
+              cursor={{ fill: "var(--chart-accent)", fillOpacity: 0.1 }}
             />
 
             <defs>
@@ -201,11 +201,24 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
                   stopOpacity={0.5}
                 />
               </linearGradient>
+              <linearGradient id="colorTotalActive" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="0%"
+                  stopColor="var(--chart-accent)"
+                  stopOpacity={1}
+                />
+                <stop
+                  offset="100%"
+                  stopColor="var(--chart-accent-alt)"
+                  stopOpacity={1}
+                />
+              </linearGradient>
             </defs>
 
             <Bar
               dataKey="Total"
               fill="url(#colorTotal)"
+              activeBar={{ fill: "url(#colorTotalActive)" }}
               radius={[8, 8, 0, 0]}
               barSize={30}
             />
