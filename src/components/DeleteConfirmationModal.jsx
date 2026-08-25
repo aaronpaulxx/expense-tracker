@@ -30,7 +30,7 @@ const DeleteConfirmationModal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-[#333333]/80" />
+          <div className="fixed inset-0 backdrop-blur-xs" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">

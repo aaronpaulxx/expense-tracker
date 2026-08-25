@@ -138,7 +138,7 @@ const Settings = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-[#333333]/80 transition-all" />
+          <div className="fixed inset-0 backdrop-blur-xs transition-all" />
         </Transition.Child>
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Transition.Child
