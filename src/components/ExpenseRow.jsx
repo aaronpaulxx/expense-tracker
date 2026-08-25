@@ -114,12 +114,12 @@ const ExpenseRow = ({
           <MenuItems
             anchor="bottom end"
             transition
-            className="z-50 w-36 origin-top-right rounded-md bg-popover shadow-lg ring-1 ring-border focus:outline-none py-1 [--anchor-gap:4px] transition duration-100 ease-out data-closed:opacity-0 data-closed:scale-95"
+            className="z-50 w-36 origin-top-right rounded-md bg-popover shadow-lg ring-1 ring-border focus:outline-none py-1 px-1 [--anchor-gap:4px] transition duration-100 ease-out data-closed:opacity-0 data-closed:scale-95"
           >
             <MenuItem>
               <button
                 onClick={() => onQuickFill && onQuickFill(expense)}
-                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-muted-foreground data-focus:bg-accent data-focus:text-foreground"
+                className="cursor-pointer flex items-center w-full rounded-md px-4 py-2 text-sm text-left text-muted-foreground data-focus:bg-muted data-focus:text-foreground"
               >
                 <Copy size={18} className="mr-2 text-blue-400" /> Quick Fill
               </button>
@@ -127,7 +127,7 @@ const ExpenseRow = ({
             <MenuItem>
               <button
                 onClick={() => onEditClick(expense, index)}
-                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-muted-foreground data-focus:bg-accent data-focus:text-foreground"
+                className="cursor-pointer flex items-center w-full rounded-md px-4 py-2 text-sm text-left text-muted-foreground data-focus:bg-muted data-focus:text-foreground"
               >
                 <PencilLine size={18} className="mr-2 text-yellow-400" /> Edit
               </button>
@@ -135,7 +135,7 @@ const ExpenseRow = ({
             <MenuItem>
               <button
                 onClick={() => handleDeleteExpense(index)}
-                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-muted-foreground data-focus:bg-accent data-focus:text-foreground"
+                className="cursor-pointer flex items-center w-full rounded-md px-4 py-2 text-sm text-left text-muted-foreground data-focus:bg-muted data-focus:text-foreground"
               >
                 <Trash size={18} className="mr-2 text-destructive" /> Delete
               </button>
