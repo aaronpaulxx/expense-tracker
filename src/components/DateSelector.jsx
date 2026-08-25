@@ -41,7 +41,7 @@ const DateSelector = ({
       </button>
 
       {/* Month & Year Dropdowns */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         {/* Month Dropdown */}
         <select
           value={date.getMonth()}

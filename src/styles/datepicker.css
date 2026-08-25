@@ -7,11 +7,11 @@
    ------------------------------------------------------------------------ */
 :root {
   font-family: "DM Sans", sans-serif;
-  --dp-bg: #090b0c;
-  --dp-text: #f0f0f0;
+  --dp-bg: #161b1d;
+  --dp-text: #f1f3f3;
   --dp-selected-text: #1c1917;
   --dp-muted-text: #67787c;
-  --dp-border: #4b585b;
+  --dp-border: #4b585b00;
   --dp-hover-bg: #043528;
   --dp-today-bg: #6ee7b7;
   --dp-selected-bg: #064e3b;
@@ -60,7 +60,7 @@
 .dp-month-select,
 .dp-year-select {
   padding: 0.2rem 0.6rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 500;
   background-color: var(--dp-bg);
   color: var(--dp-today-bg);
