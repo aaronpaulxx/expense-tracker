@@ -103,7 +103,7 @@ const FinancialInsights = ({
               onFocus={() => prefetchers[key]?.()}
               className={`relative flex-1 px-4 py-3 text-xs font-medium flex items-center justify-center gap-2 transition-transform duration-300 outline-none rounded-t-md ${
                 activeIndex === index
-                  ? "text-green-300"
+                  ? "text-accent"
                   : "text-muted-foreground hover:text-foreground group"
               }`}
             >
@@ -111,7 +111,7 @@ const FinancialInsights = ({
                 size={18}
                 className={`transition-transform duration-300 ${
                   activeIndex === index
-                    ? "text-green-300"
+                    ? "text-accent"
                     : "text-muted-foreground group-hover:text-foreground "
                 }`}
               />
@@ -121,7 +121,7 @@ const FinancialInsights = ({
           {/* Sliding underline — one shared element, shifted via transform instead
               of framer-motion's layoutId shared-layout animation. */}
           <div
-            className="absolute bottom-0 left-0 h-0.5 bg-green-300 rounded-full transition-transform duration-300 ease-in-out"
+            className="absolute bottom-0 left-0 h-0.5 bg-accent rounded-full transition-transform duration-300 ease-in-out"
             style={{
               width: `${100 / tabs.length}%`,
               transform: `translateX(${activeIndex * 100}%)`,

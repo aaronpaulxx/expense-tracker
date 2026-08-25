@@ -178,7 +178,7 @@ const Settings = ({
                             ? "bg-destructive"
                             : parseFloat(storageInfo.used) >= 4800
                               ? "bg-warning"
-                              : "bg-success"
+                              : "bg-accent"
                         }`}
                         style={{
                           width: `${Math.min(storageInfo.percentage, 100)}%`,
@@ -221,7 +221,7 @@ const Settings = ({
                         {exportFileInfo && (
                           <div className="flex flex-col text-xs ">
                             <p>
-                              <span className="font-normal text-success italic">
+                              <span className="font-normal text-accent italic">
                                 {exportFileInfo.name}
                               </span>
                             </p>
@@ -275,7 +275,7 @@ const Settings = ({
                           isDragInvalid
                             ? "border-destructive bg-destructive/10"
                             : isDragging
-                              ? "border-success bg-success/10"
+                              ? "border-accent bg-accent/10"
                               : "border-border hover:border-muted-foreground hover:bg-muted/10"
                         }`}
                       >
@@ -286,7 +286,7 @@ const Settings = ({
                               isDragInvalid
                                 ? "text-destructive"
                                 : isDragging
-                                  ? "text-success"
+                                  ? "text-accent"
                                   : "text-muted-foreground"
                             }`}
                           />
@@ -305,7 +305,7 @@ const Settings = ({
                               </span>
                             ) : (
                               <>
-                                <span className="font-medium text-success">
+                                <span className="font-medium text-accent">
                                   Click to upload
                                 </span>{" "}
                                 or drag and drop

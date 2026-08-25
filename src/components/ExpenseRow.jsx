@@ -56,7 +56,7 @@ const ExpenseRow = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-stone-800 to-stone-800/45 shadow-lg border border-border ${hoverBorder} transition-colors duration-300 group cursor-grab overflow-hidden ${
+      className={`relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-mist-800 to-mist-800/45 shadow-lg ${hoverBorder} transition-colors duration-300 group cursor-grab overflow-hidden ${
         deletingIndex === index
           ? "animate-[slideOut_0.4s_cubic-bezier(0.68,-0.55,0.27,1.55)_forwards]"
           : ""
@@ -75,7 +75,7 @@ const ExpenseRow = ({
         {...attributes}
         {...listeners}
       >
-        <div className="rounded-xl p-2 bg-stone-950/90 shrink-0 group-hover:scale-110 transition-transform duration-200">
+        <div className="rounded-xl p-2 bg-card shrink-0 transition-transform duration-200">
           {CategoryIcon && (
             <CategoryIcon
               size={24}
@@ -98,7 +98,7 @@ const ExpenseRow = ({
 
       <div className="relative z-10 flex items-center gap-3 shrink-0">
         <div className="text-right">
-          <div className="inline-flex items-baseline gap-1 text-emerald-200 font-semibold text-md px-3 py-1.5 bg-emerald-900 rounded-full shadow-sm whitespace-nowrap border border-emerald-800/30">
+          <div className="inline-flex items-baseline gap-1 text-accent font-semibold text-md px-3 py-1.5 bg-emerald-900 rounded-full shadow-sm whitespace-nowrap border border-emerald-800/30">
             <span className="text-md opacity-80">₱</span>
             <span>{formatNumber(expense.amount)}</span>
           </div>

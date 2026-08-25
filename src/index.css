@@ -22,18 +22,18 @@
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(27.5% 0.011 216.9);
   --muted-foreground: oklch(72.3% 0.014 214.4);
-  --accent: oklch(0.269 0 0);
+  --accent: oklch(84.5% 0.143 164.978);
   --destructive: oklch(66.9% 0.21327 24.179);
   --border: oklch(45% 0.017 213.2);
   --ring: oklch(0.556 0 0);
   --chart-grid: oklch(37.8% 0.015 216);
   --chart-tick: oklch(72.3% 0.014 214.4);
-  --chart-card-gradient-start: #171717;
-  --chart-card-gradient-end: #3f3f3f;
+  --chart-card-gradient-start: #22292b;
+  --chart-card-gradient-end: #161b1d;
   --chart-accent: #10b981;
   --chart-accent-alt: #14b8a6;
   --chart-outline: #0c0a09;
-  --success: #6ee7b7;
+  --success: #4ade80;
   --warning: #fbbf24;
 }
 
