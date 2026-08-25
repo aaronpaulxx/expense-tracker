@@ -103,7 +103,7 @@ const DateSelector = ({
       {/* Previous Day Button */}
       <button
         onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}
-        className="h-12.5 group px-3 py-2 text-foreground duration-200 hover:bg-secondary hover:text-accent text-sm flex items-center justify-center cursor-pointer "
+        className="h-12.5 group px-3 py-2 text-foreground duration-200 hover:bg-muted/50 hover:text-accent text-sm flex items-center justify-center cursor-pointer "
       >
         {/* Tooltip */}
         <div className="absolute left-1 top-15 bg-popover text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
@@ -174,7 +174,7 @@ const DateSelector = ({
       {/* Next Day Button */}
       <button
         onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}
-        className="h-12.5 group px-3 py-2 text-foreground duration-200 hover:bg-secondary hover:text-accent text-sm flex items-center justify-center cursor-pointer "
+        className="h-12.5 group px-3 py-2 text-foreground duration-200 hover:bg-muted/50 hover:text-accent text-sm flex items-center justify-center cursor-pointer "
       >
         {/* Tooltip */}
         <div className="absolute right-1 top-15 bg-popover text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">

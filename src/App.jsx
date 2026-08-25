@@ -134,18 +134,18 @@ const App = () => {
         setExpenses={setExpenses}
       />
 
-      {/* Date Selector - Fixed at the top after header */}
-      <div className="sticky top-0 z-1 bg-background border-b border-border">
-        <DateSelector
-          date={date}
-          setDate={setDate}
-          dateInputRef={dateInputRef}
-          onYearChange={setSelectedYear}
-          handleDateClick={handleDateClick}
-        />
-      </div>
-
       <div className="flex flex-1 overflow-auto flex-col">
+        {/* Date Selector - Sticky within the scroll area */}
+        <div className="sticky top-0 z-1 backdrop-blur-xs border-b border-border">
+          <DateSelector
+            date={date}
+            setDate={setDate}
+            dateInputRef={dateInputRef}
+            onYearChange={setSelectedYear}
+            handleDateClick={handleDateClick}
+          />
+        </div>
+
         {/* Expense Entry Section */}
         <div className="w-full p-2 flex flex-col gap-2" ref={formSectionRef}>
           <div className="w-full pl-2">
