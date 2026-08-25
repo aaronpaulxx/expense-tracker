@@ -7,11 +7,11 @@
    ------------------------------------------------------------------------ */
 :root {
   font-family: "DM Sans", sans-serif;
-  --dp-bg: #0c0a09;
+  --dp-bg: #090b0c;
   --dp-text: #f0f0f0;
   --dp-selected-text: #1c1917;
-  --dp-muted-text: #a0a0a0;
-  --dp-border: #6ee7b7;
+  --dp-muted-text: #67787c;
+  --dp-border: #4b585b;
   --dp-hover-bg: #043528;
   --dp-today-bg: #6ee7b7;
   --dp-selected-bg: #064e3b;
@@ -116,6 +116,7 @@
     .react-datepicker__day--disabled
   ):hover {
   background-color: var(--dp-hover-bg);
+  color: var(--dp-text);
   border-radius: 10px;
 }
 
