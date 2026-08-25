@@ -13,19 +13,24 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
   --radius: 0.625rem;
+
   --background: oklch(14.8% 0.004 228.8);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(14.8% 0.004 228.8);
-  --popover: oklch(21.8% 0.008 223.9);
   --secondary: oklch(37.8% 0.015 216);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(27.5% 0.011 216.9);
   --muted-foreground: oklch(72.3% 0.014 214.4);
+
+  --expense-row-gradient: oklch(21.8% 0.008 223.9);
+  --card: oklch(14.8% 0.004 228.8);
+  --popover: oklch(21.8% 0.008 223.9);
+
   --accent: oklch(84.5% 0.143 164.978);
-  --destructive: oklch(66.9% 0.21327 24.179);
   --border: oklch(45% 0.017 213.2);
   --ring: oklch(0.556 0 0);
+
   --chart-grid: oklch(37.8% 0.015 216);
   --chart-tick: oklch(72.3% 0.014 214.4);
   --chart-card-gradient-start: #22292b;
@@ -33,8 +38,44 @@
   --chart-accent: #10b981;
   --chart-accent-alt: #14b8a6;
   --chart-outline: #0c0a09;
+
   --success: #4ade80;
+  --destructive: oklch(66.9% 0.21327 24.179);
   --warning: #fbbf24;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-expense-row-gradient: var(--expense-row-gradient);
+  --color-card: var(--card);
+  --color-popover: var(--popover);
+
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-tick: var(--chart-tick);
+  --color-chart-card-gradient-start: var(--chart-card-gradient-start);
+  --color-chart-card-gradient-end: var(--chart-card-gradient-end);
+  --color-chart-accent: var(--chart-accent);
+  --color-chart-accent-alt: var(--chart-accent-alt);
+  --color-chart-outline: var(--chart-outline);
+
+  --color-success: var(--success);
+  --color-destructive: var(--destructive);
+  --color-warning: var(--warning);
 }
 
 .spinner {
@@ -111,33 +152,6 @@
   }
 }
 
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-popover: var(--popover);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-ring: var(--ring);
-  --color-chart-grid: var(--chart-grid);
-  --color-chart-tick: var(--chart-tick);
-  --color-chart-card-gradient-start: var(--chart-card-gradient-start);
-  --color-chart-card-gradient-end: var(--chart-card-gradient-end);
-  --color-chart-accent: var(--chart-accent);
-  --color-chart-accent-alt: var(--chart-accent-alt);
-  --color-chart-outline: var(--chart-outline);
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-}
 
 @layer base {
   * {

@@ -56,7 +56,7 @@ const ExpenseRow = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-mist-800 to-mist-800/45 shadow-lg ${hoverBorder} transition-colors duration-300 group cursor-grab overflow-hidden ${
+      className={`relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-expense-row-gradient to-expense-row-gradient/45 shadow-lg ${hoverBorder} transition-colors duration-300 group cursor-grab overflow-hidden ${
         deletingIndex === index
           ? "animate-[slideOut_0.4s_cubic-bezier(0.68,-0.55,0.27,1.55)_forwards]"
           : ""
