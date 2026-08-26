@@ -13,16 +13,17 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
   --radius: 0.625rem;
 
   --accent: var(--color-emerald-300);
   --accent-secondary: var(--color-emerald-500);
-  --expense-row-gradient: var(--color-emerald-900);
+  --expense-gradient: oklch(27.861% 0.01006 207.217);
+  --expense-gradient2: oklch(31.521% 0.0103 216.962);
 
   --background: var(--color-mist-950);
   --foreground: var(--color-mist-100);
-  --secondary: var(--color-mist-500);
+  --secondary: var(--color-mist-600);
   --secondary-foreground: var(--color-mist-200);
   --muted: var(--color-mist-700);
   --muted-foreground: var(--color-mist-400);
@@ -50,6 +51,8 @@
 
   --color-accent: var(--accent);
   --color-accent-secondary: var(--accent-secondary);
+  --color-expense-gradient: var(--expense-gradient);
+  --color-expense-gradient2: var(--expense-gradient2);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -58,12 +61,10 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
 
-  --color-expense-row-gradient: var(--expense-row-gradient);
   --color-card: var(--card);
   --color-popover: var(--popover);
   --color-border: var(--border);
-  --color-ring: var(--ring);
-  
+
   --color-chart-grid: var(--chart-grid);
   --color-chart-tick: var(--chart-tick);
   --color-chart-card-gradient-start: var(--chart-card-gradient-start);
@@ -149,16 +150,6 @@
   }
 }
 
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
 @keyframes gradient-flow {
   0% {
     background-position: 0% 50%;
@@ -187,7 +178,7 @@
   position: relative;
   padding: 1px;
   border-radius: 10.5px;
-  background: oklch(45% 0.017 213.2);
+  background: var(--card);
   transition: all 0.5s ease;
   z-index: 0;
 }
