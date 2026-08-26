@@ -106,7 +106,7 @@ const DateSelector = ({
         className="h-12.5 group px-3 py-2 text-foreground duration-200 hover:bg-muted/50 hover:text-accent text-sm flex items-center justify-center cursor-pointer "
       >
         {/* Tooltip */}
-        <div className="absolute left-1 top-15 bg-popover text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <div className="absolute left-1 top-15 bg-muted text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
           Previous Day
         </div>
         <ChevronLeft
@@ -122,7 +122,7 @@ const DateSelector = ({
         className="relative flex-1 px-5 py-2 rounded-lg text-center transition-all duration-300 cursor-pointer flex items-center justify-center gap-x-3 group"
       >
         {/* Tooltip */}
-        <div className="absolute top-14 bg-popover text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <div className="absolute top-14 bg-muted text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
           Click to change date
         </div>
 
@@ -177,7 +177,7 @@ const DateSelector = ({
         className="h-12.5 group px-3 py-2 text-foreground duration-200 hover:bg-muted/50 hover:text-accent text-sm flex items-center justify-center cursor-pointer "
       >
         {/* Tooltip */}
-        <div className="absolute right-1 top-15 bg-popover text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <div className="absolute right-1 top-15 bg-muted text-foreground text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
           Next Day
         </div>
         <ChevronRight
