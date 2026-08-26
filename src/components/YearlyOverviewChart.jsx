@@ -367,7 +367,7 @@ const CustomLegend = ({
             <span
               className="text-xs transition-colors"
               style={{
-                color: isHovered ? `${color}` : "var(--chart-tick)"
+                color: isHovered ? `${color}` : "var(--chart-tick)",
               }}
             >
               {value}
@@ -578,9 +578,9 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   );
 
   return (
-    <div className="chart-container relative py-2 px-2 border border-border rounded-xl">
+    <div className="min-h-70 bg-linear-to-r from-expense-gradient to-expense-gradient2/90 chart-container relative p-3 rounded-xl shadow-sm shadow-stone-950">
       <div className="flex justify-between items-center mb-5 pb-2 border-b border-border w-full">
-        <h3 className="text-sm font-medium text-accent">
+        <h3 className="text-base font-semibold text-foreground">
           {selectedYear
             ? `Yearly Overview - ${selectedYear}`
             : "Yearly Overview"}
@@ -621,7 +621,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
           {chartType === "line" ? (
             <LineChart
               data={data}
-              margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+              margin={{ top: 10, right: 20, left: 5, bottom: 0 }}
             >
               {sharedGrid}
               {sharedXAxis}
@@ -641,7 +641,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
                       : 0.2
                   }
                   dot={false}
-                  animationDuration={300}
+                  animationDuration={600}
                 />
               ))}
               {sharedBrush}
@@ -649,7 +649,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
           ) : (
             <AreaChart
               data={data}
-              margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+              margin={{ top: 10, right: 20, left: 5, bottom: 0 }}
             >
               <defs>
                 {CATEGORY_NAMES.map((category) => (
@@ -699,7 +699,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
                       ? 1
                       : 0.2
                   }
-                  animationDuration={300}
+                  animationDuration={600}
                 />
               ))}
               {sharedBrush}
