@@ -138,9 +138,9 @@ const Settings = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 backdrop-blur-xs transition-all" />
+          <div className="fixed inset-0 bg-white/20 backdrop-blur-xs transition-all" />
         </Transition.Child>
-        <div className="fixed inset-0 flex items-center justify-center p-4">
+        <div className=" fixed inset-0 flex items-center justify-center p-4">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-200"
@@ -166,7 +166,7 @@ const Settings = ({
                 <div className="border-border">
                   <div className="flex items-center gap-2">
                     <Database size={20} className="text-muted-foreground" />
-                    <h2 className="text-md font-medium text-foreground">
+                    <h2 className="text-base font-medium text-foreground">
                       Storage Usage
                     </h2>
                   </div>
@@ -208,7 +208,7 @@ const Settings = ({
                 <div className="border-t border-border pt-3">
                   <div className="flex items-center gap-2">
                     <MonitorDown size={20} className="text-muted-foreground" />
-                    <h2 className="text-md font-medium text-foreground">
+                    <h2 className="text-base font-medium text-foreground">
                       Export Data
                     </h2>
                   </div>
@@ -249,7 +249,7 @@ const Settings = ({
                 <div className="border-t border-border pt-3">
                   <div className="flex items-center gap-2">
                     <MonitorUp size={20} className="text-muted-foreground" />
-                    <h2 className="text-md font-medium text-foreground">
+                    <h2 className="text-base font-medium text-foreground">
                       Import Data
                     </h2>
                   </div>
@@ -398,7 +398,7 @@ const Settings = ({
                 <div className="border-t border-border pt-3">
                   <div className="flex items-center gap-2">
                     <Trash2 size={20} className="text-muted-foreground" />
-                    <h2 className="text-md font-medium text-foreground">
+                    <h2 className="text-base font-medium text-foreground">
                       Delete Data
                     </h2>
                   </div>
