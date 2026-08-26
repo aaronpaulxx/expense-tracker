@@ -202,7 +202,7 @@ const ExpenseForm = ({
                           hover:decoration-2 
                           hover:text-stone-50 active:text-orange-300
 
-                          relative bg-background h-auto w-full border-0 text-left p-3 
+                          relative bg-linear-to-r from-expense-gradient to-expense-gradient2 h-auto w-full border-0 text-left p-3 
                           text-stone-100 text-base font-bold rounded-lg overflow-hidden 
 
                           before:absolute before:w-12 before:h-12 before:content-[''] before:right-1 before:top-1 before:z-10 
