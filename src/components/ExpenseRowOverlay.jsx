@@ -19,9 +19,9 @@ const ExpenseRowOverlay = ({ expense }) => {
   const CategoryIcon = CATEGORIES[expense.category]?.icon;
 
   return (
-    <div className="relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-stone-800 to-stone-800/95 shadow-2xl ring-2 ring-accent cursor-grabbing overflow-hidden">
+    <div className="relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-expense-row-gradient to-expense-row-gradient/45 shadow-2xl ring-2 ring-accent cursor-grabbing overflow-hidden">
       <div className="flex items-center gap-5 min-w-0 flex-1">
-        <div className="rounded-xl p-2 bg-card shrink-0 transition-transform duration-200">
+        <div className="rounded-xl p-2 bg-background shrink-0 transition-transform duration-200">
           {CategoryIcon && (
             <CategoryIcon
               size={24}
@@ -40,7 +40,7 @@ const ExpenseRowOverlay = ({ expense }) => {
       </div>
 
       <div className="flex items-center gap-3 shrink-0">
-        <div className="inline-flex items-baseline gap-1 text-accent font-semibold text-md px-3 py-1.5 bg-emerald-900 rounded-full shadow-sm whitespace-nowrap border border-emerald-800/30">
+        <div className="inline-flex items-baseline gap-1 text-accent font-semibold text-md px-3 py-1.5 bg-background rounded-full shadow-sm whitespace-nowrap">
           <span className="text-md opacity-80">₱</span>
           <span>{formatNumber(expense.amount)}</span>
         </div>
