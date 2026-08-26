@@ -10,15 +10,14 @@ const Header = ({ clearRecords, expenses, setExpenses }) => {
   return (
     <>
       <div
-        className="py-2 flex justify-between items-center px-5 bg-[linear-gradient(45deg,#1f1f1f_25%,#10B98180_50%,#14B8A6_75%,#171717_100%)]
-"
+        className="py-2 flex justify-between items-center px-5 bg-[linear-gradient(45deg,var(--background)_25%,var(--accent)_50%,var(--accent-secondary)_75%,var(--background)_100%)]"
       >
         <div
           className="flex flex-col cursor-pointer"
           onClick={() => window.location.reload()}
         >
           <h1 className="text-[20px] font-bold titleh1">
-            <span className="bg-linear-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-[var(--accent)] to-[var(--accent-secondary)] bg-clip-text text-transparent">
               Expense Tracker
             </span>
           </h1>
