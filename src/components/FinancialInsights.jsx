@@ -129,10 +129,10 @@ const FinancialInsights = ({
           />
         </TabList>
 
-        <TabPanels className="w-full p-2">
+        <TabPanels className="w-full">
           <Suspense
             fallback={
-              <div className="w-full h-67 rounded-xl bg-card animate-pulse" />
+              <div className="w-full h-70 rounded-xl bg-popover animate-pulse" />
             }
           >
             {tabs.map(({ key, component }) => (

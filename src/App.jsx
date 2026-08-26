@@ -136,7 +136,7 @@ const App = () => {
 
       <div className="flex flex-1 overflow-auto flex-col">
         {/* Date Selector - Sticky within the scroll area */}
-        <div className="sticky top-0 z-1 backdrop-blur-xs border-b border-border">
+        <div className="sticky top-0 z-1 backdrop-blur-xs">
           <DateSelector
             date={date}
             setDate={setDate}
@@ -147,9 +147,12 @@ const App = () => {
         </div>
 
         {/* Expense Entry Section */}
-        <div className="w-full p-2 flex flex-col gap-2" ref={formSectionRef}>
-          <div className="w-full pl-2">
-            <label className="text-lg border-l-4 pl-2 border-accent font-bold text-foreground block w-full mt-3">
+        <div
+          className="m-3 p-3 bg-card flex flex-col gap-2 rounded-xl shadow-sm shadow-stone-950"
+          ref={formSectionRef}
+        >
+          <div className="w-full">
+            <label className="text-lg border-l-4 pl-2 border-accent font-bold text-foreground block w-full mt-2 mb-3">
               {isEditing ? "Edit Expense" : "Expense Details"}
             </label>
           </div>
@@ -165,8 +168,7 @@ const App = () => {
         </div>
 
         {/* Today's Expenses Section */}
-        <div className="w-full p-2 flex flex-col gap-2">
-          <div className="w-full pl-2"></div>
+        <div className="m-3 p-3 bg-card rounded-xl shadow-sm shadow-stone-950">
           <ExpenseList
             date={date}
             expenses={expenses}
@@ -181,8 +183,8 @@ const App = () => {
         </div>
 
         {/* Financial Insights Section */}
-        <div className="w-full p-2 flex flex-col gap-2">
-          <div className="w-full pl-2 mt-3">
+        <div className="m-3 p-3 bg-card rounded-2xl shadow-sm shadow-stone-950">
+          <div className="w-full my-2">
             <label className="text-lg border-l-4 pl-2 border-accent font-bold text-foreground block w-full">
               Financial Insights
             </label>
@@ -197,9 +199,10 @@ const App = () => {
             totalForToday={totalForToday}
             date={date}
           />
-          <div className="w-full flex justify-center mt-3">
-            <Footer />
-          </div>
+        </div>
+
+        <div className="w-full flex justify-center my-3">
+          <Footer />
         </div>
       </div>
     </div>

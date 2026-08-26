@@ -41,8 +41,6 @@ const ExpenseRow = ({
   const overlayGradient =
     CATEGORIES[expense.category]?.overlayGradient ||
     "from-stone-700 to-stone-700/45";
-  const hoverBorder =
-    CATEGORIES[expense.category]?.hoverBorder || "hover:border-stone-600";
   const menuHoverBg =
     CATEGORIES[expense.category]?.hoverBg ||
     "hover:bg-stone-600 data-active:bg-stone-600";
@@ -56,7 +54,7 @@ const ExpenseRow = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-expense-row-gradient to-expense-row-gradient/45 shadow-lg ${hoverBorder} transition-colors duration-300 group cursor-grab overflow-hidden ${
+      className={`relative flex items-center justify-between p-2 rounded-xl bg-linear-to-r from-expense-gradient to-expense-gradient2 shadow-sm shadow-stone-950 transition-colors duration-300 group cursor-grab overflow-hidden ${
         deletingIndex === index
           ? "animate-[slideOut_0.4s_cubic-bezier(0.68,-0.55,0.27,1.55)_forwards]"
           : ""
@@ -98,8 +96,8 @@ const ExpenseRow = ({
 
       <div className="relative z-10 flex items-center gap-3 shrink-0">
         <div className="text-right">
-          <div className="inline-flex items-baseline gap-1 text-accent font-semibold text-md px-3 py-1.5 bg-background rounded-full shadow-sm whitespace-nowrap">
-            <span className="text-md opacity-80">₱</span>
+          <div className="inline-flex items-baseline gap-1 text-accent font-semibold text-base px-3 py-1.5 bg-background rounded-full shadow-sm whitespace-nowrap">
+            <span className="text-base opacity-80">₱</span>
             <span>{formatNumber(expense.amount)}</span>
           </div>
         </div>
@@ -114,7 +112,7 @@ const ExpenseRow = ({
           <MenuItems
             anchor="bottom end"
             transition
-            className="z-50 w-36 origin-top-right rounded-md bg-popover shadow-lg ring-1 ring-border focus:outline-none py-1 px-1 [--anchor-gap:4px] transition duration-100 ease-out data-closed:opacity-0 data-closed:scale-95"
+            className="z-50 w-36 origin-top-right rounded-md bg-popover shadow-xl focus:outline-none py-1 px-1 [--anchor-gap:4px] transition duration-100 ease-out data-closed:opacity-0 data-closed:scale-95"
           >
             <MenuItem>
               <button

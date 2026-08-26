@@ -254,9 +254,9 @@ const ExpenseList = ({
 
   return (
     <>
-      <div className="ml-2 mr-2">
+      <div className="flex flex-col gap-2">
         {expensesWithIds.length >= 0 && (
-          <div className="flex justify-between items-center mb-3">
+          <div className="flex justify-between items-center mt-1 mb-2">
             <label className="text-lg border-l-4 pl-2 border-accent font-semibold text-foreground">
               Today&apos;s Expenses
             </label>
@@ -272,10 +272,7 @@ const ExpenseList = ({
           </div>
         )}
 
-        <div
-          ref={listWrapperRef}
-          className="p-2 h-87 rounded-xl border border-border bg-background transition-colors duration-200"
-        >
+        <div ref={listWrapperRef} className="h-83">
           {expensesWithIds.length ? (
             <DndContext
               sensors={sensors}

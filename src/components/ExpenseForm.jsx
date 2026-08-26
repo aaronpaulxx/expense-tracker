@@ -82,7 +82,7 @@ const ExpenseForm = ({
   }, [isEditing]);
 
   return (
-    <div ref={containerRef} className="space-y-3 p-2">
+    <div ref={containerRef} className="space-y-3">
       <div>
         <input
           ref={nameInputRef}
@@ -92,10 +92,10 @@ const ExpenseForm = ({
           }
           onFocus={() => setTouched((prev) => ({ ...prev, name: true }))}
           maxLength={35}
-          className={`caret-accent w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
+          className={`bg-linear-to-r from-expense-gradient to-expense-gradient2 caret-accent w-full px-2 py-1.5 outline-none transition-all duration-200 shadow-sm shadow-stone-950 ${
             errors.name && !touched.name
-              ? "border-destructive focus:border-accent"
-              : "border-border border focus:border-accent"
+              ? "border-destructive border focus:border-accent"
+              : "border-transparent border focus:border-accent"
           } rounded-lg text-foreground text-sm`}
           placeholder="Description"
         />
@@ -109,10 +109,10 @@ const ExpenseForm = ({
               setNewExpense((prev) => ({ ...prev, amount: e.target.value }))
             }
             onFocus={() => setTouched((prev) => ({ ...prev, amount: true }))}
-            className={`caret-accent w-full px-2 py-1 border outline-none transition-all duration-200 shadow-md shadow-stone-950 ${
+            className={`bg-linear-to-r from-expense-gradient to-expense-gradient2 caret-accent w-full px-2 py-1.5 outline-none transition-all duration-200 shadow-sm shadow-stone-950 ${
               errors.amount && !touched.amount
-                ? "border-destructive focus:border-accent"
-                : "border-border border focus:border-accent"
+                ? "border-destructive border focus:border-accent"
+                : "border-transparent border focus:border-accent"
             } rounded-lg text-foreground text-sm`}
             placeholder="Amount"
             type="number"
@@ -134,7 +134,7 @@ const ExpenseForm = ({
               );
               return (
                 <div className="relative">
-                  <ListboxButton className="shadow-md shadow-stone-950 w-full h-7.5 flex items-center justify-between gap-2 px-2 border border-border rounded-lg text-sm text-foreground cursor-pointer transition-colors duration-200 hover:bg-popover data-focus:bg-popover focus:outline-none data-focus:border-accent data-open:border-accent">
+                  <ListboxButton className="bg-linear-to-r from-expense-gradient to-expense-gradient2 shadow-sm shadow-stone-950 w-full h-8.5 flex items-center justify-between gap-2 px-2 border border-transparent rounded-lg text-sm text-foreground cursor-pointer transition-colors duration-200 hover:bg-popover data-focus:bg-popover focus:outline-none data-focus:border-accent data-open:border-accent">
                     <span className="flex items-center gap-2 truncate">
                       {selected?.icon && (
                         <selected.icon
@@ -143,9 +143,7 @@ const ExpenseForm = ({
                         />
                       )}
                       {selected?.label || (
-                        <span className="text-muted-foreground">
-                          Category
-                        </span>
+                        <span className="text-muted-foreground">Category</span>
                       )}
                     </span>
                     <ChevronsUpDown
@@ -158,7 +156,7 @@ const ExpenseForm = ({
                   <ListboxOptions
                     anchor="bottom start"
                     transition
-                    className="w-(--button-width) mt-1 bg-popover border border-border rounded-lg shadow-lg z-50 focus:outline-none px-1 origin-top transition duration-150 ease-out data-closed:opacity-0 data-closed:scale-95"
+                    className="w-(--button-width) mt-1 bg-linear-to-r from-expense-gradient to-expense-gradient2 rounded-lg shadow-xl z-50 focus:outline-none px-1 origin-top transition duration-150 ease-out data-closed:opacity-0 data-closed:scale-95"
                   >
                     {categoryOptions.map((option) => (
                       <ListboxOption
@@ -230,7 +228,7 @@ const ExpenseForm = ({
         {isEditing && (
           <button
             onClick={onCancelEdit}
-            className="cursor-pointer px-5 rounded-lg border border-border text-foreground text-md font-medium hover:bg-secondary/60 active:bg-secondary/40 transition-colors duration-200"
+            className="cursor-pointer px-5 rounded-lg border border-border text-foreground text-base font-medium hover:bg-secondary/60 active:bg-secondary/40 transition-colors duration-200"
           >
             Cancel
           </button>
