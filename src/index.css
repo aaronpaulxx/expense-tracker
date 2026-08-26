@@ -16,9 +16,9 @@
   
   --radius: 0.625rem;
 
-  --accent: oklch(84.5% 0.143 164.978);
-  --accent-secondary: oklch(69.6% 0.17 162.48);
-  --expense-row-gradient: oklch(37.8% 0.077 168.94);
+  --accent: var(--color-emerald-300);
+  --accent-secondary: var(--color-emerald-500);
+  --expense-row-gradient: var(--color-emerald-900);
 
   --background: var(--color-mist-950);
   --foreground: var(--color-mist-100);
