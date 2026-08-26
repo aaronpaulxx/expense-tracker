@@ -11,13 +11,11 @@ const formatNumber = (num) =>
 const DailySummary = ({ categoryTotals, totalForDay, date }) => {
   const dayName = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
-    day: "numeric",
-    month: "long",
   }).format(date);
 
   return (
     <div className="mt-auto p-2 rounded-xl border-border border text-sm h-auto shadow-md shadow-stone-950">
-      <h3 className="text-sm font-medium text-muted-foreground mb-2 pb-2 border-b border-border flex justify-between items-center">
+      <h3 className="text-sm font-medium text-accent mb-2 pb-2 border-b border-border flex justify-between items-center">
         <span>Daily Summary</span>
         <span className="text-muted-foreground font-style">{dayName}</span>
       </h3>
@@ -42,7 +40,7 @@ const DailySummary = ({ categoryTotals, totalForDay, date }) => {
             <Wallet size={20} className="text-[#cfc80e]" />
             Total
           </span>
-          <span className="text-muted-foreground text-[20px]">
+          <span className="text-accent text-[20px]">
             ₱{formatNumber(totalForDay)}
           </span>
         </div>

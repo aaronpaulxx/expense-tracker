@@ -105,7 +105,7 @@ export const CustomTooltip = ({ active, payload }) => {
       <p className="text-muted-foreground text-xs mb-3">
         ({weekData.startDateFormatted} - {weekData.endDateFormatted})
       </p>
-      <div className="flex items-center gap-2 text-sm font-medium">
+      <div className="flex items-center gap-2 text-sm font-semibold">
         <span>Total: ₱{weekData.Total.toLocaleString()}</span>
       </div>
     </div>
@@ -191,7 +191,7 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
 
   return (
     <div className="border-border border rounded-xl p-2 shadow-md shadow-stone-950">
-      <h3 className="text-sm font-medium text-muted-foreground mb-5 pb-2 border-b border-border flex justify-between items-center">
+      <h3 className="text-sm font-medium text-accent mb-5 pb-2 border-b border-border flex justify-between items-center">
         <span>Weekly Spending</span>
         <span className="text-muted-foreground">
           {selectedMonth

@@ -57,7 +57,7 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
 
   let displayAmount = totalAmount;
   let displayLabel = "Total";
-  let displayColor = "#ffffff";
+  let displayColor = "var(--accent)";
 
   if (hoveredCategory && activeIndex >= 0) {
     const hoveredData = formattedData[activeIndex];
@@ -71,7 +71,7 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
 
   return (
     <div className="rounded-xl p-2 flex flex-col border border-border">
-      <h3 className="text-sm font-medium text-muted-foreground mb-5 pb-2 border-b border-border flex justify-between items-center">
+      <h3 className="text-sm font-medium text-accent mb-5 pb-2 border-b border-border flex justify-between items-center">
         <span>Monthly Category Breakdown</span>
         {selectedMonth && (
           <span className="text-muted-foreground">
@@ -112,10 +112,26 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
                       style={{ backgroundColor: entry.color }}
                     ></div>
                     <div className="flex w-full justify-between">
-                      <span className="w-20 text-left">{entry.name}</span>
-                      <span className="text-muted-foreground w-12 text-right">
-                        ({percentage}%)
-                      </span>
+                        <span
+                          className="w-20 text-left transition-colors duration-200"
+                          style={{
+                            color:
+                              hoveredCategory === entry.name
+                                ? entry.color
+                                : undefined,
+                          }}
+                        >
+                          {entry.name}
+                        </span>
+                        <span
+                          className={`w-12 text-right transition-colors duration-200 ${
+                            hoveredCategory === entry.name
+                              ? "text-accent"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          ({percentage}%)
+                        </span>
                     </div>
                   </div>
                 );

@@ -178,7 +178,7 @@ const CustomYearlyTooltip = ({
 
     return (
       <div
-        className="p-2 rounded-lg shadow-lg border border-border text-foreground"
+        className="p-2 rounded-lg shadow-lg text-foreground"
         style={{
           background:
             "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
@@ -260,7 +260,7 @@ const CategoryTotalTooltip = ({ total, color }) => {
         zIndex: 100,
         background:
           "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
-        border: `1.5px solid ${color || "var(--border)"}`,
+        border: `2px solid ${color || "var(--border)"}`,
         textAlign: "center",
       }}
     >
@@ -367,10 +367,7 @@ const CustomLegend = ({
             <span
               className="text-xs transition-colors"
               style={{
-                color: isHovered ? `${color}` : "var(--chart-tick)",
-                borderBottom: isHovered
-                  ? `1px solid ${color}`
-                  : "1px solid transparent",
+                color: isHovered ? `${color}` : "var(--chart-tick)"
               }}
             >
               {value}
@@ -583,7 +580,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   return (
     <div className="chart-container relative py-2 px-2 border border-border rounded-xl">
       <div className="flex justify-between items-center mb-5 pb-2 border-b border-border w-full">
-        <h3 className="text-sm font-medium text-muted-foreground">
+        <h3 className="text-sm font-medium text-accent">
           {selectedYear
             ? `Yearly Overview - ${selectedYear}`
             : "Yearly Overview"}
