@@ -20,23 +20,22 @@
   --accent-secondary: oklch(69.6% 0.17 162.48);
   --expense-row-gradient: oklch(37.8% 0.077 168.94);
 
-  --background: oklch(14.8% 0.004 228.8);
-  --foreground: oklch(96.3% 0.002 197.1);
-  --secondary: oklch(45% 0.017 213.2);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(37.8% 0.015 216);
-  --muted-foreground: oklch(72.3% 0.014 214.4);
+  --background: var(--color-mist-950);
+  --foreground: var(--color-mist-100);
+  --secondary: var(--color-mist-500);
+  --secondary-foreground: var(--color-mist-200);
+  --muted: var(--color-mist-700);
+  --muted-foreground: var(--color-mist-400);
 
-  --card: oklch(21.8% 0.008 223.9);
-  --popover: oklch(27.5% 0.011 216.9);
-  --border: oklch(45% 0.017 213.2);
-  --ring: oklch(0.556 0 0);
+  --card: var(--color-mist-900);
+  --popover: var(--color-mist-800);
+  --border: var(--color-mist-600);
 
-  --chart-grid: oklch(37.8% 0.015 216);
-  --chart-tick: oklch(72.3% 0.014 214.4);
-  --chart-card-gradient-start: oklch(37.8% 0.015 216);
-  --chart-card-gradient-end: oklch(27.5% 0.011 216.9);
-  --chart-outline: oklch(14.8% 0.004 228.8);  
+  --chart-grid: var(--muted);
+  --chart-tick: var(--muted-foreground);
+  --chart-card-gradient-start: var(--muted);
+  --chart-card-gradient-end: var(--popover);
+  --chart-outline: var(--background);
 
   --success: oklch(72.3% 0.219 149.579);
   --destructive: oklch(66.9% 0.21327 24.179);
