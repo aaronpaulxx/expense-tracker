@@ -149,7 +149,7 @@ const App = () => {
         {/* Expense Entry Section */}
         <div className="w-full p-2 flex flex-col gap-2" ref={formSectionRef}>
           <div className="w-full pl-2">
-            <label className="text-lg border-l-4 pl-2 border-border font-bold text-foreground block w-full mt-5">
+            <label className="text-lg border-l-4 pl-2 border-border font-bold text-foreground block w-full mt-3">
               {isEditing ? "Edit Expense" : "Expense Details"}
             </label>
           </div>

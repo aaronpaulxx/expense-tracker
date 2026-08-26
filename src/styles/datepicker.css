@@ -129,16 +129,20 @@
 .react-datepicker__day--selected:focus,
 .react-datepicker__day--selected:active {
   background-color: transparent;
-  color: var(--dp-today-bg);
   border-radius: 10px;
   box-shadow: inset 0 0 0 2px var(--dp-today-bg);
   outline: none;
 }
 
+
 .react-datepicker__day--selected:hover {
-  background-color: var(--dp-hover-bg) !important;
+  background-color: var(--dp-hover-bg);
   border-radius: 10px !important;
   outline: none;
+}
+
+.react-datepicker__day--selected:not([aria-disabled=true]):hover {
+  background-color: var(--dp-hover-bg);
 }
 
 /* Keyboard focus indicator only — not a real selection, styled plainly
@@ -166,6 +170,10 @@
 .react-datepicker__day--outside-month {
   color: var(--dp-muted-text);
   opacity: 0.5;
+}
+
+.react-datepicker__day--outside-month.react-datepicker__day--selected {
+  color: var(--dp-text);
 }
 
 /* Actually disabled days (via minDate/maxDate/filterDate props) */
