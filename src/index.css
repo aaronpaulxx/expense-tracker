@@ -35,8 +35,6 @@
   --chart-tick: oklch(72.3% 0.014 214.4);
   --chart-card-gradient-start: #394447;
   --chart-card-gradient-end: #22292b;
-  --chart-accent: #10b981;
-  --chart-accent-alt: #14b8a6;
   --chart-outline: #0c0a09;
 
   --success: #4ade80;
@@ -69,8 +67,6 @@
   --color-chart-tick: var(--chart-tick);
   --color-chart-card-gradient-start: var(--chart-card-gradient-start);
   --color-chart-card-gradient-end: var(--chart-card-gradient-end);
-  --color-chart-accent: var(--chart-accent);
-  --color-chart-accent-alt: var(--chart-accent-alt);
   --color-chart-outline: var(--chart-outline);
 
   --color-success: var(--success);

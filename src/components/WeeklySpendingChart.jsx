@@ -149,22 +149,22 @@ const sharedYAxis = (
 const sharedTooltip = (
   <Tooltip
     content={<CustomTooltip />}
-    cursor={{ fill: "var(--chart-accent)", fillOpacity: 0.1 }}
+    cursor={{ fill: "var(--accent)", fillOpacity: 0.1 }}
   />
 );
 const sharedDefs = (
   <defs>
     <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor="var(--chart-accent)" stopOpacity={0.9} />
+      <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.9} />
       <stop
         offset="100%"
-        stopColor="var(--chart-accent-alt)"
+        stopColor="var(--accent)"
         stopOpacity={0.5}
       />
     </linearGradient>
     <linearGradient id="colorTotalActive" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor="var(--chart-accent)" stopOpacity={1} />
-      <stop offset="100%" stopColor="var(--chart-accent-alt)" stopOpacity={1} />
+      <stop offset="0%" stopColor="var(--accent)" stopOpacity={1} />
+      <stop offset="100%" stopColor="var(--accent)" stopOpacity={1} />
     </linearGradient>
   </defs>
 );

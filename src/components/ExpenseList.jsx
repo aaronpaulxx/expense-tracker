@@ -257,7 +257,7 @@ const ExpenseList = ({
       <div className="ml-2 mr-2">
         {expensesWithIds.length >= 0 && (
           <div className="flex justify-between items-center mb-3">
-            <label className="text-lg border-l-4 pl-2 border-border font-semibold text-foreground">
+            <label className="text-lg border-l-4 pl-2 border-accent font-semibold text-foreground">
               Today&apos;s Expenses
             </label>
             <button

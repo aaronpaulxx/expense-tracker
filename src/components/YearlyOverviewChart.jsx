@@ -299,7 +299,7 @@ const MinimalTraveller = (props) => {
         y={handleY}
         width={handleWidth}
         height={handleHeight}
-        fill="var(--chart-accent)"
+        fill="var(--accent)"
         stroke="var(--chart-outline)"
         strokeWidth={1}
         rx={handleWidth / 2}
@@ -568,7 +568,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
         key={brushKey}
         dataKey="month"
         height={15}
-        stroke="var(--chart-accent-alt)"
+        stroke="var(--accent)"
         fill="var(--chart-outline)"
         traveller={<MinimalTraveller />}
         tickFormatter={() => ""}
@@ -592,7 +592,7 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
           checked={chartType === "area"}
           onChange={(checked) => setChartType(checked ? "area" : "line")}
           className={`relative inline-flex items-center h-5 w-9 rounded-full p-0.5 transition-colors cursor-pointer ${
-            chartType === "area" ? "bg-emerald-500" : "bg-muted"
+            chartType === "area" ? "bg-accent" : "bg-muted"
           }`}
         >
           <span className="sr-only">Switch between line and area chart</span>
