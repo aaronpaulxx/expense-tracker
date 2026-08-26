@@ -126,6 +126,58 @@ CustomTooltip.propTypes = {
   ),
 };
 
+// --- Chart chrome shared across renders — fully static (no dependency on
+// props or state), so defined once at module scope instead of being
+// rebuilt as new React elements on every render.
+const sharedGrid = (
+  <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+);
+const sharedXAxis = (
+  <XAxis
+    dataKey="week"
+    tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
+    tickLine={{ stroke: "var(--chart-grid)" }}
+  />
+);
+const sharedYAxis = (
+  <YAxis
+    tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
+    tickLine={{ stroke: "var(--chart-grid)" }}
+    tickFormatter={(value) => `₱${value.toLocaleString()}`}
+  />
+);
+const sharedTooltip = (
+  <Tooltip
+    content={<CustomTooltip />}
+    cursor={{ fill: "var(--chart-accent)", fillOpacity: 0.1 }}
+  />
+);
+const sharedDefs = (
+  <defs>
+    <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor="var(--chart-accent)" stopOpacity={0.9} />
+      <stop
+        offset="100%"
+        stopColor="var(--chart-accent-alt)"
+        stopOpacity={0.5}
+      />
+    </linearGradient>
+    <linearGradient id="colorTotalActive" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor="var(--chart-accent)" stopOpacity={1} />
+      <stop offset="100%" stopColor="var(--chart-accent-alt)" stopOpacity={1} />
+    </linearGradient>
+  </defs>
+);
+const sharedBar = (
+  <Bar
+    dataKey="Total"
+    fill="url(#colorTotal)"
+    activeBar={{ fill: "url(#colorTotalActive)" }}
+    radius={[8, 8, 0, 0]}
+    barSize={30}
+  />
+);
+
 const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
   const weeklyTrendData = React.useMemo(
     () => formatWeeklyTrend(expenses, selectedMonth),
@@ -169,59 +221,12 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
             data={weeklyTrendData}
             margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
-
-            <XAxis
-              dataKey="week"
-              tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
-              tickLine={{ stroke: "var(--chart-grid)" }}
-            />
-
-            <YAxis
-              tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
-              tickLine={{ stroke: "var(--chart-grid)" }}
-              tickFormatter={(value) => `₱${value.toLocaleString()}`}
-            />
-
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ fill: "var(--chart-accent)", fillOpacity: 0.1 }}
-            />
-
-            <defs>
-              <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="0%"
-                  stopColor="var(--chart-accent)"
-                  stopOpacity={0.9}
-                />
-                <stop
-                  offset="100%"
-                  stopColor="var(--chart-accent-alt)"
-                  stopOpacity={0.5}
-                />
-              </linearGradient>
-              <linearGradient id="colorTotalActive" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="0%"
-                  stopColor="var(--chart-accent)"
-                  stopOpacity={1}
-                />
-                <stop
-                  offset="100%"
-                  stopColor="var(--chart-accent-alt)"
-                  stopOpacity={1}
-                />
-              </linearGradient>
-            </defs>
-
-            <Bar
-              dataKey="Total"
-              fill="url(#colorTotal)"
-              activeBar={{ fill: "url(#colorTotalActive)" }}
-              radius={[8, 8, 0, 0]}
-              barSize={30}
-            />
+            {sharedGrid}
+            {sharedXAxis}
+            {sharedYAxis}
+            {sharedTooltip}
+            {sharedDefs}
+            {sharedBar}
           </BarChart>
         </ResponsiveContainer>
       )}

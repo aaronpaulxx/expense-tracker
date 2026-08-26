@@ -59,15 +59,11 @@ const ExpenseCategoriesChart = ({ categoryTotals, selectedMonth }) => {
   let displayLabel = "Total";
   let displayColor = "#ffffff";
 
-  if (hoveredCategory) {
-    const hoveredData = formattedData.find(
-      (item) => item.name === hoveredCategory,
-    );
-    if (hoveredData) {
-      displayAmount = hoveredData.value;
-      displayLabel = hoveredData.name;
-      displayColor = hoveredData.color;
-    }
+  if (hoveredCategory && activeIndex >= 0) {
+    const hoveredData = formattedData[activeIndex];
+    displayAmount = hoveredData.value;
+    displayLabel = hoveredData.name;
+    displayColor = hoveredData.color;
   }
 
   const integerDigits = Math.floor(displayAmount).toString().length;

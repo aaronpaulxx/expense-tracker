@@ -35,6 +35,9 @@ const MONTHS = [
   "Nov",
   "Dec",
 ];
+// Minimum number of months that must stay visible between the two brush
+// handles — prevents them from crossing and from collapsing to one month.
+const MIN_BRUSH_MONTHS = 2;
 
 const emptyMonthEntry = (month) => {
   const entry = { month };
@@ -144,10 +147,11 @@ const CustomYearlyTooltip = ({
   payload,
   label,
   data,
+  monthIndexMap,
   previousDecemberData,
 }) => {
   if (active && payload && payload.length) {
-    const currentMonthIndex = data.findIndex((item) => item.month === label);
+    const currentMonthIndex = monthIndexMap.get(label) ?? -1;
     let previousMonthData =
       currentMonthIndex > 0 ? data[currentMonthIndex - 1] : null;
 
@@ -241,6 +245,7 @@ CustomYearlyTooltip.propTypes = {
   ),
   label: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  monthIndexMap: PropTypes.instanceOf(Map).isRequired,
   previousDecemberData: PropTypes.object,
 };
 
@@ -390,6 +395,22 @@ CustomLegend.propTypes = {
   hoveredCategory: PropTypes.string,
 };
 
+// --- Shared chart chrome with zero dependency on component state — these
+// never change, so they're created once at module load instead of being
+// rebuilt as new React elements on every render (or even every hover).
+const sharedGrid = (
+  <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+);
+const sharedXAxis = (
+  <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--chart-tick)" }} />
+);
+const sharedYAxis = (
+  <YAxis
+    tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
+    tickFormatter={(value) => `₱${value.toLocaleString()}`}
+  />
+);
+
 // --- Main Chart Component ---
 
 const YearlyOverviewChart = ({ expenses, selectedYear }) => {
@@ -407,6 +428,13 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   const data = useMemo(
     () => formatYearlyData(expenses, selectedYear, previousDecemberData),
     [expenses, selectedYear, previousDecemberData],
+  );
+
+  // Lets the tooltip look up a month's index in O(1) instead of scanning
+  // the array on every mousemove while hovering the chart.
+  const monthIndexMap = useMemo(
+    () => new Map(data.map((item, index) => [item.month, index])),
+    [data],
   );
 
   const hasAnyExpenses = useMemo(
@@ -451,8 +479,6 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   const handleLegendMouseLeave = useCallback(() => {
     setHoveredCategory(null);
   }, []);
-
-  const MIN_BRUSH_MONTHS = 2;
 
   const handleBrushChange = useCallback(
     (newRange) => {
@@ -503,54 +529,55 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   const clampedStartIndex = Math.min(brushRange.startIndex, maxIndex);
   const clampedEndIndex = Math.min(brushRange.endIndex, maxIndex);
 
-  // --- Shared chart chrome, identical across both chart types ---
-  const sharedGrid = (
-    <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+  // --- Shared chart chrome that depends on component state — memoized so
+  // toggling chartType (line/area) or other unrelated re-renders don't
+  // rebuild the Tooltip/Legend/Brush when their actual inputs haven't
+  // changed.
+  const sharedTooltip = useMemo(
+    () => (
+      <Tooltip
+        content={
+          <CustomYearlyTooltip
+            data={data}
+            monthIndexMap={monthIndexMap}
+            previousDecemberData={previousDecemberData}
+          />
+        }
+      />
+    ),
+    [data, monthIndexMap, previousDecemberData],
   );
-  const sharedXAxis = (
-    <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--chart-tick)" }} />
+  const sharedLegend = useMemo(
+    () => (
+      <Legend
+        verticalAlign="bottom"
+        content={
+          <CustomLegend
+            onMouseEnter={handleLegendMouseEnter}
+            onMouseLeave={handleLegendMouseLeave}
+            hoveredCategory={hoveredCategory}
+          />
+        }
+      />
+    ),
+    [handleLegendMouseEnter, handleLegendMouseLeave, hoveredCategory],
   );
-  const sharedYAxis = (
-    <YAxis
-      tick={{ fontSize: 11, fill: "var(--chart-tick)" }}
-      tickFormatter={(value) => `₱${value.toLocaleString()}`}
-    />
-  );
-  const sharedTooltip = (
-    <Tooltip
-      content={
-        <CustomYearlyTooltip
-          data={data}
-          previousDecemberData={previousDecemberData}
-        />
-      }
-    />
-  );
-  const sharedLegend = (
-    <Legend
-      verticalAlign="bottom"
-      content={
-        <CustomLegend
-          onMouseEnter={handleLegendMouseEnter}
-          onMouseLeave={handleLegendMouseLeave}
-          hoveredCategory={hoveredCategory}
-        />
-      }
-    />
-  );
-  const sharedBrush = (
-    <Brush
-      key={brushKey}
-      dataKey="month"
-      height={15}
-      stroke="var(--chart-accent-alt)"
-      fill="var(--chart-outline)"
-      traveller={<MinimalTraveller />}
-      tickFormatter={() => ""}
-      startIndex={clampedStartIndex}
-      endIndex={clampedEndIndex}
-      onChange={handleBrushChange}
-    />
+  const sharedBrush = useMemo(
+    () => (
+      <Brush
+        key={brushKey}
+        dataKey="month"
+        height={15}
+        stroke="var(--chart-accent-alt)"
+        fill="var(--chart-outline)"
+        traveller={<MinimalTraveller />}
+        tickFormatter={() => ""}
+        startIndex={clampedStartIndex}
+        endIndex={clampedEndIndex}
+        onChange={handleBrushChange}
+      />
+    ),
+    [brushKey, clampedStartIndex, clampedEndIndex, handleBrushChange],
   );
 
   return (
