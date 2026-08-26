@@ -11,7 +11,7 @@ const ACCENT = {
 const baseOptions = {
   duration: 5000,
   style: {
-    background: "#161b1d",
+    background: "#22292b",
     color: "#fff",
     border: "1px solid #394447",
     borderRadius: "0.5rem",
