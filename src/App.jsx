@@ -148,7 +148,7 @@ const App = () => {
 
         {/* Expense Entry Section */}
         <div
-          className="m-3 p-3 bg-card flex flex-col gap-2 rounded-xl shadow-sm shadow-stone-950"
+          className="mx-6 mb-8 mt-4 p-3 bg-card flex flex-col gap-2 rounded-xl shadow-sm shadow-stone-950"
           ref={formSectionRef}
         >
           <div className="w-full">
@@ -168,7 +168,7 @@ const App = () => {
         </div>
 
         {/* Today's Expenses Section */}
-        <div className="m-3 p-3 bg-card rounded-xl shadow-sm shadow-stone-950">
+        <div className="mx-6 mb-8 p-3 bg-card rounded-xl shadow-sm shadow-stone-950">
           <ExpenseList
             date={date}
             expenses={expenses}
@@ -183,7 +183,7 @@ const App = () => {
         </div>
 
         {/* Financial Insights Section */}
-        <div className="m-3 p-3 bg-card rounded-2xl shadow-sm shadow-stone-950">
+        <div className="mx-6 mb-2 p-3 bg-card rounded-2xl shadow-sm shadow-stone-950">
           <div className="w-full my-2">
             <label className="text-lg border-l-4 pl-2 border-accent font-bold text-foreground block w-full">
               Financial Insights
