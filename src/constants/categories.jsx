@@ -22,7 +22,7 @@ export const CATEGORIES = {
     color: "text-yellow-400",
     hex: "#fbbf24", // yellow-400
     hoverGradient: "hover:from-yellow-900 hover:to-yellow-800/25",
-    overlayGradient: "from-yellow-900 to-yellow-800/25",
+    overlayGradient: "from-yellow-800 to-yellow-800/25",
     hoverBorder: "hover:border-yellow-800/50",
     hoverBg: "hover:bg-yellow-800 data-active:bg-yellow-800",
   },
@@ -31,7 +31,7 @@ export const CATEGORIES = {
     color: "text-blue-400",
     hex: "#60a5fa", // blue-400
     hoverGradient: "hover:from-blue-900 hover:to-blue-800/25",
-    overlayGradient: "from-blue-900 to-blue-800/25",
+    overlayGradient: "from-blue-800 to-blue-800/25",
     hoverBorder: "hover:border-blue-800/50",
     hoverBg: "hover:bg-blue-800 data-active:bg-blue-800",
   },
@@ -40,7 +40,7 @@ export const CATEGORIES = {
     color: "text-red-400",
     hex: "#f87171", // red-400
     hoverGradient: "hover:from-red-900 hover:to-red-800/25",
-    overlayGradient: "from-red-900 to-red-800/25",
+    overlayGradient: "from-red-800 to-red-800/25",
     hoverBorder: "hover:border-red-800/50",
     hoverBg: "hover:bg-red-800 data-active:bg-red-800",
   },
@@ -49,7 +49,7 @@ export const CATEGORIES = {
     color: "text-purple-400",
     hex: "#c084fc", // purple-400
     hoverGradient: "hover:from-purple-900 hover:to-purple-800/25",
-    overlayGradient: "from-purple-900 to-purple-800/25",
+    overlayGradient: "from-purple-800 to-purple-800/25",
     hoverBorder: "hover:border-purple-800/50",
     hoverBg: "hover:bg-purple-800 data-active:bg-purple-800",
   },
