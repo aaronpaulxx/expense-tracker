@@ -153,7 +153,7 @@ const Settings = ({
             <Dialog.Panel className="relative bg-card p-5 rounded-xl shadow-lg w-160 max-w-[90%] max-h-[95vh] overflow-y-auto border-transparent border custom-scrollbar">
               <div className="flex justify-between items-center border-b border-border">
                 <Dialog.Title className="text-xl font-semibold text-foreground">
-                  <div className="mb-4 flex items-center gap-2 border-l-4 pl-2 border-border">
+                  <div className="mb-4 flex items-center gap-2 border-l-4 pl-2 border-accent">
                     Settings
                   </div>
                 </Dialog.Title>
