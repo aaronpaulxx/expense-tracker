@@ -101,7 +101,7 @@ export const CustomTooltip = ({ active, payload }) => {
           "linear-gradient(to bottom, var(--chart-card-gradient-start), var(--chart-card-gradient-end))",
       }}
     >
-      <p className="font-bold text-md text-foreground">{weekData.week}</p>
+      <p className="font-bold text-base text-foreground">{weekData.week}</p>
       <p className="text-muted-foreground text-xs mb-3">
         ({weekData.startDateFormatted} - {weekData.endDateFormatted})
       </p>
@@ -155,12 +155,8 @@ const sharedTooltip = (
 const sharedDefs = (
   <defs>
     <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.9} />
-      <stop
-        offset="100%"
-        stopColor="var(--accent)"
-        stopOpacity={0.5}
-      />
+      <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.6} />
+      <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.3} />
     </linearGradient>
     <linearGradient id="colorTotalActive" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stopColor="var(--accent)" stopOpacity={1} />
@@ -190,10 +186,10 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
   );
 
   return (
-    <div className="border-border border rounded-xl p-2 shadow-md shadow-stone-950">
-      <h3 className="text-sm font-medium text-accent mb-5 pb-2 border-b border-border flex justify-between items-center">
+    <div className="min-h-70 bg-linear-to-r from-expense-gradient to-expense-gradient2/90 rounded-xl p-3 shadow-sm shadow-stone-950">
+      <h3 className="text-base font-semibold text-foreground mb-5 pb-2 border-b border-border flex justify-between items-center">
         <span>Weekly Spending</span>
-        <span className="text-muted-foreground">
+        <span className="text-accent">
           {selectedMonth
             ? new Date(selectedMonth).toLocaleString("en-US", {
                 month: "long",
@@ -216,10 +212,10 @@ const WeeklySpendingChart = ({ expenses, selectedMonth }) => {
           </span>
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={195}>
           <BarChart
             data={weeklyTrendData}
-            margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
+            margin={{ top: 10, right: 20, left: 5, bottom: -10 }}
           >
             {sharedGrid}
             {sharedXAxis}
