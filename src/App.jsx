@@ -10,9 +10,11 @@ import FinancialInsights from "./components/FinancialInsights";
 
 import { useExpenses } from "./hooks/useExpenses";
 import { useExpenseCalculations } from "./hooks/useExpenseCalculations";
+import { useTheme } from "./hooks/useTheme";
 import Footer from "./components/Footer";
 
 const App = () => {
+  const { theme, setTheme, palettes } = useTheme();
   const [date, setDate] = useState(new Date());
   const {
     expenses,
@@ -132,6 +134,9 @@ const App = () => {
         clearRecords={clearRecords}
         expenses={expenses}
         setExpenses={setExpenses}
+        theme={theme}
+        setTheme={setTheme}
+        palettes={palettes}
       />
 
       <div className="flex flex-1 overflow-auto flex-col">

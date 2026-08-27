@@ -9,6 +9,7 @@ import {
   Upload,
   MonitorUp,
   Trash2,
+  Palette,
 } from "lucide-react";
 import { Dialog, Transition, CloseButton } from "@headlessui/react";
 import { loadXLSX } from "../lib/loadXLSX.js";
@@ -23,6 +24,9 @@ const Settings = ({
   clearRecords,
   expenses,
   setExpenses,
+  theme,
+  setTheme,
+  palettes,
 }) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [deleteConfirmationInput, setDeleteConfirmationInput] = useState("");
@@ -201,6 +205,49 @@ const Settings = ({
                         {(storageInfo.total / 1024).toFixed(2)} MB total
                       </span>
                     </div>
+                  </div>
+                </div>
+
+                {/* APPEARANCE SECTION */}
+                <div className="border-t border-border pt-3">
+                  <div className="flex items-center gap-2">
+                    <Palette size={20} className="text-muted-foreground" />
+                    <h2 className="text-base font-medium text-foreground">
+                      Appearance
+                    </h2>
+                  </div>
+                  <div className="mt-2 grid grid-cols-3 sm:grid-cols-5 gap-2">
+                    {palettes.map((palette) => (
+                      <button
+                        key={palette.id}
+                        onClick={() => setTheme(palette.id)}
+                        className={`cursor-pointer flex flex-col items-center justify-center gap-1 py-1 px-1 rounded-xl border transition-colors duration-200 ${
+                          theme === palette.id
+                            ? "border-accent bg-accent/10"
+                            : "border-border hover:border-muted-foreground hover:bg-muted/10"
+                        }`}
+                      >
+                        <div className="flex -space-x-1.5 mt-1">
+                          <div
+                            className="w-4 h-4 rounded-full border border-border"
+                            style={{ backgroundColor: palette.accent }}
+                          />
+                          <div
+                            className="w-4 h-4 rounded-full border border-border"
+                            style={{ backgroundColor: palette.accentSecondary }}
+                          />
+                        </div>
+                        <span
+                          className={`text-xs ${
+                            theme === palette.id
+                              ? "text-foreground font-medium"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {palette.name}
+                        </span>
+                      </button>
+                    ))}
                   </div>
                 </div>
 
@@ -510,6 +557,16 @@ Settings.propTypes = {
   clearRecords: PropTypes.func.isRequired,
   expenses: PropTypes.object,
   setExpenses: PropTypes.func.isRequired,
+  theme: PropTypes.string.isRequired,
+  setTheme: PropTypes.func.isRequired,
+  palettes: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      accent: PropTypes.string,
+      accentSecondary: PropTypes.string,
+    }),
+  ).isRequired,
 };
 
 export default Settings;

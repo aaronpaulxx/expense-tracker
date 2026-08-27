@@ -3,21 +3,26 @@ import PropTypes from "prop-types";
 import { Settings as SettingsIcon } from "lucide-react";
 import Settings from "./Settings";
 
-const Header = ({ clearRecords, expenses, setExpenses }) => {
+const Header = ({
+  clearRecords,
+  expenses,
+  setExpenses,
+  theme,
+  setTheme,
+  palettes,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <>
-      <div
-        className="py-2 flex justify-between items-center px-5 bg-[linear-gradient(45deg,var(--background)_25%,var(--accent)_50%,var(--accent-secondary)_75%,var(--background)_100%)]"
-      >
+      <div className="py-2 flex justify-between items-center px-5 bg-[linear-gradient(45deg,var(--background)_25%,var(--accent)_50%,var(--accent-secondary)_75%,var(--background)_100%)]">
         <div
           className="flex flex-col cursor-pointer"
           onClick={() => window.location.reload()}
         >
           <h1 className="text-[20px] font-bold titleh1">
-            <span className="bg-linear-to-r from-[var(--accent)] to-[var(--accent-secondary)] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-accent to-accent-secondary bg-clip-text text-transparent">
               Expense Tracker
             </span>
           </h1>
@@ -50,6 +55,9 @@ const Header = ({ clearRecords, expenses, setExpenses }) => {
         clearRecords={clearRecords}
         expenses={expenses}
         setExpenses={setExpenses}
+        theme={theme}
+        setTheme={setTheme}
+        palettes={palettes}
       />
     </>
   );
@@ -59,6 +67,16 @@ Header.propTypes = {
   clearRecords: PropTypes.func.isRequired,
   expenses: PropTypes.object,
   setExpenses: PropTypes.func.isRequired,
+  theme: PropTypes.string.isRequired,
+  setTheme: PropTypes.func.isRequired,
+  palettes: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      accent: PropTypes.string,
+      accentSecondary: PropTypes.string,
+    }),
+  ).isRequired,
 };
 
 export default Header;

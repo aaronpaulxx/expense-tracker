@@ -43,6 +43,26 @@
   --warning: oklch(82.8% 0.189 84.429);
 }
 
+[data-theme="ocean"] {
+  --accent: var(--color-cyan-300);
+  --accent-secondary: var(--color-sky-500);
+}
+
+[data-theme="sunset"] {
+  --accent: var(--color-amber-300);
+  --accent-secondary: var(--color-yellow-500);
+}
+
+[data-theme="rose"] {
+  --accent: var(--color-rose-300);
+  --accent-secondary: var(--color-pink-500);
+}
+
+[data-theme="violet"] {
+  --accent: var(--color-violet-300);
+  --accent-secondary: var(--color-purple-500);
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
