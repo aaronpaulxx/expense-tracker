@@ -443,18 +443,6 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
     [data],
   );
 
-  const categoryTotals = useMemo(() => {
-    const totals = {};
-    const currentYearData = data.filter((month) => !month.isPreviousYear);
-    CATEGORY_NAMES.forEach((category) => {
-      totals[category] = currentYearData.reduce(
-        (acc, month) => acc + (month[category] || 0),
-        0,
-      );
-    });
-    return totals;
-  }, [data]);
-
   const [brushRange, setBrushRange] = useState({
     startIndex: 0,
     endIndex: data.length - 1,
@@ -525,6 +513,23 @@ const YearlyOverviewChart = ({ expenses, selectedYear }) => {
   const maxIndex = Math.max(data.length - 1, 0);
   const clampedStartIndex = Math.min(brushRange.startIndex, maxIndex);
   const clampedEndIndex = Math.min(brushRange.endIndex, maxIndex);
+
+  // Only the months currently visible within the brush's handles — recomputed
+  // whenever the user drags the brush so the legend-hover total reflects what's
+  // actually shown on the chart rather than the whole year.
+  const categoryTotals = useMemo(() => {
+    const totals = {};
+    const visibleData = data
+      .slice(clampedStartIndex, clampedEndIndex + 1)
+      .filter((month) => !month.isPreviousYear);
+    CATEGORY_NAMES.forEach((category) => {
+      totals[category] = visibleData.reduce(
+        (acc, month) => acc + (month[category] || 0),
+        0,
+      );
+    });
+    return totals;
+  }, [data, clampedStartIndex, clampedEndIndex]);
 
   // --- Shared chart chrome that depends on component state — memoized so
   // toggling chartType (line/area) or other unrelated re-renders don't
